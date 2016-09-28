@@ -6,7 +6,6 @@ import time
 import json
 import config
 import libs.public
-import libs.authentication
 import libs.swarm.swarm_multi
 import libs.swarm.swarm_engine
 import libs.swarm.swarm_cluster
@@ -40,7 +39,7 @@ def before_request():
     g.requestId = libs.public.gen_requestId()
     g.username  = request.cookies.get("username", request.args.get("username", ""))
     g.sessionid = request.cookies.get("Esessionid", request.args.get("Esessionid", ""))
-    g.auth      = libs.authentication.auth(config.GLOBAL.get("AuthSysUrl"), g.username, g.sessionid)
+    g.auth      = True
     g.swarm_node    = libs.swarm.swarm_engine.SWARM_NODE_API(swarm.getActive.get("manager")) if swarm.getActive.get("type") == "engine" else ''
     g.swarm_service = libs.swarm.swarm_engine.SWARM_SERVICE_API(swarm.getActive.get("manager")) if swarm.getActive.get("type") == "engine" else ''
     logger.info("And this requestId is %s, auth(%s), username(%s), sessionid(%s)" %(g.requestId, g.auth, g.username, g.sessionid))
@@ -49,10 +48,10 @@ def before_request():
 #每次返回数据中，带上响应头，包含API版本和本次请求的requestId，以及允许所有域跨域访问API, 记录访问日志.
 @app.after_request
 def add_header(response):
-    response.headers["X-Emar-Name"]         = __process__
-    response.headers["X-Emar-Version"]      = __version__
-    response.headers["X-Emar-Request-Id"]   = g.requestId
-    response.headers["X-Emar-Cluster-Mode"] = swarm.getActive.get("type")
+    response.headers["X-SaintIC-Name"]         = __process__
+    response.headers["X-SaintIC-Version"]      = __version__
+    response.headers["X-SaintIC-Request-Id"]   = g.requestId
+    response.headers["X-SaintIC-Cluster-Mode"] = swarm.getActive.get("type")
     response.headers["Access-Control-Allow-Origin"] = "*"
     logger.info(json.dumps({
         "AccessLog": {
