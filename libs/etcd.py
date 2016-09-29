@@ -3,7 +3,7 @@
 
 import requests
 from SpliceURL import Splice
-from libs.public import logger
+from utils.public import logger
 
 
 class Etcd(object):

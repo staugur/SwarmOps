@@ -7,7 +7,7 @@
 #
 
 import requests
-from libs.public import logger, Ot2Bool
+from utils.public import logger, Ot2Bool
 from random import choice
 from SpliceURL import Splice
 

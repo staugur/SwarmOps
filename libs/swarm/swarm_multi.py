@@ -5,7 +5,7 @@ import json
 import requests
 from random import choice
 from SpliceURL import Splice
-from libs.public import logger, commaConvert
+from utils.public import logger, commaConvert
 from libs.etcd import Etcd
 
 class MultiSwarmManager(object):
@@ -19,8 +19,8 @@ class MultiSwarmManager(object):
     5. commaConvert
     """
     port = 2375
-    _timeout = 3
-    _verify  = False
+    timeout = 3
+    verify  = False
 
     def __init__(self, default, method, IsProduction=False, **etcd):
         """
@@ -122,7 +122,7 @@ class MultiSwarmManager(object):
         logger.debug(leader)
 
         try:
-            swarm = requests.get(Splice(ip=leader, port=self.port, path='/swarm').geturl, timeout=self._timeout, verify=self._verify).json()
+            swarm = requests.get(Splice(ip=leader, port=self.port, path='/swarm').geturl, timeout=self.timeout, verify=self.verify).json()
             token = swarm.get('JoinTokens')
         except Exception,e:
             logger.warn(e, exc_info=True)
@@ -135,7 +135,7 @@ class MultiSwarmManager(object):
  
         for manager in swarm.get("manager"):
             try:
-                leader = ( _.get('ManagerStatus', {}).get('Addr').split(':')[0] for _ in requests.get(Splice(ip=manager, port=self.port, path='/nodes').geturl, timeout=self._timeout, verify=self._verify).json() if _.get('ManagerStatus', {}).get('Leader') ).next()
+                leader = ( _.get('ManagerStatus', {}).get('Addr').split(':')[0] for _ in requests.get(Splice(ip=manager, port=self.port, path='/nodes').geturl, timeout=self.timeout, verify=self.verify).json() if _.get('ManagerStatus', {}).get('Leader') ).next()
             except Exception,e:
                 logger.warn(e)
             else:
@@ -148,7 +148,7 @@ class MultiSwarmManager(object):
         state = False
         logger.info("To determine whether the cluster is healthy, starting")
         try:
-            nodes = requests.get(Splice(ip=self._checkSwarmLeader(swarm), port=self.port, path='/nodes').geturl, timeout=self._timeout, verify=self._verify).json()
+            nodes = requests.get(Splice(ip=self._checkSwarmLeader(swarm), port=self.port, path='/nodes').geturl, timeout=self.timeout, verify=self.verify).json()
             for node in nodes:
                 role = 'Leader' if node.get('ManagerStatus', {}).get('Leader') else node['Spec'].get('Role')
                 # Logic to determine whether a cluster is healthy!
@@ -268,7 +268,7 @@ class MultiSwarmManager(object):
                 url = Splice(ip=nodeIp, port=nodePort, path='/info').geturl
                 logger.info("get swarm ip info, that url is %s" %url)
                 try:
-                    r = requests.get(url, timeout=self._timeout, verify=self._verify).json()
+                    r = requests.get(url, timeout=self.timeout, verify=self.verify).json()
                 except Exception,e:
                     logger.warn(e, exc_info=True)
                     res.update(msg="Access the node ip url(%s) has exception" %url, code=-1021)

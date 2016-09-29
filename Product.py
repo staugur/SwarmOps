@@ -3,7 +3,7 @@
 
 import os ; os.environ['swarmopsapi_isproduction'] = 'true'
 from main import app, __version__
-from libs.public import logger
+from utils.public import logger
 from config import GLOBAL, PRODUCT
 
 Host = GLOBAL.get('Host')
@@ -23,7 +23,7 @@ else:
     logger.info(msg)
 
 if GLOBAL.get("putEtcd") == True:
-    from libs.public import putEtcd
+    from utils.public import putEtcd
     from config import ETCD
     from threading import Thread
     MISC = {"version": __version__}
