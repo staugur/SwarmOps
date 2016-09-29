@@ -6,7 +6,6 @@ import time
 import json
 import config
 import utils.public
-import libs.authentication
 import libs.swarm.swarm_multi
 import libs.swarm.swarm_engine
 import libs.swarm.swarm_cluster
@@ -36,7 +35,7 @@ def before_request():
     g.requestId = utils.public.gen_requestId()
     g.username  = request.cookies.get("username", request.args.get("username", ""))
     g.sessionid = request.cookies.get("Esessionid", request.args.get("Esessionid", ""))
-    g.auth      = libs.authentication.auth(config.GLOBAL.get("AuthSysUrl"), g.username, g.sessionid)
+    g.auth      = True
     g.swarm     = swarm
     g.swarm_node    = libs.swarm.swarm_engine.SWARM_NODE_API(swarm.getActive.get("manager")) if swarm.getActive.get("type") == "engine" else ''
     g.swarm_service = libs.swarm.swarm_engine.SWARM_SERVICE_API(swarm.getActive.get("manager")) if swarm.getActive.get("type") == "engine" else ''
