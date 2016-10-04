@@ -8,7 +8,7 @@ GLOBAL={
     "Host": os.getenv("swarmopsapi_host", "0.0.0.0"),
     #Application run network address, you can set it `0.0.0.0`, `127.0.0.1`, ``;
 
-    "Port": int(os.getenv("swarmopsapi_port", 10030)),
+    "Port": int(os.getenv("swarmopsapi_port", 10130)),
     #Application run port, default port;
 
     "Debug": os.getenv("swarmopsapi_debug", True),
