@@ -20,7 +20,7 @@ GLOBAL={
     "AuthSysUrl": "xxxxxxxxxxx",
     #token认证接口地址
 
-    "putEtcd": os.getenv("swarmopsapi_putetcd", True),
+    "putEtcd": os.getenv("swarmopsapi_putetcd", False),
     #是否开启put至etcd的线程
 
     "SwarmStorageMode": os.getenv("swarmopsapi_swarmstoragemode", "file")
