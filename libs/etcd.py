@@ -12,7 +12,7 @@ class Etcd(object):
     def __init__(self, **etcd):
         self.timeout = 5
         self.verify  = False
-        self.etcdUrl = Splice(scheme=etcd.get("ETCD_SCHEME"), domain=etcd.get("ETCD_HOST"), port=etcd.get("ETCD_PORT"), path=etcd.get("ETCD_VERSION") + "/keys").geturl
+        self.etcdUrl = Splice(scheme=etcd.get("ETCD_SCHEME"), netloc=etcd.get("ETCD_HOST"), port=etcd.get("ETCD_PORT"), path=etcd.get("ETCD_VERSION") + "/keys").geturl
 
     @property
     def url(self):

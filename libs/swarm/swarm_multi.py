@@ -122,7 +122,7 @@ class MultiSwarmManager(object):
         logger.debug(leader)
 
         try:
-            swarm = requests.get(Splice(ip=leader, port=self.port, path='/swarm').geturl, timeout=self.timeout, verify=self.verify).json()
+            swarm = requests.get(Splice(netloc=leader, port=self.port, path='/swarm').geturl, timeout=self.timeout, verify=self.verify).json()
             token = swarm.get('JoinTokens')
         except Exception,e:
             logger.warn(e, exc_info=True)

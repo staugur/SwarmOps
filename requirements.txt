@@ -1,6 +1,6 @@
-Flask==0.11.1
+Flask==0.10.1
 Flask-RESTful==0.3.5
-SpliceURL>=0.5
+SpliceURL>=1.2
 tornado
 gevent
 setproctitle
