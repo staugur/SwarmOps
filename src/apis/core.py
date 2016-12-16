@@ -1,17 +1,16 @@
 # -*- coding:utf-8 -*-
 
-
-from utils.public import logger
 from flask import Blueprint, request, g
 from flask_restful import Api, Resource
+from utils.public import logger
 
 
 class Swarm(Resource):
 
     def get(self):
-        """ Query cluster information """
+        """ 查询存储的swarm集群信息 """
 
-        get   = request.args.get("get")
+        get   = request.args.get("get").lower()
         state = True if request.args.get("state", True) in ('true', 'True', True) else False
 
         if g.auth:
@@ -22,7 +21,7 @@ class Swarm(Resource):
             return res, 403
 
     def post(self):
-        """ The api for adding a swarm cluster, post data """
+        """ 向存储里添加一个swarm集群 """
 
         swarmname = request.form.get("name")
         swarmtype = request.form.get("type")
@@ -58,9 +57,9 @@ class Swarm(Resource):
         else:
             res = {"msg": "Authentication failed, permission denied.", "code": 403}
             logger.warn(res)
-            return res, 403 
+            return res, 403
 
-
+'''
 class Service(Resource):
 
     def get(self):
@@ -186,10 +185,11 @@ class Node(Resource):
             res = {"msg": "Authentication failed, permission denied.", "code": 403}
             logger.warn(res)
             return res, 403
+'''
 
 
 core_blueprint = Blueprint(__name__, __name__)
 api = Api(core_blueprint)
-api.add_resource(Service, '/service', '/service/', endpoint='service')
 api.add_resource(Swarm, '/swarm', '/swarm/', endpoint='swarm')
-api.add_resource(Node, '/node', '/node/', endpoint='node')
+#api.add_resource(Service, '/service', '/service/', endpoint='service')
+#api.add_resource(Node, '/node', '/node/', endpoint='node')

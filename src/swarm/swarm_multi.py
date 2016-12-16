@@ -6,12 +6,10 @@ import requests
 from random import choice
 from SpliceURL import Splice
 from utils.public import logger, commaConvert
-from libs.etcd import Etcd
 
-class MultiSwarmManager(object):
+class MultiSwarmManager:
 
     """
-    Swarm Manager Class, Need the Second Module:
     1. requests
     2. SpliceURL
     3. logger
@@ -22,7 +20,7 @@ class MultiSwarmManager(object):
     timeout = 3
     verify  = False
 
-    def __init__(self, default, method, IsProduction=False, **etcd):
+    def __init__(self, default, method):
         """
         :: Init some varible, set default and swarm data.
         :: 1. `default` is the default swarm cluster of writting in config.py.

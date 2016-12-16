@@ -1,8 +1,7 @@
 #!/usr/bin/python -O
 #product environment start application with `tornado IOLoop` and `gevent server`
 
-import os ; os.environ['swarmopsapi_isproduction'] = 'true'
-from main import app, __version__
+from main import app
 from utils.public import logger
 from config import GLOBAL, PRODUCT
 
@@ -21,14 +20,6 @@ else:
     msg = 'The process is %s' %ProcessName
     print msg
     logger.info(msg)
-
-if GLOBAL.get("putEtcd") == True:
-    from utils.public import putEtcd
-    from config import ETCD
-    from threading import Thread
-    MISC = {"version": __version__}
-    t = Thread(target=putEtcd, name='Put2Etcd', args=(ProcessName, Port, ETCD, MISC))
-    t.start()
 
 try:
     msg = '%s has been launched, %s:%d, with %s.' %(ProcessName, Host, Port, ProductType)
