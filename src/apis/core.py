@@ -10,8 +10,8 @@ class Swarm(Resource):
     def get(self):
         """ 查询存储的swarm集群信息 """
 
-        get   = request.args.get("get").lower()
-        state = True if request.args.get("state", True) in ('true', 'True', True) else False
+        get   = request.args.get("get")
+        state = True if request.args.get("state", False) in ('true', 'True', True) else False
 
         if g.auth:
             return g.swarm.GET(get, state)

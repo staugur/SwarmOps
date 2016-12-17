@@ -33,8 +33,9 @@ PRODUCT={
 
 #REDIS配置段
 REDIS={
-    "Connection": os.getenv("swarmopsapi_RedisConnection", "redis://101.200.125.9:16379:SaintIC"),
-    #redis://ip:port:password
+    "Connection": os.getenv("swarmopsapi_RedisConnection", "redis://ip:port:password"),
 
-    "Key": os.getenv("swarmopsapi_RedisKey", "Swarm"),
+    "SwarmKey": os.getenv("swarmopsapi_RedisSwarmKey", "Swarm_All"),
+
+    "ActiveKey": os.getenv("swarmopsapi_RedisSwarmKey", "Swarm_Active"),
 }

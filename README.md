@@ -20,7 +20,6 @@ setproctitle     LinuxOS设定进程
 SpliceURL        URL拼接分割叠加模块
 docker-py        docker for python模块
 requests         URL请求处理模块
-paramiko         SSH登陆模块
 ```
 
 

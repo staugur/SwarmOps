@@ -1,13 +1,9 @@
 # -*- coding:utf-8 -*-
 
-import os
-import sys
 import time
-import json
-from config import GLOBAL, PRODUCT
 from flask import Flask, request, g, jsonify
+from config import GLOBAL, PRODUCT
 from utils.public import logger, gen_requestId
-#from apis.misc import misc_blueprint
 from apis.core import core_blueprint
 from swarm.Swarm import MultiSwarmManager
 
@@ -21,21 +17,18 @@ app = Flask(__name__)
 app.register_blueprint(core_blueprint)
 
 #swarm = libs.swarm.swarm_multi.MultiSwarmManager(default=config.SWARM, method=config.GLOBAL.get("SwarmStorageMode"), **config.ETCD)
-
+swarm = MultiSwarmManager()
 
 #每个URL请求之前，定义初始化时间、requestId、用户验证结果等相关信息并绑定到g.
 @app.before_request
 def before_request():
-    logger.info("Start Once Access")
     g.startTime = time.time()
     g.requestId = gen_requestId()
     g.username  = request.cookies.get("username", request.args.get("username", ""))
     g.sessionid = request.cookies.get("Esessionid", request.args.get("Esessionid", ""))
     g.auth      = True
-    g.swarm = MultiSwarmManager()
-    #g.swarm_node    = libs.swarm.swarm_engine.SWARM_NODE_API(swarm.getActive.get("manager")) if swarm.getActive.get("type") == "engine" else ''
-    #g.swarm_service = libs.swarm.swarm_engine.SWARM_SERVICE_API(swarm.getActive.get("manager")) if swarm.getActive.get("type") == "engine" else ''
-    logger.info("And this requestId is %s, auth(%s), username(%s), sessionid(%s)" %(g.requestId, g.auth, g.username, g.sessionid))
+    g.swarm     = swarm
+    logger.info("Start Once Access, and this requestId is %s, auth(%s), username(%s), sessionid(%s)" %(g.requestId, g.auth, g.username, g.sessionid))
     logger.debug(app.url_map)
 
 #每次返回数据中，带上响应头，包含本次请求的requestId，以及允许所有域跨域访问API, 记录访问日志.
@@ -43,8 +36,8 @@ def before_request():
 def add_header(response):
     response.headers["X-Emar-Request-Id"]   = g.requestId
     response.headers["Access-Control-Allow-Origin"] = "*"
-    logger.info(json.dumps({
-        "AccessLog": {
+    logger.info({
+            "AccessLog": True,
             "status_code": response.status_code,
             "method": request.method,
             "ip": request.headers.get('X-Real-Ip', request.remote_addr),
@@ -53,8 +46,7 @@ def add_header(response):
             "agent": request.headers.get("User-Agent"),
             "requestId": g.requestId,
             "OneTimeInterval": "%0.2fs" %float(time.time() - g.startTime)
-        }}
-    ))
+    })
     return response
 
 #首页
