@@ -5,6 +5,7 @@ from flask import Flask, request, g, jsonify
 from config import GLOBAL, PRODUCT
 from utils.public import logger, gen_requestId
 from apis.core import core_blueprint
+from ui.ui import ui_blueprint
 from swarm.Swarm import MultiSwarmManager
 
 __author__  = 'Mr.tao'
@@ -14,6 +15,7 @@ __version__ = '0.0.1'
 
 app = Flask(__name__)
 app.register_blueprint(core_blueprint)
+app.register_blueprint(ui_blueprint, url_prefix="/ui")
 
 swarm = MultiSwarmManager()
 
@@ -27,7 +29,7 @@ def before_request():
     g.auth      = True
     g.swarm     = swarm
     logger.info("Start Once Access, and this requestId is %s, auth(%s), username(%s), sessionid(%s)" %(g.requestId, g.auth, g.username, g.sessionid))
-    logger.debug(app.url_map)
+    app.logger.debug(app.url_map)
 
 #每次返回数据中，带上响应头，包含本次请求的requestId，以及允许所有域跨域访问API, 记录访问日志.
 @app.after_request
