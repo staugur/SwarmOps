@@ -37,5 +37,5 @@ REDIS={
 
     "SwarmKey": os.getenv("swarmopsapi_RedisSwarmKey", "Swarm_All"),
 
-    "ActiveKey": os.getenv("swarmopsapi_RedisSwarmKey", "Swarm_Active"),
+    "ActiveKey": os.getenv("swarmopsapi_RedisActiveKey", "Swarm_Active"),
 }

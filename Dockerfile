@@ -1,6 +1,6 @@
-FROM docker.emarbox.com/sys/alpine-python:gcc
+FROM registry.saintic.com/python
 
-MAINTAINER taochengwei <taochengwei@emar.com>
+MAINTAINER Mr.tao <staugur@saintic.com>
 
 ADD .src /SwarmOpsApi
 
