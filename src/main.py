@@ -4,9 +4,9 @@ import time
 from flask import Flask, request, g, jsonify
 from config import GLOBAL, PRODUCT
 from utils.public import logger, gen_requestId
+from swarm.Swarm import MultiSwarmManager
 from apis.core import core_blueprint
 from ui.ui import ui_blueprint
-from swarm.Swarm import MultiSwarmManager
 
 __author__  = 'Mr.tao'
 __email__   = 'staugur@saintic.com'
