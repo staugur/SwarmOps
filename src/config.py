@@ -27,7 +27,7 @@ PRODUCT={
     "ProcessName": "SwarmOpsApi",
     #Custom process, you can see it with "ps aux|grep ProcessName".
 
-    "ProductType": os.getenv("swarmopsapi_producttype"),
+    "ProductType": os.getenv("swarmopsapi_producttype", "tornado"),
     #生产环境启动方法，可选`gevent`, `tornado`。
 }
 
