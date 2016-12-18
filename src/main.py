@@ -7,16 +7,14 @@ from utils.public import logger, gen_requestId
 from apis.core import core_blueprint
 from swarm.Swarm import MultiSwarmManager
 
-
 __author__  = 'Mr.tao'
-__email__   = 'taochengwei@emar.com'
+__email__   = 'staugur@saintic.com'
 __doc__     = 'Manage swarm clusters to provide a more concise and compact intermediate layer web application'
 __version__ = '0.0.1'
 
 app = Flask(__name__)
 app.register_blueprint(core_blueprint)
 
-#swarm = libs.swarm.swarm_multi.MultiSwarmManager(default=config.SWARM, method=config.GLOBAL.get("SwarmStorageMode"), **config.ETCD)
 swarm = MultiSwarmManager()
 
 #每个URL请求之前，定义初始化时间、requestId、用户验证结果等相关信息并绑定到g.

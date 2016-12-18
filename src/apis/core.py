@@ -24,24 +24,23 @@ class Swarm(Resource):
         """ 向存储里添加一个swarm集群 """
 
         swarmname = request.form.get("name")
-        swarmtype = request.form.get("type")
-        swarmip   = request.form.get("manager", request.form.get("ip"))
+        swarmip   = request.form.get("ip")
 
-        if g.auth:    
-            return g.swarm.POST(name=swarmname, type=swarmtype, ip=swarmip)
+        if g.auth:
+            return g.swarm.POST(swarmName=swarmname, swarmIp=swarmip)
         else:
             res = {"msg": "Authentication failed, permission denied.", "code": 403}
             logger.warn(res)
             return res, 403 
 
     def put(self):
-        """ Update g.swarm info or set active g.swarm """
+        """ 设置活跃集群 """
 
-        setActive = True if request.args.get("setActive", request.form.get("setActive")) in ("true", "True", True) else False
-        swarmname = request.args.get("name", request.form.get("name"))
+        setActive = True if request.args.get("setActive") in ("true", "True", True) else False
+        swarmname = request.args.get("name")
 
         if g.auth:    
-            return g.swarm.PUT(setActive=setActive, name=swarmname)
+            return g.swarm.PUT(name=swarmname, setActive=setActive)
         else:
             res = {"msg": "Authentication failed, permission denied.", "code": 403}
             logger.warn(res)
@@ -50,7 +49,7 @@ class Swarm(Resource):
     def delete(self):
         """ Delete a g.swarm cluster """
 
-        swarmname = request.args.get("name", request.form.get("name"))
+        swarmname = request.args.get("name")
 
         if g.auth:    
             return g.swarm.DELETE(name=swarmname)
