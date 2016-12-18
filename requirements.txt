@@ -7,3 +7,4 @@ setproctitle
 docker-py
 requests
 supervisor
+redis
