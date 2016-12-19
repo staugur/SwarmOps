@@ -23,7 +23,7 @@ MIT
 
 3. run:
     3.1 python main.py        #开发模式
-    3.2 sh Control.sh   #生产模式
+    3.2 sh Control.sh         #生产模式
     3.3 python -O Product.py  #生产模式，3.2中方式实际调用此脚本
     3.4 python super_debug.py #性能分析模式
 ```
