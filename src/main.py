@@ -5,18 +5,19 @@ from flask import Flask, request, g, jsonify
 from config import GLOBAL, PRODUCT
 from utils.public import logger, gen_requestId
 from swarm.Swarm import MultiSwarmManager
-from apis.core import core_blueprint
 from ui.ui import ui_blueprint
+from apis.core import core_blueprint
+from apis.misc import misc_blueprint
 
 __author__  = 'Mr.tao'
 __email__   = 'staugur@saintic.com'
 __doc__     = 'Manage swarm clusters to provide a more concise and compact intermediate layer web application with ui'
 __version__ = '0.0.1'
 
-
 app = Flask(__name__)
-app.register_blueprint(core_blueprint)
 app.register_blueprint(ui_blueprint, url_prefix="/ui")
+app.register_blueprint(core_blueprint, url_prefix="/api")
+app.register_blueprint(misc_blueprint, url_prefix="/misc")
 
 swarm = MultiSwarmManager()
 

@@ -189,6 +189,6 @@ class Node(Resource):
 
 core_blueprint = Blueprint(__name__, __name__)
 api = Api(core_blueprint)
-api.add_resource(Swarm, '/swarm', '/swarm/', endpoint='swarm')
+api.add_resource(Swarm, '/swarm/', endpoint='swarm')
 #api.add_resource(Service, '/service', '/service/', endpoint='service')
 #api.add_resource(Node, '/node', '/node/', endpoint='node')
