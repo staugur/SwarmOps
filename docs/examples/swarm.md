@@ -1,4 +1,4 @@
-## SwarmOpsApi examples for /swarm
+## SwarmOps Api examples for /swarm
 
 
 1. 查询swarm集群示例

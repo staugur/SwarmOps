@@ -1,5 +1,5 @@
 # -*- coding: utf8 -*-
 #
-# SwarmOpsApi libs or modules
+# SwarmOps libs or modules for Api
 # These are important program codes.
 #

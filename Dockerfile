@@ -2,13 +2,13 @@ FROM registry.saintic.com/python
 
 MAINTAINER Mr.tao <staugur@saintic.com>
 
-ADD .src /SwarmOpsApi
+ADD .src /SwarmOps
 
 ADD misc/supervisord.conf /etc/supervisord.conf
 
 ADD requirements.txt /tmp
 
-WORKDIR /SwarmOpsApi
+WORKDIR /SwarmOps
 
 #RUN apk add --no-cache libffi-dev openssl-dev
 

@@ -1,5 +1,5 @@
 # -*- coding: utf8 -*-
 #
-# SwarmOpsApi utils
+# SwarmOps utils
 # This is a number of public functions or classes.
 #

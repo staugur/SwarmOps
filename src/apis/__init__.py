@@ -1,4 +1,4 @@
 # -*- coding:utf-8 -*-
 #
-# SwarmOpsApi views for api
+# SwarmOps views for api
 #

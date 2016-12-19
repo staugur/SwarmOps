@@ -1,4 +1,4 @@
-## SwarmOpsApi examples for /service
+## SwarmOps Api examples for /service
 
 
 1. 创建服务示例

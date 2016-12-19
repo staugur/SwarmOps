@@ -10,8 +10,9 @@ from ui.ui import ui_blueprint
 
 __author__  = 'Mr.tao'
 __email__   = 'staugur@saintic.com'
-__doc__     = 'Manage swarm clusters to provide a more concise and compact intermediate layer web application'
+__doc__     = 'Manage swarm clusters to provide a more concise and compact intermediate layer web application with ui'
 __version__ = '0.0.1'
+
 
 app = Flask(__name__)
 app.register_blueprint(core_blueprint)
