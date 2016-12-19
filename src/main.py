@@ -1,9 +1,10 @@
 # -*- coding:utf-8 -*-
 
-import time
-from flask import Flask, request, g, jsonify
-from config import GLOBAL, PRODUCT
-from utils.public import logger, gen_requestId
+import time, json, datetime, SpliceURL
+from urllib import urlencode
+from flask import Flask, request, g, jsonify, redirect, make_response, url_for
+from config import GLOBAL, PRODUCT, SSO
+from utils.public import logger, gen_requestId, isLogged_in, md5
 from swarm.Swarm import MultiSwarmManager
 from ui.ui import ui_blueprint
 from apis.core import core_blueprint
@@ -26,11 +27,12 @@ swarm = MultiSwarmManager()
 def before_request():
     g.startTime = time.time()
     g.requestId = gen_requestId()
-    g.username  = request.cookies.get("username", request.args.get("username", ""))
-    g.sessionid = request.cookies.get("Esessionid", request.args.get("Esessionid", ""))
-    g.auth      = True
+    g.sessionId = request.cookies.get("sessionId", "")
+    g.username  = request.cookies.get("username", "")
+    g.expires   = request.cookies.get("time", "")
+    g.auth      = isLogged_in('.'.join([ g.username, g.expires, g.sessionId ]))
     g.swarm     = swarm
-    logger.info("Start Once Access, and this requestId is %s, auth(%s), username(%s), sessionid(%s)" %(g.requestId, g.auth, g.username, g.sessionid))
+    logger.info("Start Once Access, and this requestId is %s, auth(%s)" %(g.requestId, g.auth))
     app.logger.debug(app.url_map)
 
 #每次返回数据中，带上响应头，包含本次请求的requestId，以及允许所有域跨域访问API, 记录访问日志.
@@ -51,12 +53,52 @@ def add_header(response):
     })
     return response
 
-#首页
 @app.route("/")
 def index():
-    return jsonify({PRODUCT["ProcessName"]: "ok"})
+    return redirect(url_for("ui.index"))
 
-#自定义错误显示信息，404错误
+@app.route('/login/')
+def login():
+    if g.auth:
+        return redirect(url_for("index"))
+    else:
+        query = {"sso": True,
+           "sso_r": SpliceURL.Modify(request.url_root, "/sso/").geturl,
+           "sso_p": SSO["SSO.PROJECT"],
+           "sso_t": md5("%s:%s" %(SSO["SSO.PROJECT"], SpliceURL.Modify(request.url_root, "/sso/").geturl))
+        }
+        SSOLoginURL = SpliceURL.Modify(url=SSO["SSO.URL"], path="/login/", query=query).geturl
+        logger.info("User request login to SSO: %s" %SSOLoginURL)
+        return redirect(SSOLoginURL)
+
+@app.route('/logout/')
+def logout():
+    SSOLogoutURL = SSO.get("SSO.URL") + "/sso/?nextUrl=" + request.url_root.strip("/")
+    resp = make_response(redirect(SSOLogoutURL))
+    resp.set_cookie(key='logged_in', value='', expires=0)
+    resp.set_cookie(key='username',  value='', expires=0)
+    resp.set_cookie(key='sessionId',  value='', expires=0)
+    resp.set_cookie(key='time',  value='', expires=0)
+    resp.set_cookie(key='Azone',  value='', expires=0)
+    return resp
+
+@app.route('/sso/')
+def sso():
+    ticket = request.args.get("ticket")
+    logger.info("ticket: %s" %ticket)
+    username, expires, sessionId = ticket.split('.')
+    if expires == 'None':
+        UnixExpires = None
+    else:
+        UnixExpires = datetime.datetime.strptime(expires,"%Y-%m-%d")
+    resp = make_response(redirect(url_for("index")))
+    resp.set_cookie(key='logged_in', value="yes", expires=UnixExpires)
+    resp.set_cookie(key='username',  value=username, expires=UnixExpires)
+    resp.set_cookie(key='sessionId', value=sessionId, expires=UnixExpires)
+    resp.set_cookie(key='time', value=expires, expires=UnixExpires)
+    resp.set_cookie(key='Azone', value="sso", expires=UnixExpires)
+    return resp
+
 @app.errorhandler(404)
 def not_found(error=None):
     message = {

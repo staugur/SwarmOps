@@ -17,8 +17,11 @@ GLOBAL={
     "LogLevel": os.getenv("swarmops_loglevel", "DEBUG"),
     #应用程序写日志级别，目前有DEBUG，INFO，WARNING，ERROR，CRITICAL
 
-    "SwarmStorageMode": os.getenv("swarmops_swarmstoragemode", "redis")
+    "SwarmStorageMode": os.getenv("swarmops_swarmstoragemode", "redis"),
     #存储Swarm集群信息的方式
+
+    "Interest.blog.Url": os.getenv("swarmops_interest_blog_url", "https://www.saintic.com/home/")
+
 }
 
 #生产环境配置段
@@ -38,4 +41,13 @@ REDIS={
     "SwarmKey": os.getenv("swarmops_RedisSwarmKey", "Swarm_All"),
 
     "ActiveKey": os.getenv("swarmops_RedisActiveKey", "Swarm_Active"),
+}
+
+SSO={
+
+    "SSO.URL": os.getenv("swarmops_ssourl", "https://passport.saintic.com"),
+    #The passport(SSO Authentication System) Web Site URL.
+
+    "SSO.PROJECT": PRODUCT["ProcessName"],
+    #SSO request application.
 }

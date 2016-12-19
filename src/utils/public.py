@@ -4,11 +4,14 @@
 import re
 import uuid
 import datetime
+import requests
+import hashlib
 from redis import Redis
 from config import REDIS
 from .syslog import Syslog
+from config import SSO
 
-
+md5             = lambda pwd:hashlib.md5(pwd).hexdigest()
 ip_pat          = re.compile(r"^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$")
 logger          = Syslog.getLogger()
 Ot2Bool         = lambda string:string.lower() in ("desc",) #将字符串desc转化为True
@@ -33,3 +36,17 @@ def ip_check(ip):
     logger.info("the function ip_check param is %s" %ip)
     if isinstance(ip, (str, unicode)):
         return ip_pat.match(ip)
+
+def isLogged_in(cookie_str):
+    ''' check username is logged in '''
+
+    SSOURL = SSO.get("SSO.URL")
+    if cookie_str and not cookie_str == '..':
+        username, expires, sessionId = cookie_str.split('.')
+        #success = Requests(SSOURL+"/sso/").post(data={"username": username, "time": expires, "sessionId": sessionId}).get("success", False)
+        success = requests.post(SSOURL+"/sso/", data={"username": username, "time": expires, "sessionId": sessionId}, timeout=5, verify=False, headers={"User-Agent": "Template"}).json().get("success", False)
+        logger.info("check login request, cookie_str: %s, success:%s" %(cookie_str, success))
+        return success
+    else:
+        logger.info("Not Logged in")
+        return False
