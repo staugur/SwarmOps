@@ -39,8 +39,8 @@ MIT
 ```
 
 
-## Design
+## Api Design
 ![Design][1]
 
 
-[1]: ./misc/SwarmOps.png
+[1]: ./misc/SwarmOpsApi.png
