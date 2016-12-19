@@ -5,9 +5,9 @@ import json, requests
 from config import REDIS
 from SpliceURL import Splice
 from utils.public import logger, RedisConnection, ip_check
+from .Base import BASE_SWARM_ENGINE_API
 
-
-class MultiSwarmManager:
+class MultiSwarmManager(BASE_SWARM_ENGINE_API):
 
 
     def __init__(self, port=2375, timeout=2):
@@ -36,59 +36,6 @@ class MultiSwarmManager:
         else:
             return []
 
-    def _checkSwarmToken(self, leader):
-        """ 根据Leader查询集群令牌 """
-
-        try:
-            swarm = requests.get(Splice(netloc=leader, port=self.port, path='/swarm').geturl, timeout=self.timeout, verify=self.verify).json()
-            token = swarm.get('JoinTokens')
-        except Exception,e:
-            logger.warn(e, exc_info=True)
-        else:
-            #dict, {u'Manager': u'xxx', u'Worker': u'xxx'}
-            logger.info(token)
-            return token
-
-    def _checkSwarmLeader(self, swarm):
-        """ 查询swarm集群Leader """
-
-        if swarm:
-            try:
-                url  = Splice(netloc=swarm.get("manager")[0], port=self.port, path='/nodes').geturl
-                data = requests.get(url, timeout=self.timeout, verify=self.verify).json()
-                if isinstance(data, (list, tuple)):
-                    leader = ( _.get('ManagerStatus', {}).get('Addr').split(':')[0] for _ in data if _.get('ManagerStatus', {}).get('Leader') ).next()
-                else:
-                    leader = None
-                logger.info("get %s leader, request url is %s, response is %s, get leader is %s" %(swarm["name"], url, data, leader))
-            except Exception,e:
-                logger.warn(e, exc_info=True)
-            else:
-                return leader
-
-    def _checkSwarmHealth(self, leader):
-        """ 根据Leader查询某swarm集群是否健康 """
-
-        state = []
-        logger.info("To determine whether the cluster is healthy, starting, swarm leader is %s" %leader)
-        try:
-            nodes = requests.get(Splice(netloc=leader, port=self.port, path='/nodes').geturl, timeout=self.timeout, verify=self.verify).json()
-            logger.debug("check swarm health, swarm nodes length is %d" % len(nodes))
-            for node in nodes:
-                if node['Spec'].get('Role') == 'manager':
-                    isHealth = True if node['Status']['State'] == 'ready' and node['Spec'].get('Availability') == 'active' and node.get('ManagerStatus', {}).get('Reachability') == 'reachable' else False
-                    if isHealth:
-                        state.append(isHealth)
-        except Exception,e:
-            logger.warn(e, exc_info=True)
-            return "ERROR"
-        else:
-            logger.info("To determine whether the cluster is healthy, ending, the state is %s" %state)
-            if len(state) == len(nodes) and state:
-                return 'Healthy'
-            else:
-                return 'Unhealthy'
-
     def _pickleActive(self, data):
         """ 序列化活跃集群数据写入存储 """
         res = self.storage.set(self.ActiveKey, json.dumps(data))
@@ -102,6 +49,8 @@ class MultiSwarmManager:
         logger.info("init active data is %s" %res)
         if res:
             return json.loads(res)
+        else:
+            return {}
 
     def isActive(self, name):
         """ 判断某name的swarm集群是否为活跃集群 """
@@ -126,7 +75,9 @@ class MultiSwarmManager:
 
     def isMember(self, name):
         """ 查询某name的swarm集群是否在存储中 """
-        return name in [ _.get("name") for _ in self._swarm ]
+        res = name in [ _.get("name") for _ in self._swarm ]
+        logger.info("check %s, is member? %s" %(name, res))
+        return res
 
     def getOne(self, name):
         """ 查询某name的swarm集群信息 """
@@ -157,7 +108,7 @@ class MultiSwarmManager:
         logger.info("get request, the query params is %s, get state is %s" %(get, checkState))
 
         if not isinstance(get, (str, unicode)) or not get:
-            res.update(msg="GET: query params type error or none", code=-10000)
+            res.update(msg="GET: query params type error or none", code=-1010)
         else:
             get = get.lower()
             if get == "all":
@@ -170,7 +121,7 @@ class MultiSwarmManager:
                 if self.isMember(get):
                     res.update(data=self.getOne(get))
                 else:
-                    res.update(msg="No such swarm", code=-10000)
+                    res.update(msg="No such swarm", code=-1011)
 
         logger.info(res)
         return res
@@ -248,7 +199,7 @@ class MultiSwarmManager:
             if name and self.isMember(name):
                 res.update(success=self.setActive(name))
             else:
-                res.update(msg="PUT: setActive, but no name param or name non-existent", code=-1010)
+                res.update(msg="PUT: setActive, but no name param or name non-existent", code=-1040)
         else:
             pass
             #update swarm info

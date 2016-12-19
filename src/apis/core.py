@@ -47,7 +47,7 @@ class Swarm(Resource):
             return res, 403 
 
     def delete(self):
-        """ Delete a g.swarm cluster """
+        """ 删除存储中的一个swarm集群 """
 
         swarmname = request.args.get("name")
 
@@ -58,15 +58,14 @@ class Swarm(Resource):
             logger.warn(res)
             return res, 403
 
-'''
 class Service(Resource):
 
     def get(self):
         """ get swarm all service """
 
         core    = True if request.args.get("core", False) in ("True", "true", True) else False
-        service = request.args.get("id", request.args.get("name", None))
         convert = True if request.args.get("convert", True) in ("True", "true", True) else False
+        service = request.args.get("id", request.args.get("name"))
 
         if g.auth:
             return g.swarm_service.Retrieve(
@@ -129,6 +128,8 @@ class Service(Resource):
             logger.warn(res)
             return res, 403 
 
+
+'''
 
 class Node(Resource):
 
