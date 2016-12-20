@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 
-from flask import Blueprint, render_template, abort
+from flask import Blueprint, render_template, abort, g
 from utils.public import logger
 
 ui_blueprint = Blueprint("ui", __name__, template_folder="templates", static_folder='static')
