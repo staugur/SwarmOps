@@ -17,14 +17,14 @@ SwarmOps | Docker管理平台
             <th>WorkerToken</th>
         </tr>
     </thead>
-    <tbody id="swarm_list_body_bak">
+    <tbody>
     {% for swarm in Swarms %}
         <tr>
-        {% if swarm.name == ActiveSwarm.name %}
+        {%- if swarm.name == ActiveSwarm.name %}
             <td style="vertical-align: middle; text-align: center;"><attr title="当前为活跃集群" class="glyphicon glyphicon-ok-sign"></attr></td>
         {% else %}
             <td style="vertical-align: middle; text-align: center;"><a href='javascript:setActive("{{ swarm.name }}")'><attr title='升级为活跃集群' class='glyphicon glyphicon-arrow-up'></attr></a></td>
-        {% endif %}
+        {% endif -%}
             <td style='vertical-align: middle; text-align: center;'>{{ swarm.name }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ swarm.manager }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ swarm.state }}</td>
@@ -37,49 +37,8 @@ SwarmOps | Docker管理平台
 {% endblock %}
 {% block script %}
 <script type="text/javascript">
-        var activeSwarmName;
-        document.getElementById("swarm_number").innerHTML= {{ SwarmsLength }};
-
-        // 获取活跃集群
-        $.ajax({
-            url: "{{ url_for('apis.core.swarm', get='active') }}",
-            method: 'GET',
-            datatype: 'json',
-            success: function(res) {
-                console.log(res);
-                activeSwarmName = res.data.name;
-            },
-            error: function(error){
-                console.log(error);
-                alert("Swarm活跃集群数据获取错误，请尝试刷新重试！");
-            }
-        });
-        // 获取所有swarm集群数据
-        $.ajax({
-            url: "{{ url_for('apis.core.swarm') }}?get=all&state=true",
-            method: 'GET',
-            datatype: 'json',
-            success: function(res) {
-                console.log(res);
-                var data= res.data;
-                var str = '';
-                document.getElementById("swarm_number").innerHTML=data.length;
-                for(i=0; i<data.length; i++) {
-                    swarm = data[i];
-                    if (swarm.name==activeSwarmName) {
-                        msg = "<attr title='当前为活跃集群' class='glyphicon glyphicon-ok-sign'></attr>";
-                    } else {
-                        msg = "<a href='javascript:setActive(" + swarm.name + ")'><attr title='升级为活跃集群' class='glyphicon glyphicon-arrow-up'></attr></a>";
-                    }
-                    str += "<tr><td style='vertical-align: middle; text-align: center;'>" + msg + "</td><td style='vertical-align: middle; text-align: center;'>" + swarm.name + "</td><td style='vertical-align: middle; text-align: center;'>" + swarm.manager + "</td><td style='vertical-align: middle; text-align: center;'>" + swarm.state + "</td><td>" + swarm.managerToken + "</td><td>" + swarm.workerToken + "</td></tr>";
-                };
-                document.getElementById('swarm_list_body').innerHTML=str;
-            },
-            error: function(error){
-                console.log(error);
-                alert("Swarm列表数据获取错误，请尝试刷新重试！");
-            }
-        });
+// Swarm集群数量
+document.getElementById("swarm_number").innerHTML= {{ SwarmsLength }};
 
 // 设置活跃集群
 function setActive(name) {

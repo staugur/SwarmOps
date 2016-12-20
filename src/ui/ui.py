@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 
-from flask import Blueprint, render_template, abort, g
+from flask import Blueprint, render_template, url_for, redirect, g
 from utils.public import logger
 
 ui_blueprint = Blueprint("ui", __name__, template_folder="templates", static_folder='static')
@@ -15,7 +15,5 @@ def index():
          logger.debug(ActiveSwarm)
          return render_template("index.html", Swarms=Swarms, SwarmsLength=len(Swarms), ActiveSwarm=ActiveSwarm)
     else:
-        abort(403)
-
-
+         return redirect(url_for("login"))
 

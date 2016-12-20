@@ -32,7 +32,7 @@ def before_request():
     g.sessionId = request.cookies.get("sessionId", "")
     g.username  = request.cookies.get("username", "")
     g.expires   = request.cookies.get("time", "")
-    g.auth      = True #isLogged_in('.'.join([ g.username, g.expires, g.sessionId ]))
+    g.auth      = True#isLogged_in('.'.join([ g.username, g.expires, g.sessionId ]))
     g.swarm     = swarm
     logger.info("Start Once Access, and this requestId is %s, auth(%s)" %(g.requestId, g.auth))
     app.logger.debug(app.url_map)
