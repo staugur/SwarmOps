@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 
-from flask import Blueprint, render_template, alert
+from flask import Blueprint, render_template, abort
 from utils.public import logger
 
 ui_blueprint = Blueprint("ui", __name__, template_folder="templates", static_folder='static')
@@ -13,7 +13,7 @@ def index():
          ActiveSwarm = g.swarm.GET("active")
          return render_template("index.html", Swarms=Swarms, SwarmsLength=len(Swarms), ActiveSwarm=ActiveSwarm)
     else:
-        alert(403)
+        abort(403)
 
 
 
