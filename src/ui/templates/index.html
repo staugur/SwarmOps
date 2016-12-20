@@ -1,34 +1,101 @@
 {% extends "base.html" %}
-{% block head %}
-        <link href="{{ url_for('ui.static', filename='css/jquery.dataTables.min.css') }}" rel="stylesheet">
+{% block title %}
+SwarmOps | Docker管理平台
 {% endblock %}
 {% block container %}
-<table id="swarm_list" class=" table table-bordered">
+<table class=" table table-bordered table-hover table-condensed">
     <thead>
-        <tr>
-            <th>Column 1</th>
-            <th>Column 2</th>
+        <tr class="active">
+            <th>isActive</th>
+            <th>Name</th>
+            <th>Manager</th>
+            <th>State</th>
+            <th>ManagerToken</th>
+            <th>WorkerToken</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="swarm_list_body_bak">
+    {% for swarm in Swarms %}
         <tr>
-            <td>Row 1 Data 1</td>
-            <td>Row 1 Data 2</td>
+        {% if swarm["name"] == ActiveSwarm["name"] %}
+            <td style="vertical-align: middle; text-align: center;"><attr title="当前为活跃集群" class="glyphicon glyphicon-ok-sign"></attr></td>
+        {% else %}
+            <td style="vertical-align: middle; text-align: center;"><a href='javascript:setActive(" + swarm.name + ")'><attr title='升级为活跃集群' class='glyphicon glyphicon-arrow-up'></attr></a></td>
+        {% endif %}
+            <td style='vertical-align: middle; text-align: center;'>" + swarm.name + "</td>
+            <td style='vertical-align: middle; text-align: center;'>" + swarm.manager + "</td>
+            <td style='vertical-align: middle; text-align: center;'>" + swarm.state + "</td>
+            <td>" + swarm.managerToken + "</td><td>" + swarm.workerToken + "</td>
         </tr>
-        <tr>
-            <td>Row 2 Data 1</td>
-            <td>Row 2 Data 2</td>
-        </tr>
+    {% endfor %}
     </tbody>
 </table>
 {% endblock %}
 {% block script %}
-<script src="{{ url_for('ui.static', filename='js/jquery.dataTables.min.js') }}"></script>
-<script>
-    $('#swarm_list').DataTable( {
-        data: data,
-        paging: false,
-    } );
-    
+<script type="text/javascript">
+        var activeSwarmName;
+        document.getElementById("swarm_number").innerHTML= {{ SwarmsLength }};
+
+        // 获取活跃集群
+        $.ajax({
+            url: "{{ url_for('apis.core.swarm', get='active') }}",
+            method: 'GET',
+            datatype: 'json',
+            success: function(res) {
+                console.log(res);
+                activeSwarmName = res.data.name;
+            },
+            error: function(error){
+                console.log(error);
+                alert("Swarm活跃集群数据获取错误，请尝试刷新重试！");
+            }
+        });
+        // 获取所有swarm集群数据
+        $.ajax({
+            url: "{{ url_for('apis.core.swarm') }}?get=all&state=true",
+            method: 'GET',
+            datatype: 'json',
+            success: function(res) {
+                console.log(res);
+                var data= res.data;
+                var str = '';
+                document.getElementById("swarm_number").innerHTML=data.length;
+                for(i=0; i<data.length; i++) {
+                    swarm = data[i];
+                    if (swarm.name==activeSwarmName) {
+                        msg = "<attr title='当前为活跃集群' class='glyphicon glyphicon-ok-sign'></attr>";
+                    } else {
+                        msg = "<a href='javascript:setActive(" + swarm.name + ")'><attr title='升级为活跃集群' class='glyphicon glyphicon-arrow-up'></attr></a>";
+                    }
+                    str += "<tr><td style='vertical-align: middle; text-align: center;'>" + msg + "</td><td style='vertical-align: middle; text-align: center;'>" + swarm.name + "</td><td style='vertical-align: middle; text-align: center;'>" + swarm.manager + "</td><td style='vertical-align: middle; text-align: center;'>" + swarm.state + "</td><td>" + swarm.managerToken + "</td><td>" + swarm.workerToken + "</td></tr>";
+                };
+                document.getElementById('swarm_list_body').innerHTML=str;
+            },
+            error: function(error){
+                console.log(error);
+                alert("Swarm列表数据获取错误，请尝试刷新重试！");
+            }
+        });
+
+// 设置活跃集群
+function setActive(name) {
+    $.ajax({
+        url: "{{ url_for('apis.core.swarm', setActive=True) }}&name=" + name,
+        method: 'PUT',
+        datatype: 'json',
+        success: function(res) {
+            console.log(res);
+            if (res.success==true) {
+                alert("设置活跃集群成功！");
+            } else {
+                alert("设置活跃集群失败！");
+            }
+            window.location.reload();
+        },
+        error: function(error){
+            console.log(error);
+        }
+    });
+}
 </script>
 {% endblock %}
