@@ -3,6 +3,9 @@
 SwarmOps | Docker管理平台
 {% endblock %}
 {% block container %}
+{% if not ActiveSwarm %}
+<div class="alert alert-danger" role="alert">当前系统无活跃集群!!!</div>
+{% endif %}
 <table class=" table table-bordered table-hover table-condensed">
     <thead>
         <tr class="active">
@@ -17,15 +20,16 @@ SwarmOps | Docker管理平台
     <tbody id="swarm_list_body_bak">
     {% for swarm in Swarms %}
         <tr>
-        {% if swarm["name"] == ActiveSwarm["name"] %}
+        {% if swarm.name == ActiveSwarm.name %}
             <td style="vertical-align: middle; text-align: center;"><attr title="当前为活跃集群" class="glyphicon glyphicon-ok-sign"></attr></td>
         {% else %}
-            <td style="vertical-align: middle; text-align: center;"><a href='javascript:setActive(" + swarm.name + ")'><attr title='升级为活跃集群' class='glyphicon glyphicon-arrow-up'></attr></a></td>
+            <td style="vertical-align: middle; text-align: center;"><a href='javascript:setActive("{{ swarm.name }}")'><attr title='升级为活跃集群' class='glyphicon glyphicon-arrow-up'></attr></a></td>
         {% endif %}
-            <td style='vertical-align: middle; text-align: center;'>" + swarm.name + "</td>
-            <td style='vertical-align: middle; text-align: center;'>" + swarm.manager + "</td>
-            <td style='vertical-align: middle; text-align: center;'>" + swarm.state + "</td>
-            <td>" + swarm.managerToken + "</td><td>" + swarm.workerToken + "</td>
+            <td style='vertical-align: middle; text-align: center;'>{{ swarm.name }}</td>
+            <td style='vertical-align: middle; text-align: center;'>{{ swarm.manager }}</td>
+            <td style='vertical-align: middle; text-align: center;'>{{ swarm.state }}</td>
+            <td>{{ swarm.managerToken }}</td>
+            <td>{{ swarm.workerToken }}</td>
         </tr>
     {% endfor %}
     </tbody>
