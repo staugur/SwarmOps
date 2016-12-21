@@ -59,6 +59,10 @@ def add_header(response):
 def index():
     return redirect(url_for("ui.index"))
 
+@app.route("/home/")
+def home():
+    return redirect(GLOBAL["Interest.blog.Url"])
+
 @app.route('/login/')
 def login():
     if g.auth:

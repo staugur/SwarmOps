@@ -6,7 +6,7 @@ SwarmOps | Docker管理平台
 {% if not ActiveSwarm %}
 <div class="alert alert-danger" role="alert">当前系统无活跃集群!!!</div>
 {% endif %}
-<table class=" table table-bordered table-hover table-condensed">
+<table class=" table table-bordered table-hover table-condensed table-responsive">
     <thead>
         <tr class="active">
             <th>isActive</th>
@@ -26,7 +26,7 @@ SwarmOps | Docker管理平台
             <td style="vertical-align: middle; text-align: center;"><a href='javascript:setActive("{{ swarm.name }}")'><attr title='升级为活跃集群' class='glyphicon glyphicon-arrow-up'></attr></a></td>
         {% endif -%}
             <td style='vertical-align: middle; text-align: center;'>{{ swarm.name }}</td>
-            <td style='vertical-align: middle; text-align: center;'>{{ swarm.manager }}</td>
+            <td style='vertical-align: middle; text-align: center;'>{{ swarm.manager|join(', ') }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ swarm.state }}</td>
             <td>{{ swarm.managerToken }}</td>
             <td>{{ swarm.workerToken }}</td>
@@ -38,7 +38,7 @@ SwarmOps | Docker管理平台
 {% block script %}
 <script type="text/javascript">
 // Swarm集群数量
-document.getElementById("swarm_number").innerHTML= {{ SwarmsLength }};
+document.getElementById("swarm_number").innerHTML= {{ Swarms|length }};
 
 // 设置活跃集群
 function setActive(name) {
@@ -60,5 +60,11 @@ function setActive(name) {
         }
     });
 }
+
+var NavId=null;
+var As=document.getElementById('tab').getElementsByTagName('li');
+NavId = As[0];
+console.log(NavId)
+NavId.className='active';
 </script>
 {% endblock %}

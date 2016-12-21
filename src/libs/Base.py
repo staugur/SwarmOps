@@ -91,3 +91,18 @@ class BASE_SWARM_ENGINE_API:
         else:
             logger.info("check node, request url is %s ,response is %s" %(NodeUrl, NodeData))
             return NodeData
+
+    def _checkSwarmManager(self, ip):
+        """ 查询节点的Manager """
+
+        url   = Splice(netloc=ip, port=self.port, path='/info').geturl
+        logger.info("Get or Update swarm manager, that url is %s" %url)
+        try:
+            nodeinfo = requests.get(url, timeout=self.timeout, verify=self.verify).json()
+            logger.debug("Get or Update swarm manager, response is %s" %nodeinfo)
+            managers = [ nodes["Addr"].split(":")[0] for nodes in nodeinfo["Swarm"]["RemoteManagers"] ]
+        except Exception,e:
+            logger.error(e, exc_info=True)
+            return []
+        else:
+            return managers

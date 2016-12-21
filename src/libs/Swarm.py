@@ -93,10 +93,11 @@ class MultiSwarmManager(BASE_SWARM_ENGINE_API):
         logger.debug(self._swarm)
         if checkState:
             logger.info("get and check all swarm cluster, start")
-            return [ swarm for swarm in self._swarm if swarm.update(state=self._checkSwarmHealth(self._checkSwarmLeader(swarm))) == None ]
+            return [ swarm for swarm in self._swarm if swarm.update(state=self._checkSwarmHealth(self._checkSwarmLeader(swarm))) == None and swarm.update(manager=self._checkSwarmManager(self._checkSwarmLeader(swarm))) == None ]
         else:
             swarms = []
             for swarm in self._swarm:
+                swarm.update(manager=self._checkSwarmManager(self._checkSwarmLeader(swarm)))
                 if "state" in swarm:
                     swarm.pop("state")
                 swarms.append(swarm)
@@ -202,7 +203,6 @@ class MultiSwarmManager(BASE_SWARM_ENGINE_API):
                 res.update(msg="PUT: setActive, but no name param or name non-existent", code=-1040)
         else:
             pass
-            #update swarm info
 
         logger.info(res)
         return res
