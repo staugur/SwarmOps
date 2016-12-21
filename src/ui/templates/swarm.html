@@ -28,8 +28,8 @@ SwarmOps | Docker管理平台
             <td style='vertical-align: middle; text-align: center;'>{{ swarm.name }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ swarm.manager|join(', ') }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ swarm.state }}</td>
-            <td>{{ swarm.managerToken }}</td>
-            <td>{{ swarm.workerToken }}</td>
+            <td style='vertical-align: middle;'>{{ swarm.managerToken }}</td>
+            <td style='vertical-align: middle;'>{{ swarm.workerToken }}</td>
         </tr>
     {% endfor %}
     </tbody>

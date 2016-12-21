@@ -61,18 +61,14 @@ class Swarm(Resource):
 class Service(Resource):
 
     def get(self):
-        """ get swarm all service """
+        """ 查询swarm活跃集群集群service信息 """
 
-        core    = True if request.args.get("core", False) in ("True", "true", True) else False
-        convert = True if request.args.get("convert", True) in ("True", "true", True) else False
-        service = request.args.get("id", request.args.get("name"))
+        service = request.args.get("id", request.args.get("name", None))
+        core    = True if request.args.get("core", True) in ("True", "true", True) else False
+        core_convert = True if request.args.get("core_convert", True) in ("True", "true", True) else False
 
         if g.auth:
-            return g.swarm_service.Retrieve(
-                       service=service,
-                       core=core,
-                       conversion=convert,
-                   )
+            return g.service.GET(service, core, core_convert)
         else:
             res = {"msg": "Authentication failed, permission denied.", "code": 403}
             logger.warn(res)
@@ -128,23 +124,12 @@ class Service(Resource):
             logger.warn(res)
             return res, 403 
 
-
-'''
-
 class Node(Resource):
 
     def get(self):
-        """ get swarm node """
 
-        #Initialize Request Query Parameters
         if g.auth:
-            return g.swarm_node.NodeQuery(
-                start      = request.args.get("start", 0),
-                length     = request.args.get("length", 10),
-                search     = request.args.get("search[value]", request.args.get("search", '')),
-                orderindex = request.args.get("order[0][column]", 0),
-                ordertype  = request.args.get("order[0][dir]", 'asc')
-            )
+            return g.node.GET()
         else:
             res = {"msg": "Authentication failed, permission denied.", "code": 403}
             logger.warn(res)
@@ -185,11 +170,10 @@ class Node(Resource):
             res = {"msg": "Authentication failed, permission denied.", "code": 403}
             logger.warn(res)
             return res, 403
-'''
 
 
 core_blueprint = Blueprint(__name__, __name__)
 api = Api(core_blueprint)
-api.add_resource(Swarm, '/swarm/', endpoint='swarm')
-#api.add_resource(Service, '/service', '/service/', endpoint='service')
-#api.add_resource(Node, '/node', '/node/', endpoint='node')
+api.add_resource(Swarm, '/swarm', '/swarm/', endpoint='swarm')
+api.add_resource(Service, '/service', '/service/', endpoint='service')
+api.add_resource(Node, '/node', '/node/', endpoint='node')

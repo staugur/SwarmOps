@@ -8,7 +8,7 @@ from utils.public import logger
 class BASE_SWARM_ENGINE_API:
 
 
-    def __init__(self, port=2375, timeout=2):
+    def __init__(self, port=2375, timeout=3):
         self.port      = port
         self.timeout   = timeout
         self.verify    = False
@@ -29,6 +29,7 @@ class BASE_SWARM_ENGINE_API:
     def _checkSwarmLeader(self, swarm):
         """ 查询swarm集群Leader """
 
+        logger.info("check swarm leader, the request info is %s" %swarm)
         if swarm:
             try:
                 url  = Splice(netloc=swarm.get("manager")[0], port=self.port, path='/nodes').geturl

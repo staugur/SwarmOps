@@ -3,33 +3,32 @@
 SwarmOps | Docker管理平台
 {% endblock %}
 {% block container %}
-{% if not ActiveSwarm %}
-<div class="alert alert-danger" role="alert">当前系统无活跃集群!!!</div>
+{% if not Nodes %}
+<div class="alert alert-danger" role="alert">活跃集群中没有节点!!!</div>
 {% endif %}
 <table class=" table table-bordered table-hover table-condensed table-responsive">
     <thead>
         <tr class="active">
-            <th>isActive</th>
-            <th>Name</th>
-            <th>Manager</th>
-            <th>State</th>
-            <th>ManagerToken</th>
-            <th>WorkerToken</th>
+            <th>host</th>
+            <th>id</th>
+            <th>role</th>
+            <th>status</th>
+            <th>availability</th>
+            <th>reachability</th>
+            <th>containers</th>
+            <th>cpu</th>
+            <th>mem</th>
+            <th>label</th>
+            <th>UpdatedAt</th>
+            <th>Version</th>
         </tr>
     </thead>
     <tbody>
-    {% for swarm in Swarms %}
+    {% for node in Nodes %}
         <tr>
-        {%- if swarm.name == ActiveSwarm.name %}
-            <td style="vertical-align: middle; text-align: center;"><attr title="当前为活跃集群" class="glyphicon glyphicon-ok-sign"></attr></td>
-        {% else %}
-            <td style="vertical-align: middle; text-align: center;"><a href='javascript:setActive("{{ swarm.name }}")'><attr title='升级为活跃集群' class='glyphicon glyphicon-arrow-up'></attr></a></td>
-        {% endif -%}
-            <td style='vertical-align: middle; text-align: center;'>{{ swarm.name }}</td>
-            <td style='vertical-align: middle; text-align: center;'>{{ swarm.manager|join(', ') }}</td>
-            <td style='vertical-align: middle; text-align: center;'>{{ swarm.state }}</td>
-            <td>{{ swarm.managerToken }}</td>
-            <td>{{ swarm.workerToken }}</td>
+            {% for i in node %}
+            <td style='vertical-align: middle; text-align: center;'>{{ i }}</td>
+            {% endfor %}
         </tr>
     {% endfor %}
     </tbody>
@@ -37,30 +36,10 @@ SwarmOps | Docker管理平台
 {% endblock %}
 {% block script %}
 <script type="text/javascript">
-// Swarm集群数量
-document.getElementById("node_number").innerHTML= {{ Swarms|length }};
+// 节点数量
+document.getElementById("node_number").innerHTML= {{ Nodes|length }};
 
-// 设置活跃集群
-function setActive(name) {
-    $.ajax({
-        url: "{{ url_for('apis.core.swarm', setActive=True) }}&name=" + name,
-        method: 'PUT',
-        datatype: 'json',
-        success: function(res) {
-            console.log(res);
-            if (res.success==true) {
-                alert("设置活跃集群成功！");
-            } else {
-                alert("设置活跃集群失败！");
-            }
-            window.location.reload();
-        },
-        error: function(error){
-            console.log(error);
-        }
-    });
-}
-
+// 更新导航
 var NavId=null;
 var As=document.getElementById('tab').getElementsByTagName('li');
 NavId = As[2];

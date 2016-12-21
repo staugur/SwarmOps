@@ -10,7 +10,7 @@ from .Base import BASE_SWARM_ENGINE_API
 class MultiSwarmManager(BASE_SWARM_ENGINE_API):
 
 
-    def __init__(self, port=2375, timeout=2):
+    def __init__(self, port=2375, timeout=3):
         self.storage   = RedisConnection
         self.swarmKey  = REDIS["SwarmKey"]
         self.ActiveKey = REDIS["ActiveKey"]
@@ -56,6 +56,11 @@ class MultiSwarmManager(BASE_SWARM_ENGINE_API):
         """ 判断某name的swarm集群是否为活跃集群 """
         return name == self._active.get("name")
 
+    @property
+    def getAcitve(self):
+        """ 查询活跃集群 """
+        return self._active
+
     def setActive(self, name):
         """ 设置活跃集群 """
         logger.info("setActive, request name that will set is %s" % name)
@@ -91,17 +96,18 @@ class MultiSwarmManager(BASE_SWARM_ENGINE_API):
         """ 查询存储中所有Swarm集群信息(并检查健康状态) """
 
         logger.debug(self._swarm)
-        if checkState:
-            logger.info("get and check all swarm cluster, start")
-            return [ swarm for swarm in self._swarm if swarm.update(state=self._checkSwarmHealth(self._checkSwarmLeader(swarm))) == None and swarm.update(manager=self._checkSwarmManager(self._checkSwarmLeader(swarm))) == None ]
-        else:
-            swarms = []
-            for swarm in self._swarm:
-                swarm.update(manager=self._checkSwarmManager(self._checkSwarmLeader(swarm)))
-                if "state" in swarm:
-                    swarm.pop("state")
-                swarms.append(swarm)
-            return swarms
+        logger.info("get and check state(%s) for all swarm cluster, start" %checkState)
+        swarms = []
+        for swarm in self._swarm:
+            if checkState:
+                swarm.update(state=self._checkSwarmHealth(self._checkSwarmLeader(swarm)))
+            elif "state" in swarm:
+                swarm.pop("state")
+            manager=self._checkSwarmManager(self._checkSwarmLeader(swarm))
+            if manager:
+                swarm.update(manager=manager)
+            swarms.append(swarm)
+        return swarms
 
     def GET(self, get, checkState=False):
 
@@ -115,9 +121,9 @@ class MultiSwarmManager(BASE_SWARM_ENGINE_API):
             if get == "all":
                 res.update(data=self.getSwarm(checkState))
             elif get == "active":
-                res.update(data=self._active)
+                res.update(data=self.getAcitve)
             elif get == "leader":
-                res.update(data=self._checkSwarmLeader(self._active))
+                res.update(data=self._checkSwarmLeader(self.getAcitve))
             else:
                 if self.isMember(get):
                     res.update(data=self.getOne(get))

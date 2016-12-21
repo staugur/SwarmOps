@@ -9,7 +9,8 @@ from ui.ui import ui_blueprint
 from apis.core import core_blueprint
 from apis.misc import misc_blueprint
 from libs.Swarm import MultiSwarmManager
-
+from libs.Service import ServiceManager
+from libs.Node import NodeManager
 
 __author__  = 'Mr.tao'
 __email__   = 'staugur@saintic.com'
@@ -22,7 +23,7 @@ app.register_blueprint(core_blueprint, url_prefix="/api")
 app.register_blueprint(misc_blueprint, url_prefix="/misc")
 
 swarm = MultiSwarmManager()
-logger.debug(dir(swarm))
+app.logger.debug(dir(swarm))
 
 #每个URL请求之前，定义初始化时间、requestId、用户验证结果等相关信息并绑定到g.
 @app.before_request
@@ -34,6 +35,8 @@ def before_request():
     g.expires   = request.cookies.get("time", "")
     g.auth      = True#isLogged_in('.'.join([ g.username, g.expires, g.sessionId ]))
     g.swarm     = swarm
+    g.service   = ServiceManager(ActiveSwarm=g.swarm.getAcitve)
+    g.node      = NodeManager(ActiveSwarm=g.swarm.getAcitve)
     logger.info("Start Once Access, and this requestId is %s, auth(%s)" %(g.requestId, g.auth))
     app.logger.debug(app.url_map)
 
