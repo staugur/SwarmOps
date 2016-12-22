@@ -20,7 +20,7 @@ class NodeManager(BASE_SWARM_ENGINE_API):
     def GET(self):
         """ 查询所有可用的节点群，并组织返回节点信息 """
 
-        res = {"code": 0, "msg": None}
+        res = {"code": 0, "msg": None, "data": []}
         if self.leader:
             #format (host, id, role, status, availability, reachability, containers, cpu, mem, label, UpdatedAt, Version).
             node = []

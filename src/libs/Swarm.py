@@ -17,7 +17,7 @@ class MultiSwarmManager(BASE_SWARM_ENGINE_API):
         self.port      = port
         self.timeout   = timeout
         self.verify    = False
-        self._swarm    = self._unpickle
+        self._swarms   = self._unpickle
         self._active   = self._unpickleActive
 
     def _pickle(self, data):
@@ -52,6 +52,12 @@ class MultiSwarmManager(BASE_SWARM_ENGINE_API):
         else:
             return {}
 
+    def isMember(self, name):
+        """ 查询某name的swarm集群是否在存储中 """
+        res = name in [ _.get("name") for _ in self._swarms ]
+        logger.info("check %s, is member? %s" %(name, res))
+        return res
+
     def isActive(self, name):
         """ 判断某name的swarm集群是否为活跃集群 """
         return name == self._active.get("name")
@@ -78,48 +84,55 @@ class MultiSwarmManager(BASE_SWARM_ENGINE_API):
                 return False
         return True
 
-    def isMember(self, name):
-        """ 查询某name的swarm集群是否在存储中 """
-        res = name in [ _.get("name") for _ in self._swarm ]
-        logger.info("check %s, is member? %s" %(name, res))
-        return res
-
     def getOne(self, name):
         """ 查询某name的swarm集群信息 """
 
         if self.isMember(name):
-            return ( _ for _ in self._swarm if _.get("name") == name ).next()
+            return ( _ for _ in self._swarms if _.get("name") == name ).next()
         else:
-            logger.warn("get %s, but no data" %name)
+            logger.warn("get one swarm named %s, but no data" %name)
 
-    def getSwarm(self, checkState=False):
+    def getSwarm(self, checkState=False, UpdateManager=False):
         """ 查询存储中所有Swarm集群信息(并检查健康状态) """
 
-        logger.debug(self._swarm)
-        logger.info("get and check state(%s) for all swarm cluster, start" %checkState)
+        logger.info("get all swarm and check state(%s) for all swarm cluster, start" %checkState)
         swarms = []
-        for swarm in self._swarm:
-            if checkState:
+        for swarm in self._swarms:
+            if checkState == True:
                 swarm.update(state=self._checkSwarmHealth(self._checkSwarmLeader(swarm)))
             elif "state" in swarm:
                 swarm.pop("state")
-            manager=self._checkSwarmManager(self._checkSwarmLeader(swarm))
-            if manager:
-                swarm.update(manager=manager)
+            elif UpdateManager == True:
+                logger.info("Update manager in getSwarm, start")
+                try:
+                    manager=self._checkSwarmManager(self._checkSwarmLeader(swarm))
+                except Exception, e:
+                    logger.error(e, exc_info=True)
+                    logger.info("Update manager in getSwarm, end, fail")
+                else:
+                    if manager:
+                        swarm.update(manager=manager)
+                    logger.info("Update manager in getSwarm, end, successfully, manager is %s" %manager)
             swarms.append(swarm)
+        if UpdateManager == True:
+            self._swarms = swarms
+            res = self._pickle(self._swarms)
+            logger.info("Update manager in getSwarm, over, %s" % res)
         return swarms
 
-    def GET(self, get, checkState=False):
+    def GET(self, get, **kwargs):
 
         res = {"msg": None, "code": 0}
-        logger.info("get request, the query params is %s, get state is %s" %(get, checkState))
+        checkState    = kwargs.get("checkState", False)
+        UpdateManager = kwargs.get("UpdateManager", False)
+        logger.info("get %s request, the query params is %s" %(get, kwargs))
 
         if not isinstance(get, (str, unicode)) or not get:
             res.update(msg="GET: query params type error or none", code=-1010)
         else:
             get = get.lower()
             if get == "all":
-                res.update(data=self.getSwarm(checkState))
+                res.update(data=self.getSwarm(checkState, UpdateManager))
             elif get == "active":
                 res.update(data=self.getAcitve)
             elif get == "leader":
@@ -158,8 +171,8 @@ class MultiSwarmManager(BASE_SWARM_ENGINE_API):
             else:
                 token = self._checkSwarmToken(self._checkSwarmLeader(swarm))
                 swarm.update(managerToken=token.get('Manager'), workerToken=token.get('Worker'))
-                self._swarm.append(swarm)
-                self._pickle(self._swarm)
+                self._swarms.append(swarm)
+                self._pickle(self._swarms)
                 res.update(success=True, code=0)
                 logger.info("check all pass and added")
 
@@ -181,13 +194,13 @@ class MultiSwarmManager(BASE_SWARM_ENGINE_API):
         elif self.isMember(name):
             swarm = self.getOne(name)
             logger.info("Will delete swarm cluster is %s" %swarm)
-            self._swarm.remove(swarm)
+            self._swarms.remove(swarm)
             if self.isMember(name):
                 logger.info("Delete fail")
                 res.update(success=False)
             else:
                 logger.info("Delete successfully, pickle current swarm")
-                self._pickle(self._swarm)
+                self._pickle(self._swarms)
                 res.update(success=True)
 
         else:

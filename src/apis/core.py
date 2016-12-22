@@ -10,11 +10,12 @@ class Swarm(Resource):
     def get(self):
         """ 查询存储的swarm集群信息 """
 
-        get   = request.args.get("get")
-        state = True if request.args.get("state", False) in ('true', 'True', True) else False
+        get    = request.args.get("get")
+        state  = True if request.args.get("state", False) in ('true', 'True', True) else False
+        update = True if request.args.get("UpdateManager", False) in ('true', 'True', True) else False
 
         if g.auth:
-            return g.swarm.GET(get, state)
+            return g.swarm.GET(get, checkState=state, UpdateManager=update)
         else:
             res = {"msg": "Authentication failed, permission denied.", "code": 403}
             logger.warn(res)
@@ -49,7 +50,7 @@ class Swarm(Resource):
     def delete(self):
         """ 删除存储中的一个swarm集群 """
 
-        swarmname = request.args.get("name")
+        swarmname = request.args.get("name", request.form.get("name"))
 
         if g.auth:    
             return g.swarm.DELETE(name=swarmname)

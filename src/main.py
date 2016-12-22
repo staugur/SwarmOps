@@ -5,7 +5,7 @@ from urllib import urlencode
 from flask import Flask, request, g, jsonify, redirect, make_response, url_for
 from config import GLOBAL, PRODUCT, SSO
 from utils.public import logger, gen_requestId, isLogged_in, md5
-from ui.ui import ui_blueprint
+from ui import ui_blueprint
 from apis.core import core_blueprint
 from apis.misc import misc_blueprint
 from libs.Swarm import MultiSwarmManager
@@ -23,7 +23,6 @@ app.register_blueprint(core_blueprint, url_prefix="/api")
 app.register_blueprint(misc_blueprint, url_prefix="/misc")
 
 swarm = MultiSwarmManager()
-app.logger.debug(dir(swarm))
 
 #每个URL请求之前，定义初始化时间、requestId、用户验证结果等相关信息并绑定到g.
 @app.before_request
@@ -33,7 +32,7 @@ def before_request():
     g.sessionId = request.cookies.get("sessionId", "")
     g.username  = request.cookies.get("username", "")
     g.expires   = request.cookies.get("time", "")
-    g.auth      = True#isLogged_in('.'.join([ g.username, g.expires, g.sessionId ]))
+    g.auth      = True #isLogged_in('.'.join([ g.username, g.expires, g.sessionId ]))
     g.swarm     = swarm
     g.service   = ServiceManager(ActiveSwarm=g.swarm.getAcitve)
     g.node      = NodeManager(ActiveSwarm=g.swarm.getAcitve)
@@ -60,11 +59,17 @@ def add_header(response):
 
 @app.route("/")
 def index():
-    return redirect(url_for("ui.index"))
+    if g.auth:
+        return redirect(url_for("ui.index"))
+    else:
+        return redirect(url_for("login"))
 
 @app.route("/home/")
 def home():
-    return redirect(GLOBAL["Interest.blog.Url"])
+    if g.auth:
+        return redirect(GLOBAL["Interest.blog.Url"])
+    else:
+        return redirect(url_for("login"))
 
 @app.route('/login/')
 def login():

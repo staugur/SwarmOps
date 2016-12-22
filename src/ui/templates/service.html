@@ -4,7 +4,7 @@ SwarmOps | Docker管理平台
 {% endblock %}
 {% block container %}
 {% if not Services %}
-<div class="alert alert-warning" role="alert">活跃集群中没有服务!!!</div>
+<div class="alert alert-danger" role="alert">没有服务或活跃集群异常!!!</div>
 {% endif %}
 <table class=" table table-bordered table-hover table-condensed table-responsive">
     <thead>
@@ -16,9 +16,9 @@ SwarmOps | Docker管理平台
             <th>Mounts</th>
             <th>Replicas</th>
             <th>CreatedAt</th>
+            {% if request.args.get("show") %}
             <th>UpdatedAt</th>
             <th>UpdateStatus</th>
-            {% if request.args.get("show") %}
             <th>NetMode</th>
             <th>NetVip</th>
             <th>NetPorts</th>
@@ -36,9 +36,9 @@ SwarmOps | Docker管理平台
             <td style='vertical-align: middle; text-align: center;'>{{ service.Mounts }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ service.Replicas }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ service.CreatedAt }}</td>
+            {% if request.args.get("show") %}
             <td style='vertical-align: middle; text-align: center;'>{{ service.UpdatedAt }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ service.UpdateStatus }}</td>
-            {% if request.args.get("show") %}
             <td style='vertical-align: middle; text-align: center;'>{{ service.NetMode }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ service.NetVip }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ service.NetPorts }}</td>

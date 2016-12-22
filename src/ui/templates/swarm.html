@@ -3,9 +3,16 @@
 SwarmOps | Docker管理平台
 {% endblock %}
 {% block container %}
+{% if not Swarms %}
+<div class="alert alert-warning" role="alert">当前系统无集群!!!</div>
+{% endif %}
 {% if not ActiveSwarm %}
 <div class="alert alert-danger" role="alert">当前系统无活跃集群!!!</div>
 {% endif %}
+<p>
+    <a href="{{ url_for('ui.misc', misc='AddSwarm') }}"><button type="button" class="btn btn-success">添加集群</button></a>
+    <a href="{{ url_for('ui.misc', misc='DelSwarm') }}" target="_blank"><button type="button" class="btn btn-danger">删除集群</button></a>
+</p>
 <table class=" table table-bordered table-hover table-condensed table-responsive">
     <thead>
         <tr class="active">

@@ -17,17 +17,17 @@ class ServiceManager(BASE_SWARM_ENGINE_API):
     Note: Service operations require to first be part of a Swarm.
     """
 
-    def __init__(self, port=2375, timeout=3, ActiveSwarm=None):
+    def __init__(self, port=2375, timeout=3, ActiveSwarm={}):
         self.port      = port
         self.timeout   = timeout
         self.verify    = False
         self.swarm     = ActiveSwarm
         self.leader    = self._checkSwarmLeader(self.swarm)
-        logger.info("Service Api, ActiveSwarm is %s, the leader is %s" %(self.swarm, self.leader))
+        logger.info("Service Api Init, ActiveSwarm is %s, the leader is %s" %(self.swarm, self.leader))
 
     def GET(self, service=None, core=False, core_convert=False):
 
-        res = {"msg": None, "code": 0}
+        res = {"msg": None, "code": 0, "data": []}
 
         if self.leader:
             ServiceUrl = Splice(netloc=self.leader, port=self.port, path="/services/%s" %service).geturl if service else Splice(netloc=self.leader, port=self.port, path="/services").geturl
@@ -136,7 +136,7 @@ class ServiceManager(BASE_SWARM_ENGINE_API):
 
             res.update(recordsTotal=recordsTotal, recordsFiltered=len(services_core))
         else:
-            res.update(data=None, msg="No active swarm cluster", code=30020)
+            res.update(msg="No active swarm cluster", code=30020)
 
         logger.info(res)
         return res
