@@ -137,6 +137,8 @@ class MultiSwarmManager(BASE_SWARM_ENGINE_API):
                 res.update(data=self.getAcitve)
             elif get == "leader":
                 res.update(data=self._checkSwarmLeader(self.getAcitve))
+            elif get == "member":
+                res.update(data=[ _.get("name") for _ in self._swarms ])
             else:
                 if self.isMember(get):
                     res.update(data=self.getOne(get))
@@ -182,7 +184,7 @@ class MultiSwarmManager(BASE_SWARM_ENGINE_API):
     def DELETE(self, name):
         """ 删除当前存储中的群集 """
 
-        res = {"msg": None, "code": 0}
+        res = {"msg": None, "code": 0, "success": False}
         logger.info("the name that will delete is %s" %name)
 
         if name in ("leader", "active", "all"):

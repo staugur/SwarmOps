@@ -29,12 +29,14 @@ SwarmOps | Docker管理平台
 </form>
 {% endif %}
 {% if request.args.get("misc") == "DelSwarm" %}
+<div class="alert alert-danger" role="alert">活跃集群不允许删除!!!</div>
+<scan>1</scan><scan>1</scan><scan>1</scan><scan>1</scan>
 <form class="form-horizontal" role="form" id="DelSwarmForm">
 
   <div class="form-group">
     <label for="DelSwarmName" class="col-sm-12">Swarm Name</label>
     <div class="col-sm-12">
-      <input type="text" class="form-control" id="DelSwarmName" name="name" id="delname" placeholder="Swarm集群标识名称, 如果要删除多个集群, 请用空格区分">
+      <input type="text" class="form-control" id="DelSwarmName" name="name" placeholder="Swarm集群标识名称, 如果要删除多个集群, 请用空格区分">
     </div>
   </div>
 
@@ -70,26 +72,44 @@ function AddSwarm() {
 {% endif %}
 {% if request.args.get("misc") == "DelSwarm" %}
 function DelSwarm() {
-  var delname = document.getElementById('delname').value;
+  var delname  = $("input#DelSwarmName").val()
   if (delname) {
-    if(window.confirm("你确定要删除？")){
-        $.ajax({
-            url: "{{ url_for('apis.core.swarm') }}",
-            method: 'DELETE',
-            datatype: 'json',
-            data: $('#DelSwarmForm').serialize(),
-            success: function(res) {
-                console.log(res);
-                if (res.success==true) {
-                    alert("删除Swarm集群成功！");
-                } else {
-                    alert("删除Swarm集群失败，请重试提交或报告错误！\n错误原因是：" + res.msg);
-                }
-            },
-        });
+    if(window.confirm("你确定要删除" + delname +"？")) {
+        var delnames = delname.split(" ");
+        var SUCCESS  = new Array();
+        var FAILED   = new Array();
+        console.log(delnames);
+        for (i=0;i<delnames.length ;i++ ) {
+            name = delnames[i];
+            if (name) {
+                $.ajax({
+                    url: "{{ url_for('apis.core.swarm') }}",
+                    method: 'DELETE',
+                    async: false,
+                    datatype: 'json',
+                    data: {"name": name},
+                    success: function(res) {
+                        console.log(res);
+                        if (res.success==true) {
+                            console.log("Delete Swarm Successfully:" + name);
+                            SUCCESS.push(name);
+                        } else {
+                            console.log("Delete Swarm Failed:" + name);
+                            FAILED.push(name);
+                        }
+                    },
+                });
+            }
+        }
+        if (SUCCESS.length!==0) {
+            alert("Swarm集群删除成功列表：" + SUCCESS);
+        }
+        if (FAILED.length!==0) {
+            alert("Swarm集群删除失败列表：" + FAILED);
+        }
     }
   } else {
-      alert("请填写Swarm标识名称");
+      alert("请填写要删除的Swarm集群标识名称！");
   }
 }
 {% endif %}

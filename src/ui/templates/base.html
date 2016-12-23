@@ -21,7 +21,7 @@
 
     <br />
     <p><strong>{{ self.title() }}</strong></p>
-	  <br />
+	<br />
     <!-- 导航 -->
     <ul class="nav nav-tabs" id="tab">
         <li><a href="{{ url_for('ui.index') }}" id="swarm">Swarm <span class="badge" id="swarm_number"></span></a></li>
@@ -29,7 +29,7 @@
         <li><a href="{{ url_for('ui.node') }}" id="node">Node <span class="badge" id="node_number"></span></a></li>
         <li><a href="{{ url_for('home') }}" target="_blank" id="home">个人中心</a></li>
     </ul>
-	  <p></p></br>
+	<p></p></br>
 
     {% block container %}{% endblock %}
 
