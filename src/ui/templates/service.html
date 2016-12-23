@@ -3,26 +3,27 @@
 SwarmOps | Docker管理平台
 {% endblock %}
 {% block container %}
+{% set Services = g.service.GET(request.args.get("id", request.args.get("name")), core=True, core_convert=True).data %}
 {% if not Services %}
 <div class="alert alert-danger" role="alert">没有服务或活跃集群异常!!!</div>
 {% endif %}
 <table class=" table table-bordered table-hover table-condensed table-responsive">
     <thead>
         <tr class="active">
-            <th>ID</th>
-            <th>Name</th>
-            <th>Image</th>
-            <th>Env</th>
-            <th>Mounts</th>
-            <th>Replicas</th>
-            <th>CreatedAt</th>
+            <th style="vertical-align: middle; text-align: center;">ID</th>
+            <th style="vertical-align: middle; text-align: center;">Name</th>
+            <th style="vertical-align: middle; text-align: center;">Image</th>
+            <th style="vertical-align: middle; text-align: center;">Env</th>
+            <th style="vertical-align: middle; text-align: center;">Mounts</th>
+            <th style="vertical-align: middle; text-align: center;">Replicas</th>
+            <th style="vertical-align: middle; text-align: center;">CreatedAt</th>
             {% if request.args.get("show") %}
-            <th>UpdatedAt</th>
-            <th>UpdateStatus</th>
-            <th>NetMode</th>
-            <th>NetVip</th>
-            <th>NetPorts</th>
-            <th>Version</th>
+            <th style="vertical-align: middle; text-align: center;">UpdatedAt</th>
+            <th style="vertical-align: middle; text-align: center;">UpdateStatus</th>
+            <th style="vertical-align: middle; text-align: center;">NetMode</th>
+            <th style="vertical-align: middle; text-align: center;">NetVip</th>
+            <th style="vertical-align: middle; text-align: center;">NetPorts</th>
+            <th style="vertical-align: middle; text-align: center;">Version</th>
             {% endif %}
         </tr>
     </thead>
@@ -52,7 +53,7 @@ SwarmOps | Docker管理平台
 {% block script %}
 <script type="text/javascript">
 // 服务数量
-document.getElementById("service_number").innerHTML= {{ Services|length }};
+document.getElementById("service_number").innerHTML= {{ g.service.GET(request.args.get("id", request.args.get("name"))).data|length }};
 
 // 更新导航
 var NavId=null;

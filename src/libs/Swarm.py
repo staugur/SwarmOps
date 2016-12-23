@@ -68,7 +68,7 @@ class MultiSwarmManager(BASE_SWARM_ENGINE_API):
         return name == self._active.get("name")
 
     @property
-    def getAcitve(self):
+    def getActive(self):
         """ 查询活跃集群 """
         return self._active
 
@@ -88,6 +88,10 @@ class MultiSwarmManager(BASE_SWARM_ENGINE_API):
                 logger.info("setActive, the request name sets it for active, but fail")
                 return False
         return True
+
+    def getOneLeader(self, name):
+        """ 查询某name的swarm集群leader """
+        return self._checkSwarmLeader(self.getOne(name))
 
     def getOne(self, name):
         """ 查询某name的swarm集群信息 """
@@ -139,9 +143,9 @@ class MultiSwarmManager(BASE_SWARM_ENGINE_API):
             if get == "all":
                 res.update(data=self.getSwarm(checkState, UpdateManager))
             elif get == "active":
-                res.update(data=self.getAcitve)
+                res.update(data=self.getActive)
             elif get == "leader":
-                res.update(data=self._checkSwarmLeader(self.getAcitve))
+                res.update(data=self._checkSwarmLeader(self.getActive))
             elif get == "member":
                 res.update(data=self.getMember)
             else:

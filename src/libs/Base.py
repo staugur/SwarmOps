@@ -85,6 +85,7 @@ class BASE_SWARM_ENGINE_API:
             NodeInfo = requests.get(NodeUrl, timeout=self.timeout, verify=self.verify).json()
         except Exception,e:
             logger.error(e, exc_info=True)
+            return {}
         else:
             logger.info("check node info, request url is %s ,response is %s" %(NodeUrl, NodeInfo))
             return NodeInfo

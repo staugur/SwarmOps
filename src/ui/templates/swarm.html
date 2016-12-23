@@ -3,6 +3,8 @@
 SwarmOps | Docker管理平台
 {% endblock %}
 {% block container %}
+{% set Swarms = g.swarm.getSwarm() %}
+{% set ActiveSwarm = g.swarm.getActive %}
 {% if not Swarms %}
 <div class="alert alert-warning" role="alert">当前系统无集群!!!</div>
 {% endif %}
@@ -16,16 +18,16 @@ SwarmOps | Docker管理平台
 <table class=" table table-bordered table-hover table-condensed table-responsive">
     <thead>
         <tr class="active">
-            <th>isActive</th>
-            <th>Name</th>
-            <th>Manager</th>
-            <th>State</th>
-            <th>ManagerToken</th>
-            <th>WorkerToken</th>
+            <th style="vertical-align: middle; text-align: center;">isActive</th>
+            <th style="vertical-align: middle; text-align: center;">Name</th>
+            <th style="vertical-align: middle; text-align: center;">Manager</th>
+            <th style="vertical-align: middle; text-align: center;">State</th>
+            <th style="vertical-align: middle; text-align: center;">ManagerToken</th>
+            <th style="vertical-align: middle; text-align: center;">WorkerToken</th>
         </tr>
     </thead>
     <tbody>
-    {% for swarm in Swarms %}
+    {% for swarm in g.swarm.getSwarm(checkState=true) %}
         <tr>
         {%- if swarm.name == ActiveSwarm.name %}
             <td style="vertical-align: middle; text-align: center;"><attr title="当前为活跃集群" class="glyphicon glyphicon-ok-sign"></attr></td>
@@ -33,8 +35,21 @@ SwarmOps | Docker管理平台
             <td style="vertical-align: middle; text-align: center;"><a href='javascript:setActive("{{ swarm.name }}")'><attr title='升级为活跃集群' class='glyphicon glyphicon-arrow-up'></attr></a></td>
         {% endif -%}
             <td style='vertical-align: middle; text-align: center;'>{{ swarm.name }}</td>
-            <td style='vertical-align: middle; text-align: center;'>{{ swarm.manager|join(', ') }}</td>
-            <td style='vertical-align: middle; text-align: center;'>{{ swarm.state }}</td>
+            <td style='vertical-align: middle; text-align: center;'>
+            {% set leader = g.swarm.getOneLeader(swarm.name) %}
+            {% for m in swarm.manager %}
+                {% if m == leader %}
+                    <code>{{ m }}</code>
+                {% else %}
+                    <em>{{ m }}</em>
+                {% endif %}
+            {% endfor %}
+            </td>
+            {% if swarm.state == "Healthy" %}
+            <td style='vertical-align: middle; text-align: center;' class="text-success">{{ swarm.state }}</td>
+            {% else %}
+            <td style='vertical-align: middle; text-align: center;' class="text-danger">{{ swarm.state }}</td>
+            {% endif %}
             <td style='vertical-align: middle;'>{{ swarm.managerToken }}</td>
             <td style='vertical-align: middle;'>{{ swarm.workerToken }}</td>
         </tr>
@@ -45,7 +60,7 @@ SwarmOps | Docker管理平台
 {% block script %}
 <script type="text/javascript">
 // Swarm集群数量
-document.getElementById("swarm_number").innerHTML= {{ Swarms|length }};
+document.getElementById("swarm_number").innerHTML={{ g.swarm.getSwarm()|length }};
 
 // 设置活跃集群
 function setActive(name) {
