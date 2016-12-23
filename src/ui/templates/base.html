@@ -24,9 +24,9 @@
 	<br />
     <!-- 导航 -->
     <ul class="nav nav-tabs" id="tab">
-        <li><a href="{{ url_for('ui.index') }}" id="swarm">Swarm <span class="badge" id="swarm_number"></span></a></li>
-        <li><a href="{{ url_for('ui.service') }}" id="service">Service <span class="badge" id="service_number"></span></a></li>
-        <li><a href="{{ url_for('ui.node') }}" id="node">Node <span class="badge" id="node_number"></span></a></li>
+        <li><a href="{{ url_for('ui.index') }}" id="swarm" title="Swarms">集群 <span class="badge" id="swarm_number"></span></a></li>
+        <li><a href="{{ url_for('ui.service') }}" id="service" title="Services">服务 <span class="badge" id="service_number"></span></a></li>
+        <li><a href="{{ url_for('ui.node') }}" id="node" title="Nodes">节点 <span class="badge" id="node_number"></span></a></li>
         <li><a href="{{ url_for('home') }}" target="_blank" id="home">个人中心</a></li>
     </ul>
 	<p></p></br>

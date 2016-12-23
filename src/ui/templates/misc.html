@@ -29,8 +29,13 @@ SwarmOps | Docker管理平台
 </form>
 {% endif %}
 {% if request.args.get("misc") == "DelSwarm" %}
-<div class="alert alert-danger" role="alert">活跃集群不允许删除!!!</div>
-<scan>1</scan><scan>1</scan><scan>1</scan><scan>1</scan>
+<div class="alert alert-danger" role="alert">活跃集群<code>{{ g.swarm.getAcitve.name }}</code>不允许删除!!!</div>
+<strong class="text-success "><span class="glyphicon glyphicon-arrow-down"></span>Swarm集群标识名称列表<scan class="badge"> {{ g.swarm.getMember|length }}</scan><span class="glyphicon glyphicon-arrow-down"></span></strong>
+<br />
+<br />
+<p>{% for member in g.swarm.getMember %}<code class="text-muted"> {{ member }} </code>&nbsp;{% endfor %}</p>
+<br />
+
 <form class="form-horizontal" role="form" id="DelSwarmForm">
 
   <div class="form-group">

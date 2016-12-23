@@ -52,9 +52,14 @@ class MultiSwarmManager(BASE_SWARM_ENGINE_API):
         else:
             return {}
 
+    @property
+    def getMember(self):
+        """ 查询所有节点名称 """
+        return [ _.get("name") for _ in self._swarms ]
+
     def isMember(self, name):
         """ 查询某name的swarm集群是否在存储中 """
-        res = name in [ _.get("name") for _ in self._swarms ]
+        res = name in self.getMember
         logger.info("check %s, is member? %s" %(name, res))
         return res
 
@@ -138,7 +143,7 @@ class MultiSwarmManager(BASE_SWARM_ENGINE_API):
             elif get == "leader":
                 res.update(data=self._checkSwarmLeader(self.getAcitve))
             elif get == "member":
-                res.update(data=[ _.get("name") for _ in self._swarms ])
+                res.update(data=self.getMember)
             else:
                 if self.isMember(get):
                     res.update(data=self.getOne(get))
