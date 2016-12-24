@@ -7,6 +7,11 @@ SwarmOps | Docker管理平台
 {% if not Services %}
 <div class="alert alert-danger" role="alert">没有服务或活跃集群异常!!!</div>
 {% endif %}
+<p>
+    <a href="{{ url_for('ui.misc', misc='AddService') }}"><button type="button" class="btn btn-success">添加服务</button></a>
+    <a href="{{ url_for('ui.misc', misc='DelService') }}"><button type="button" class="btn btn-danger">删除服务</button></a>
+    <a href="{{ url_for('ui.misc', misc='UpdateService') }}"><button type="button" class="btn btn-info">更新服务</button></a>
+</p>
 <table class=" table table-bordered table-hover table-condensed table-responsive">
     <thead>
         <tr class="active">

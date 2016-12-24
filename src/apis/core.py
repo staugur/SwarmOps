@@ -84,9 +84,9 @@ class Service(Resource):
         env       = request.form.get("env")
         mount     = request.form.get("mount")        
         publish   = request.form.get("publish")
-        replicas  = request.form.get("replicas", 1)
+        replicas  = request.form.get("replicas") or 1
         if g.auth:
-            return g.swarm_service.Create(image=image,name=name,env=env,mount=mount,publish=publish,replicas=replicas)
+            return g.service.POST(image=image,name=name,env=env,mount=mount,publish=publish,replicas=replicas)
         else:
             res = {"msg": "Authentication failed, permission denied.", "code": 403}
             logger.warn(res)
@@ -107,7 +107,7 @@ class Service(Resource):
         parallelism = request.form.get("parallelism")
 
         if g.auth:
-            return g.swarm_service.Update(serviceFlag=flag, image=image, name=name, env=env, mount=mount, publish=publish, replicas=replicas, delay=delay, parallelism=parallelism)
+            return g.service.PUT(serviceFlag=flag, image=image, name=name, env=env, mount=mount, publish=publish, replicas=replicas, delay=delay, parallelism=parallelism)
         else:
             res = {"msg": "Authentication failed, permission denied.", "code": 403}
             logger.warn(res)
@@ -119,7 +119,7 @@ class Service(Resource):
         flag = request.form.get("flag", request.form.get("serviceId", request.form.get("serviceName", request.form.get("id", request.form.get("name")))))
 
         if g.auth:
-            return g.swarm_service.Delete(serviceFlag=flag)
+            return g.service.DELETE(serviceFlag=flag)
         else:
             res = {"msg": "Authentication failed, permission denied.", "code": 403}
             logger.warn(res)

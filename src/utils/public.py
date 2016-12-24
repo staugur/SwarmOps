@@ -13,6 +13,7 @@ from config import SSO
 
 md5             = lambda pwd:hashlib.md5(pwd).hexdigest()
 ip_pat          = re.compile(r"^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$")
+comma_Pat       = re.compile(r"\s*,\s*")
 logger          = Syslog.getLogger()
 Ot2Bool         = lambda string:string.lower() in ("desc",) #将字符串desc转化为True
 gen_requestId   = lambda :str(uuid.uuid4())

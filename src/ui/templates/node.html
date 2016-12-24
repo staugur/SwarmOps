@@ -7,6 +7,11 @@ SwarmOps | Docker管理平台
 {% if not Nodes %}
 <div class="alert alert-danger" role="alert">活跃集群异常!!!</div>
 {% endif %}
+<p>
+    <a href="{{ url_for('ui.misc', misc='AddNode') }}"><button type="button" class="btn btn-success">添加节点</button></a>
+    <a href="{{ url_for('ui.misc', misc='DelNode') }}"><button type="button" class="btn btn-danger">删除节点</button></a>
+    <a href="{{ url_for('ui.misc', misc='UpdateNode') }}"><button type="button" class="btn btn-info">更新节点</button></a>
+</p>
 <table class=" table table-bordered table-hover table-condensed table-responsive">
     <thead>
         <tr class="active">
