@@ -20,14 +20,14 @@ def service():
     if g.auth:
         return render_template("service.html")
     else:
-         return redirect(url_for("login"))
+        return redirect(url_for("login"))
 
 @ui_blueprint.route("/node/")
 def node():
     if g.auth:
         return render_template("node.html")
     else:
-         return redirect(url_for("login"))
+        return redirect(url_for("login"))
 
 @ui_blueprint.route("/misc/")
 def misc():
