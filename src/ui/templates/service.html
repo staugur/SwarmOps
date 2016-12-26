@@ -17,7 +17,7 @@ SwarmOps | Docker管理平台
     <a href="{{ url_for('ui.service', show='all') }}"><button type="button" class="btn btn-primary">显示所有</button></a>
     {% endif %}
 </p>
-<table class=" table table-bordered table-hover table-condensed table-responsive">
+<table class="table table-bordered table-hover table-condensed table-responsive">
     <thead>
         <tr class="active">
             <th style="vertical-align: middle; text-align: center;">ID</th>
@@ -39,6 +39,7 @@ SwarmOps | Docker管理平台
     </thead>
     <tbody>
     {% for service in Services %}
+    {{ g.service._checkServiceTaskNode(leader=g.swarm.GET("leader").data, service=service) }}
         <tr>
             <td style='vertical-align: middle; text-align: center;'>{{ service.ID }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ service.Name }}</td>

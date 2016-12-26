@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 
-import requests
+import requests, json
 from SpliceURL import Splice
 from utils.public import logger
 from random import choice
@@ -117,12 +117,17 @@ class BASE_SWARM_ENGINE_API:
         else:
             return managers
 
-    def _checkServiceTask(self, leader):
-        data = requests.get(url, params={"filters": json.dumps({'desired-state':{'running':True}})}).json()
-        nodes = [ _['NodeID'] for _ in data if _['Status']['State'] == 'running' ]
-        ips = []
+    def _checkServiceTaskNode(self, leader, service):
+        """ 查询某service的实例节点 """
+
+        url   = Splice(netloc=leader, port=self.port, path='/tasks').geturl
+        logger.info("Get service %s task, that url is %s" %(service, url))
+        data  = requests.get(url, params={"filters": json.dumps({'desired-state':{'running':True}})}).json()
+        #data  = requests.get(url).json()
+        nodes = [ _['NodeID'] for _ in data if _['Status']['State'] == 'running' and _['ServiceID'] == service ]
+        ips   = []
         for node in nodes:
             self._checkSwarmNode(leader, node)
-            ip = node.get('ManagerStatus', {}).get('Addr', '').split(':')[0] or node['Spec'].get('Labels', {}).get('ipaddr', node['Description']['Hostname'])
+            ip = node.get('ManagerStatus', {}).get('Addr', '').split(':')[0] or node['Spec'].get('Labels', {}).get('ipaddr')
             ips.append(ip)
         return ips
