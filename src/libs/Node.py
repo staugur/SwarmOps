@@ -39,8 +39,9 @@ class NodeManager(BASE_SWARM_ENGINE_API):
                     if isinstance(node_label, dict):
                         _node_label = ''
                         for k,v in node_label.iteritems():
-                            _node_label += '%s:%s, ' %(k, v)
+                            _node_label += '%s=%s, ' %(k, v)
                         node_label = _node_label.strip(' ,')
+                    node_CreatedAt     = timeChange(i['CreatedAt'])
                     node_UpdatedAt     = timeChange(i['UpdatedAt'])
                     node_dockerversion = i['Description']['Engine']['EngineVersion']
                 except Exception,e:
@@ -49,7 +50,7 @@ class NodeManager(BASE_SWARM_ENGINE_API):
                     node_host = i.get('ManagerStatus', {}).get('Addr', '').split(':')[0] or i['Spec'].get('Labels', {}).get('ipaddr', i['Description']['Hostname'])
                     node.append((node_host, i.get("ID")))
                 else:
-                    node.append((node_host, node_id, node_role, node_status, node_availability, node_reachability, node_containers, node_cpu, node_mem, node_label, node_UpdatedAt, node_dockerversion))
+                    node.append((node_host, node_id, node_role, node_status, node_availability, node_reachability, node_containers, node_cpu, node_mem, node_label, node_CreatedAt, node_UpdatedAt, node_dockerversion))
             res.update(data=node)
         logger.info(res)
         return res

@@ -11,6 +11,11 @@ SwarmOps | Docker管理平台
     <a href="{{ url_for('ui.misc', misc='AddService') }}"><button type="button" class="btn btn-success">添加服务</button></a>
     <a href="{{ url_for('ui.misc', misc='DelService') }}"><button type="button" class="btn btn-danger">删除服务</button></a>
     <a href="{{ url_for('ui.misc', misc='UpdateService') }}"><button type="button" class="btn btn-info">更新服务</button></a>
+    {% if request.args.get("show") %}
+    <a href="{{ url_for('ui.service') }}"><button type="button" class="btn btn-primary">隐藏展示</button></a>
+    {% else %}
+    <a href="{{ url_for('ui.service', show='all') }}"><button type="button" class="btn btn-primary">显示所有</button></a>
+    {% endif %}
 </p>
 <table class=" table table-bordered table-hover table-condensed table-responsive">
     <thead>
@@ -38,16 +43,32 @@ SwarmOps | Docker管理平台
             <td style='vertical-align: middle; text-align: center;'>{{ service.ID }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ service.Name }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ service.Image }}</td>
-            <td style='vertical-align: middle; text-align: center;'>{{ service.Env }}</td>
-            <td style='vertical-align: middle; text-align: center;'>{{ service.Mounts }}</td>
+            <td style='vertical-align: middle;'>
+            {% for env in service.Env or [] %}
+                {{ env }}<br/>
+            {% endfor %}
+            </td>
+            <td style='vertical-align: middle;'>
+            {% for mount in service.Mounts or [] %}
+                {{ mount }}<br/>
+            {% endfor %}
+            </td>
             <td style='vertical-align: middle; text-align: center;'>{{ service.Replicas }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ service.CreatedAt }}</td>
             {% if request.args.get("show") %}
             <td style='vertical-align: middle; text-align: center;'>{{ service.UpdatedAt }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ service.UpdateStatus }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ service.NetMode }}</td>
-            <td style='vertical-align: middle; text-align: center;'>{{ service.NetVip }}</td>
-            <td style='vertical-align: middle; text-align: center;'>{{ service.NetPorts }}</td>
+            <td style='vertical-align: middle;'>
+            {% for vip in service.NetVip or [] %}
+                {{ vip }}<br/>
+            {% endfor %}
+            </td>
+            <td style='vertical-align: middle;'>
+            {% for port in service.NetPorts or [] %}
+                {{ port }}<br/>
+            {% endfor %}
+            </td>
             <td style='vertical-align: middle; text-align: center;'>{{ service.Version }}</td>
             {% endif %}
         </tr>
