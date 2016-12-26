@@ -116,3 +116,13 @@ class BASE_SWARM_ENGINE_API:
             return []
         else:
             return managers
+
+    def _checkServiceTask(self, leader):
+        data = requests.get(url, params={"filters": json.dumps({'desired-state':{'running':True}})}).json()
+        nodes = [ _['NodeID'] for _ in data if _['Status']['State'] == 'running' ]
+        ips = []
+        for node in nodes:
+            self._checkSwarmNode(leader, node)
+            ip = node.get('ManagerStatus', {}).get('Addr', '').split(':')[0] or node['Spec'].get('Labels', {}).get('ipaddr', node['Description']['Hostname'])
+            ips.append(ip)
+        return ips
