@@ -2,7 +2,7 @@ FROM registry.saintic.com/python
 
 MAINTAINER Mr.tao <staugur@saintic.com>
 
-ADD .src /SwarmOps
+ADD src /SwarmOps
 
 ADD misc/supervisord.conf /etc/supervisord.conf
 
