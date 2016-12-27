@@ -127,7 +127,7 @@ class BASE_SWARM_ENGINE_API:
         nodes = [ _['NodeID'] for _ in data if _['Status']['State'] == 'running' and _['ServiceID'] == service ]
         ips   = []
         for node in nodes:
-            self._checkSwarmNode(leader, node)
-            ip = node.get('ManagerStatus', {}).get('Addr', '').split(':')[0] or node['Spec'].get('Labels', {}).get('ipaddr')
+            nodeinfo = self._checkSwarmNode(leader, node)
+            ip = nodeinfo.get('ManagerStatus', {}).get('Addr', '').split(':')[0] or nodeinfo['Spec'].get('Labels', {}).get('ipaddr')
             ips.append(ip)
-        return ips
+        return {"ips": ips, "nodes": nodes}

@@ -67,16 +67,20 @@ class Service(Resource):
         service = request.args.get("id", request.args.get("name", None))
         core    = True if request.args.get("core", True) in ("True", "true", True) else False
         core_convert = True if request.args.get("core_convert", True) in ("True", "true", True) else False
+        task    = True if request.args.get("task", True) in ("True", "true", True) else False
 
         if g.auth:
-            return g.service.GET(service, core, core_convert)
+            if task:
+                return g.service.GetServiceNode(serviceId=service)
+            else:
+                return g.service.GET(service, core, core_convert)
         else:
             res = {"msg": "Authentication failed, permission denied.", "code": 403}
             logger.warn(res)
             return res, 403
 
     def post(self):
-        """ create a service """
+        """ 创建服务 """
 
         #get query, optional only is "name, env, mount, publish, replicas", required "image".
         image     = request.form.get("image")
@@ -93,7 +97,7 @@ class Service(Resource):
             return res, 403
 
     def put(self):
-        """put, update service"""
+        """ 更新服务 """
 
         flag        = request.form.get("flag", request.form.get("serviceId", request.form.get("serviceName")))
         #In fact, the official currently only supports the ID form of the update operation.
@@ -114,7 +118,7 @@ class Service(Resource):
             return res, 403
 
     def delete(self):
-        """delete a service"""
+        """ 删除服务 """
 
         flag = request.form.get("flag", request.form.get("serviceId", request.form.get("serviceName", request.form.get("id", request.form.get("name")))))
 

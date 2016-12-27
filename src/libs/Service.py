@@ -28,7 +28,7 @@ class ServiceManager(BASE_SWARM_ENGINE_API):
 
     def GET(self, service=None, core=False, core_convert=False):
 
-        res = {"msg": None, "code": 0, "data": []}
+        res = {"msg": None, "code": 0, "data": ()}
 
         if self.leader:
             ServiceUrl = Splice(netloc=self.leader, port=self.port, path="/services/%s" %service).geturl if service else Splice(netloc=self.leader, port=self.port, path="/services").geturl
@@ -37,6 +37,8 @@ class ServiceManager(BASE_SWARM_ENGINE_API):
             try:
                 r = requests.get(ServiceUrl, timeout=self.timeout, verify=self.verify)
                 services = r.json()
+                services = services if isinstance(services, (list, tuple)) else (services,)
+                services_core = []
             except Exception,e:
                 logger.error(e, exc_info=True)
                 res.update(msg="Retrieve service fail", code=30000)
@@ -45,13 +47,7 @@ class ServiceManager(BASE_SWARM_ENGINE_API):
                     res.update(msg="No such service<%s>" %service, data=[], code=30010)
                     logger.info(res)
                     return res
-                else:
-                    recordsTotal = len(services)
-
-                services = (services,) if not isinstance(services, (list, tuple)) else services
-                services_core=[]
-
-                if core == False:
+                elif core == False:
                     res.update(data=services)
 
                 elif core == True and core_convert == True:
@@ -69,7 +65,7 @@ class ServiceManager(BASE_SWARM_ENGINE_API):
                             i_Mounts    = i.get("Spec", {}).get("TaskTemplate", {}).get("ContainerSpec", {}).get("Mounts", [])
                             _i_Mounts   = []
                             for _ in i_Mounts:
-                                _i_Mounts.append("%s:%s:%s:%s" %(_.get("Source"), _.get("Target"), _.get("ReadOnly", ""), _.get("Type")))
+                                _i_Mounts.append("%s:%s:%s:%s" %(_.get("Source"), _.get("Target"), _.get("ReadOnly", ""), _.get("Type", "")))
                             i_Mounts    = _i_Mounts
                             #### end convert mount
                             i_Replicas  = i.get("Spec", {}).get("Mode", {}).get("Replicated", {}).get("Replicas")  or "global"
@@ -109,6 +105,7 @@ class ServiceManager(BASE_SWARM_ENGINE_API):
                             })
                     except Exception,e:
                         logger.error(e, exc_info=True)
+                    else:
                         res.update(data=services_core)
 
                 elif core == True and core_convert == False:
@@ -133,11 +130,22 @@ class ServiceManager(BASE_SWARM_ENGINE_API):
                             })
                     except Exception,e:
                         logger.error(e, exc_info=True)
+                    else:
                         res.update(data=services_core)
-
-                res.update(recordsTotal=recordsTotal, recordsFiltered=len(services_core))
         else:
             res.update(msg="No active swarm cluster", code=30020)
+
+        logger.info(res)
+        return res
+
+    def GetServiceNode(self, serviceId):
+        """ 查询某service正在运行的实例数所在node(IP) """
+        res = {"msg": None, "code": 0}
+
+        if self.leader:
+            res.update(data=self._checkServiceTaskNode(leader=self.leader, service=serviceId))
+        else:
+            res.update(msg="No active swarm cluster", code=30021)
 
         logger.info(res)
         return res
@@ -220,6 +228,7 @@ class ServiceManager(BASE_SWARM_ENGINE_API):
             try:
                 source, target, readonly, mountype = m.split(":")
                 readonly = True if readonly in ("true", "True", True) else False
+                mountype = mountype or "bind"
             except Exception, e:
                 logger.warn(e, exc_info=True)
                 res.update(msg="mount format error", code=40007)
