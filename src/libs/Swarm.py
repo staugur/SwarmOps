@@ -161,6 +161,8 @@ class MultiSwarmManager(BASE_SWARM_ENGINE_API):
         """ add a swarm cluster into current, check, pickle. """
 
         res = {"msg": None, "code": 0}
+        swarmIp = swarmIp.strip()
+        swarmName = swarmName.strip()
         logger.debug("post a swarm cluster, name is %s, ip is %s, check ip is %s" %(swarmName, swarmIp, ip_check(swarmIp)))
 
         if not swarmName or not swarmIp or not ip_check(swarmIp):

@@ -351,6 +351,12 @@ class ServiceManager(BASE_SWARM_ENGINE_API):
             logger.info(res)
             return res
 
+        #check leader
+        if not self.leader:
+            res.update(msg="No active swarm", code=-1000)
+            logger.info(res)
+            return res
+
         serviceSourceData = self.GET(serviceFlag, core=True, conversion=False).get("data")
         if isinstance(serviceSourceData, (list, tuple)) and len(serviceSourceData) > 0:
             serviceSourceData = serviceSourceData[0]
@@ -369,8 +375,8 @@ class ServiceManager(BASE_SWARM_ENGINE_API):
                 mount       = self.commaConvert(params.get("mount")) if params.get("mount") else defaultMount
                 publish     = self.commaConvert(params.get("publish")) if params.get("publish") else defaultPublish
                 replicas    = int(params.get("replicas")) if params.get("replicas") else defaultReplicas
-                delay       = int(params.get("delay")) if params.get("delay") else 10
-                parallelism = int(params.get("parallelism")) if params.get("parallelism") else 1
+                delay       = int(params.get("delay")) if isinstance(params.get("delay"), int) else 10
+                parallelism = int(params.get("parallelism")) if isinstance(params.get("parallelism"), int) else 1
             except Exception,e:
                 logger.warn(e, exc_info=True)
                 res.update(msg="parameters error", code=50001)
@@ -393,6 +399,7 @@ class ServiceManager(BASE_SWARM_ENGINE_API):
                     try:
                         source, target, readonly, mountype = m.split(":")
                         readonly = True if readonly in ("true", "True", True) else False
+                        mountype = mountype or "bind"
                     except Exception, e:
                         logger.warn(e, exc_info=True)
                         res.update(msg="mount format error", code=50002)
@@ -457,8 +464,8 @@ class ServiceManager(BASE_SWARM_ENGINE_API):
 
         #post data to update service
         try:
-            SwarmEngineServiceUpdateUrl  = Splice(ip=self.LeaderIp, port=2375, path="/services/%s/update?version=%d" %(serviceFlag2ID, defaultVersion)).geturl
-            SwarmEngineServiceUpdateRes  = requests.post(SwarmEngineServiceUpdateUrl, headers={"Content-type": "application/json"}, timeout=self.timeout, verify=False, data=json.dumps(baseData))
+            SwarmEngineServiceUpdateUrl  = Splice(netloc=self.leader, port=self.port, path="/services/%s/update?version=%d" %(serviceFlag2ID, defaultVersion)).geturl
+            SwarmEngineServiceUpdateRes  = requests.post(SwarmEngineServiceUpdateUrl, headers={"Content-type": "application/json"}, timeout=self.timeout, verify=self.verify, data=json.dumps(baseData))
             SwarmEngineServiceUpdateCode = SwarmEngineServiceUpdateRes.status_code
             SwarmEngineServiceUpdateData = SwarmEngineServiceUpdateRes.text or '{}'
             SwarmEngineServiceUpdateData = json.loads(SwarmEngineServiceUpdateData)
