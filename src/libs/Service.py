@@ -68,7 +68,7 @@ class ServiceManager(BASE_SWARM_ENGINE_API):
                                 _i_Mounts.append("%s:%s:%s:%s" %(_.get("Source"), _.get("Target"), _.get("ReadOnly", ""), _.get("Type", "")))
                             i_Mounts    = _i_Mounts
                             #### end convert mount
-                            i_Replicas  = i.get("Spec", {}).get("Mode", {}).get("Replicated", {}).get("Replicas")  or "global"
+                            i_Replicas  = "global" if "Global" in i.get("Spec", {}).get("Mode", {}) else i.get("Spec", {}).get("Mode", {}).get("Replicated", {}).get("Replicas")
                             i_NetMode   = i.get("Endpoint", {}).get("Spec", {}).get("Mode") or i.get("Spec", {}).get("EndpointSpec", {}).get("Mode")
                             #### start convert publish
                             i_NetPorts  = i.get("Endpoint", {}).get("Spec", {}).get("Ports", [])
