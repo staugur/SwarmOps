@@ -1,4 +1,4 @@
-# -*- coding:utf8 -*-
+# -*- coding: utf8 -*-
 
 
 import re
@@ -7,9 +7,8 @@ import datetime
 import requests
 import hashlib
 from redis import Redis
-from config import REDIS
 from .syslog import Syslog
-from config import SSO
+from config import STORAGE, SSO
 
 md5             = lambda pwd:hashlib.md5(pwd).hexdigest()
 ip_pat          = re.compile(r"^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$")
@@ -17,8 +16,8 @@ comma_Pat       = re.compile(r"\s*,\s*")
 logger          = Syslog.getLogger()
 Ot2Bool         = lambda string:string.lower() in ("desc",) #将字符串desc转化为True
 gen_requestId   = lambda :str(uuid.uuid4())
-ParseRedis      = lambda string: string.split("redis://")[-1].split(":")
-RedisConnection = Redis(host=ParseRedis(REDIS["Connection"])[0], port=ParseRedis(REDIS["Connection"])[1], password=ParseRedis(REDIS["Connection"])[2], db=0, socket_timeout=5, socket_connect_timeout=5)
+ParseRedis      = STORAGE["Connection"].split("redis://")[-1].split(":")
+RedisConnection = Redis(host=ParseRedis[0], port=ParseRedis[1], password=ParseRedis[2], db=0, socket_timeout=5, socket_connect_timeout=5)
 
 
 def timeChange(timestring):
@@ -44,7 +43,6 @@ def isLogged_in(cookie_str):
     SSOURL = SSO.get("SSO.URL")
     if cookie_str and not cookie_str == '..':
         username, expires, sessionId = cookie_str.split('.')
-        #success = Requests(SSOURL+"/sso/").post(data={"username": username, "time": expires, "sessionId": sessionId}).get("success", False)
         success = requests.post(SSOURL+"/sso/", data={"username": username, "time": expires, "sessionId": sessionId}, timeout=5, verify=False, headers={"User-Agent": "Template"}).json().get("success", False)
         logger.info("check login request, cookie_str: %s, success:%s" %(cookie_str, success))
         return success

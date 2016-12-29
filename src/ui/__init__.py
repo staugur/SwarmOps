@@ -35,3 +35,11 @@ def misc():
         return render_template("misc.html")
     else:
         return redirect(url_for("login"))
+
+@ui_blueprint.route("/storage/")
+def storage():
+    if g.auth:
+        return render_template("storage.html")
+    else:
+        return redirect(url_for("login"))
+

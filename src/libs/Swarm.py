@@ -2,7 +2,7 @@
 
 
 import json, requests
-from config import REDIS
+from config import STORAGE
 from SpliceURL import Splice
 from utils.public import logger, RedisConnection, ip_check
 from .Base import BASE_SWARM_ENGINE_API
@@ -12,8 +12,8 @@ class MultiSwarmManager(BASE_SWARM_ENGINE_API):
 
     def __init__(self, port=2375, timeout=3):
         self.storage   = RedisConnection
-        self.swarmKey  = REDIS["SwarmKey"]
-        self.ActiveKey = REDIS["ActiveKey"]
+        self.swarmKey  = STORAGE["SwarmKey"]
+        self.ActiveKey = STORAGE["ActiveKey"]
         self.port      = port
         self.timeout   = timeout
         self.verify    = False

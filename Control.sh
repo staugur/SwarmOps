@@ -1,14 +1,14 @@
 #!/bin/sh
 
 dir=$(cd $(dirname $0); pwd)
-log_dir=${dir}/logs
+log_dir=${dir}/src/logs
 [ -d $log_dir ] || mkdir $log_dir
-procname=$(grep '"ProcessName":' ${dir}/config.py | awk '{print $2}' | awk -F \" '{print $2}'|head -1)
+procname=$(grep '"ProcessName":' ${dir}/src/config.py | awk '{print $2}' | awk -F \" '{print $2}'|head -1)
 pidfile=${log_dir}/${procname}.pid
 
 function _start()
 {
-    $(which python) -O ${dir}/Product.py &>> ${log_dir}/output.log &
+    $(which python) -O ${dir}/src/Product.py &>> ${log_dir}/output.log &
     pid=$!
     echo $pid > $pidfile
     echo "$procname start over."
@@ -16,12 +16,12 @@ function _start()
 
 function _start_front()
 {
-    $(which python) -O ${dir}/Product.py
+    $(which python) -O ${dir}/src/Product.py
 }
 
 function _start_test()
 {
-    nohup $(which python) ${dir}/main.py > ${log_dir}/output.log &
+    nohup $(which python) ${dir}/src/main.py > ${log_dir}/output.log &
     pid=$!
     echo $pid > $pidfile
     echo "$procname start over."

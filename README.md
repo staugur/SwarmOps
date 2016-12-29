@@ -39,17 +39,17 @@ MIT
 ```
 
 
-## Api Design
-![Design][1]
-
-
 ## UI
 ![Swarms][2]
 ![Services][3]
 ![Nodes][4]
 
 
+## Api Design
+![Design][1]
+
+
   [1]: ./misc/SwarmOpsApi.png
-  [2]: ./misc/swarm.png "swarm.png"
-  [3]: ./misc/service.png "service.png"
-  [4]: ./misc/node.png "node.png"
+  [2]: ./misc/swarm.png "集群"
+  [3]: ./misc/service.png "服务"
+  [4]: ./misc/node.png "节点"

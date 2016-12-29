@@ -34,13 +34,13 @@ PRODUCT={
     #生产环境启动方法，可选`gevent`, `tornado`。
 }
 
-#REDIS配置段
-REDIS={
-    "Connection": os.getenv("swarmops_RedisConnection", "redis://ip:port:password"),
+#STORAGE配置段
+STORAGE={
+    "Connection": os.getenv("swarmops_StorageConnection", "redis://ip:port:password"),
 
-    "SwarmKey": os.getenv("swarmops_RedisSwarmKey", "Swarm_All"),
+    "SwarmKey": os.getenv("swarmops_StorageSwarmKey", "Swarm_All"),
 
-    "ActiveKey": os.getenv("swarmops_RedisActiveKey", "Swarm_Active"),
+    "ActiveKey": os.getenv("swarmops_StorageActiveKey", "Swarm_Active"),
 }
 
 SSO={

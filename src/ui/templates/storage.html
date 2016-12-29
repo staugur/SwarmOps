@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}
+SwarmOps | Docker管理平台
+{% endblock %}
+{% block container %}
+{% set ALL = g.swarm.getSwarm() %}
+{% set ACTIVE = g.swarm.getActive %}
+{% if not ALL %}
+<div class="alert alert-info" role="alert">没有集群!!!</div>
+{% endif %}
+{% if not ACTIVE %}
+<div class="alert alert-warning" role="alert">没有活跃集群!!!</div>
+{% endif %}
+<table class="table table-bordered table-hover table-condensed table-responsive">
+    <caption><div class="text-success"><strong>存储后端所有数据列表:&nbsp;</strong></div></caption>
+    <thead>
+        <tr class="active">
+            <th style="vertical-align: middle; text-align: center;">Name</th>
+            <th style="vertical-align: middle; text-align: center;">Manager</th>
+            <th style="vertical-align: middle; text-align: center;">ManagerToken</th>
+            <th style="vertical-align: middle; text-align: center;">WorkerToken</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for swarm in ALL %}
+        <tr>
+            <td style="vertical-align: middle; text-align: center;">{{ swarm.name }}</td>
+            <td style='vertical-align: middle; text-align: center;'>{{ swarm.manager }}</td>
+            <td style='vertical-align: middle;'>{{ swarm.managerToken }}</td>
+            <td style='vertical-align: middle;'>{{ swarm.workerToken }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<table class="table table-bordered table-hover table-condensed table-responsive">
+    <caption><div class="text-success"><strong>存储后端活跃集群数据:&nbsp;</strong></div></caption>
+    <thead>
+        <tr class="active">
+            <th style="vertical-align: middle; text-align: center;">Name</th>
+            <th style="vertical-align: middle; text-align: center;">Manager</th>
+            <th style="vertical-align: middle; text-align: center;">ManagerToken</th>
+            <th style="vertical-align: middle; text-align: center;">WorkerToken</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="vertical-align: middle; text-align: center;">{{ ACTIVE.name }}</td>
+            <td style='vertical-align: middle; text-align: center;'>{{ ACTIVE.manager }}</td>
+            <td style='vertical-align: middle;'>{{ ACTIVE.managerToken }}</td>
+            <td style='vertical-align: middle;'>{{ ACTIVE.workerToken }}</td>
+        </tr>
+    </tbody>
+</table>
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+// 更新导航
+var NavId=null;
+var As=document.getElementById('tab').getElementsByTagName('li');
+NavId = As[3];
+console.log(NavId)
+NavId.className='active';
+</script>
+{% endblock %}
