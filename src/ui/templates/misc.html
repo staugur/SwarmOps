@@ -138,7 +138,7 @@ SwarmOps | Docker管理平台
 {% if request.args.get("misc") == "UpdateService" %}
 {% set Services = g.service.GET(core=True, core_convert=True).data %}
 
-<strong class="text-success "><span class="glyphicon glyphicon-arrow-down"></span>服务标识名称列表<scan class="badge"> {{ g.service.GET().data|length }}</scan><span class="glyphicon glyphicon-arrow-down"></span></strong>
+<strong class="text-success "><span class="glyphicon glyphicon-arrow-down"></span>点击以下服务标识名称进行数据填充后再更新:&nbsp<scan class="badge"> {{ g.service.GET().data|length }}</scan><span class="glyphicon glyphicon-arrow-down"></span></strong>
 <br />
 <br />
 <p>{% for service in Services %}
@@ -154,6 +154,8 @@ SwarmOps | Docker管理平台
     </div>
   </div>
 
+  <input type="hidden" class="form-control" id="UpdateServiceId" name="serviceId">
+
   <div class="form-group">
     <label for="UpdateServiceImage" class="col-sm-12">Service Image&nbsp;<span class="glyphicon glyphicon-star-empty"></span></label>
     <div class="col-sm-12">
@@ -164,7 +166,7 @@ SwarmOps | Docker管理平台
   <div class="form-group">
     <label for="UpdateServicereplicas" class="col-sm-12">Service Replicas&nbsp;<span class="glyphicon glyphicon-star-empty"></span></label>
     <div class="col-sm-12">
-      <input type="text" class="form-control" id="UpdateServicereplicas" name="replicas" placeholder="服务副本(实例数), 默认值为1">
+      <input type="number" class="form-control" id="UpdateServicereplicas" name="replicas" placeholder="服务副本(实例数), 默认值为1">
     </div>
   </div>
 
@@ -186,6 +188,20 @@ SwarmOps | Docker管理平台
     <label for="UpdateServicePublish" class="col-sm-12">Service Publish</label>
     <div class="col-sm-12">
       <input type="text" class="form-control" id="UpdateServicePublish" name="publish" placeholder='服务发现(端口映射), 格式是"src:target:protocol", protocol默认值tcp, 多个映射以逗号分隔'>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="UpdateServiceDelay" class="col-sm-12">Service Delay</label>
+    <div class="col-sm-12">
+      <input type="number" class="form-control" id="UpdateServiceDelay" name="delay" value=10 placeholder='服务更新之间的延迟秒数, 默认为10'>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="UpdateServiceParallelism" class="col-sm-12">Service Parallelism</label>
+    <div class="col-sm-12">
+      <input type="number" class="form-control" id="UpdateServiceParallelism" name="parallelism" value=1 placeholder='同时更新的任务数, 默认为1'>
     </div>
   </div>
 
@@ -371,6 +387,7 @@ function ServiceFill(serviceId) {
             console.log(service);
             console.log(service.Name);
             document.getElementById("UpdateServiceName").value = service.Name;
+            document.getElementById("UpdateServiceId").value = service.ID;
             document.getElementById("UpdateServiceImage").value = service.Image;
             document.getElementById("UpdateServicereplicas").value = service.Replicas;
             document.getElementById("UpdateServiceEnv").value = service.Env;
@@ -395,6 +412,10 @@ function UpdateService() {
                 alert("更新服务失败，请重试提交或报告错误！\n错误原因是：" + res.msg);
             }
         },
+        error: function(res) {
+            console.log(res);
+            alert(res.statusText);
+        }
     });
 }
 

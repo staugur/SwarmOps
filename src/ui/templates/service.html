@@ -25,15 +25,14 @@ SwarmOps | Docker管理平台
             <th style="vertical-align: middle; text-align: center;">Image</th>
             <th style="vertical-align: middle; text-align: center;">Replicas</th>
             <th style="vertical-align: middle; text-align: center;">Env</th>
-            <th style="vertical-align: middle; text-align: center;">CreatedAt</th>
-            {% if request.args.get("show") %}
             <th style="vertical-align: middle; text-align: center;">Mounts</th>
+            {% if request.args.get("show") %}
+            <th style="vertical-align: middle; text-align: center;">CreatedAt</th>
             <th style="vertical-align: middle; text-align: center;">UpdatedAt</th>
             <th style="vertical-align: middle; text-align: center;">UpdateStatus</th>
             <th style="vertical-align: middle; text-align: center;">NetMode</th>
             <th style="vertical-align: middle; text-align: center;">NetVip</th>
             <th style="vertical-align: middle; text-align: center;">NetPorts</th>
-            <th style="vertical-align: middle; text-align: center;">Version</th>
             {% endif %}
         </tr>
     </thead>
@@ -54,13 +53,13 @@ SwarmOps | Docker管理平台
                 {{ env }}<br/>
             {% endfor %}
             </td>
-            <td style='vertical-align: middle; text-align: center;'>{{ service.CreatedAt }}</td>
-            {% if request.args.get("show") %}
             <td style='vertical-align: middle;'>
             {% for mount in service.Mounts or [] %}
                 {{ mount }}<br/>
             {% endfor %}
             </td>
+            {% if request.args.get("show") %}
+            <td style='vertical-align: middle; text-align: center;'>{{ service.CreatedAt }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ service.UpdatedAt }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ service.UpdateStatus }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ service.NetMode }}</td>
@@ -74,7 +73,6 @@ SwarmOps | Docker管理平台
                 {{ port }}<br/>
             {% endfor %}
             </td>
-            <td style='vertical-align: middle; text-align: center;'>{{ service.Version }}</td>
             {% endif %}
         </tr>
     {% endfor %}
