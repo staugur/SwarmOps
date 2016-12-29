@@ -34,7 +34,7 @@ function _status()
             echo -e "\033[39;31m${procname} has stopped.\033[0m"
             exit 127
         else
-            pid=$(ps aux | grep -v grep | grep $procname | awk '{print $2}')
+            pid=$(pgrep $procname)
             [ "$pid" = "root" ] && pid=$(ps aux | grep -v grep | grep $procname | awk '{print $1}')
         fi
     else
