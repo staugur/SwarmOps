@@ -42,6 +42,7 @@ SwarmOps | Docker管理平台
             <th style="vertical-align: middle; text-align: center;">WorkerToken</th>
         </tr>
     </thead>
+    {% if ACTIVE %}
     <tbody>
         <tr>
             <td style="vertical-align: middle; text-align: center;">{{ ACTIVE.name }}</td>
@@ -50,6 +51,7 @@ SwarmOps | Docker管理平台
             <td style='vertical-align: middle;'>{{ ACTIVE.workerToken }}</td>
         </tr>
     </tbody>
+    {% endif %}
 </table>
 {% endblock %}
 {% block script %}

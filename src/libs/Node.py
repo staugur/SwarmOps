@@ -32,7 +32,7 @@ class NodeManager(BASE_SWARM_ENGINE_API):
                     node_status        = i['Status']['State']
                     node_availability  = i['Spec'].get('Availability')
                     node_reachability  = i.get('ManagerStatus', {}).get('Reachability')
-                    node_containers    = self._checkSwarmNodeinfo(node_host).get("ContainersRunning") if ip_check(node_host) else 'Unknown'
+                    node_containers    = self._checkSwarmNodeinfo(node_host).get("ContainersRunning") if ip_check(node_host) and node_status == "ready" and node_availability == "active" else 'Unknown'
                     node_cpu           = int(i['Description']['Resources']['NanoCPUs'] / 1e9)
                     node_mem           = int(i['Description']['Resources']['MemoryBytes'] / 1e6 / 1024) #bytes to G
                     node_label         = i['Spec'].get('Labels')
