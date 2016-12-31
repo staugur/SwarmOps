@@ -10,7 +10,7 @@ from .Base import BASE_SWARM_ENGINE_API
 class MultiSwarmManager(BASE_SWARM_ENGINE_API):
 
 
-    def __init__(self, port=2375, timeout=3):
+    def __init__(self, port=2375, timeout=2):
         self.storage   = RedisConnection
         self.swarmKey  = STORAGE["SwarmKey"]
         self.ActiveKey = STORAGE["ActiveKey"]

@@ -8,7 +8,7 @@ from random import choice
 class BASE_SWARM_ENGINE_API:
 
 
-    def __init__(self, port=2375, timeout=3):
+    def __init__(self, port=2375, timeout=2):
         self.port      = port
         self.timeout   = timeout
         self.verify    = False
@@ -36,21 +36,18 @@ class BASE_SWARM_ENGINE_API:
                 data = requests.get(url, timeout=self.timeout, verify=self.verify).json()
             except requests.exceptions.Timeout, e:
                 logger.warn(e, exc_info=True)
-                url  = Splice(netloc=swarm.get("manager")[-1], port=self.port, path='/nodes').geturl
-                data = requests.get(url, timeout=self.timeout, verify=self.verify).json()
-            except requests.exceptions.Timeout, e:
-                logger.warn(e, exc_info=True)
-                url  = Splice(netloc=choice(swarm.get("manager")), port=self.port, path='/nodes').geturl
-                data = requests.get(url, timeout=self.timeout, verify=self.verify).json()
-            except Exception,e:
-                logger.error(e, exc_info=True)
+                try:
+                    url  = Splice(netloc=swarm.get("manager")[-1], port=self.port, path='/nodes').geturl
+                    data = requests.get(url, timeout=self.timeout, verify=self.verify).json()
+                except Exception,e:
+                    logger.error(e, exc_info=True)
+                    data = None
+            if isinstance(data, (list, tuple)):
+                leader = ( _.get('ManagerStatus', {}).get('Addr').split(':')[0] for _ in data if _.get('ManagerStatus', {}).get('Leader') ).next()
             else:
-                if isinstance(data, (list, tuple)):
-                    leader = ( _.get('ManagerStatus', {}).get('Addr').split(':')[0] for _ in data if _.get('ManagerStatus', {}).get('Leader') ).next()
-                else:
-                    leader = None
-                logger.info("get %s leader, request url is %s, get leader is %s" %(swarm["name"], url, leader))
-                return leader
+                leader = None
+            logger.info("get %s leader, request url is %s, get leader is %s" %(swarm["name"], url, leader))
+            return leader
 
     def _checkSwarmHealth(self, leader):
         """ 根据Leader查询某swarm集群是否健康 """

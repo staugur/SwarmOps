@@ -17,7 +17,7 @@ class ServiceManager(BASE_SWARM_ENGINE_API):
     Note: Service operations require to first be part of a Swarm.
     """
 
-    def __init__(self, port=2375, timeout=3, ActiveSwarm={}):
+    def __init__(self, port=2375, timeout=2, ActiveSwarm={}):
         self.port      = port
         self.verify    = False
         self.timeout   = timeout
