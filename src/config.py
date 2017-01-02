@@ -1,4 +1,7 @@
 # -*- coding:utf8 -*-
+#
+# SwarmOps配置文件, 默认先读取环境变量, 格式: os.getenv("环境变量", "默认值")
+#
 
 import os
 
@@ -6,13 +9,13 @@ import os
 GLOBAL={
 
     "Host": os.getenv("swarmops_host", "0.0.0.0"),
-    #Application run network address, you can set it `0.0.0.0`, `127.0.0.1`, ``;
+    #应用监听地址
 
     "Port": int(os.getenv("swarmops_port", 10130)),
-    #Application run port, default port;
+    #应用监听端口
 
     "Debug": os.getenv("swarmops_debug", True),
-    #The development environment is open, the production environment is closed, which is also the default configuration.
+    #Debug, 开发环境是True, 生产环境是False, 这是默认配置
 
     "LogLevel": os.getenv("swarmops_loglevel", "DEBUG"),
     #应用程序写日志级别，目前有DEBUG，INFO，WARNING，ERROR，CRITICAL
@@ -21,14 +24,14 @@ GLOBAL={
     #存储Swarm集群信息的方式
 
     "Interest.blog.Url": os.getenv("swarmops_interest_blog_url", "https://www.saintic.com/home/")
-
+    #个人中心地址
 }
 
 #生产环境配置段
 PRODUCT={
 
     "ProcessName": "SwarmOps",
-    #Custom process, you can see it with "ps aux|grep ProcessName".
+    #自定义进程名称
 
     "ProductType": os.getenv("swarmops_producttype", "tornado"),
     #生产环境启动方法，可选`gevent`, `tornado`。
@@ -37,10 +40,13 @@ PRODUCT={
 #STORAGE配置段
 STORAGE={
     "Connection": os.getenv("swarmops_StorageConnection", "redis://ip:port:password"),
+    #存储后端连接信息(对应`SwarmStorageMode`选项值)
 
     "SwarmKey": os.getenv("swarmops_StorageSwarmKey", "Swarm_All"),
+    #存储后端存储所有Swarm数据的Key索引
 
     "ActiveKey": os.getenv("swarmops_StorageActiveKey", "Swarm_Active"),
+    #存储后端存储活跃集群数据的Key索引
 }
 
 SSO={
