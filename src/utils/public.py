@@ -17,7 +17,7 @@ logger          = Syslog.getLogger()
 Ot2Bool         = lambda string:string.lower() in ("desc",) #将字符串desc转化为True
 gen_requestId   = lambda :str(uuid.uuid4())
 ParseRedis      = STORAGE["Connection"].split("redis://")[-1].split(":")
-RedisConnection = Redis(host=ParseRedis[0], port=ParseRedis[1], password=ParseRedis[2], db=0, socket_timeout=5, socket_connect_timeout=5)
+RedisConnection = Redis(host=ParseRedis[0], port=ParseRedis[1], password=ParseRedis[2] if len(ParseRedis) >= 3 else None, db=0, socket_timeout=5, socket_connect_timeout=5)
 
 
 def timeChange(timestring):
