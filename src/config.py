@@ -40,7 +40,7 @@ PRODUCT={
 #STORAGE配置段
 STORAGE={
     "Connection": os.getenv("swarmops_StorageConnection", "redis://ip:port:password"),
-    #存储后端连接信息(对应`SwarmStorageMode`选项值)
+    #存储后端连接信息(对应`SwarmStorageMode`选项值),redis没有密码则留空:password部分
 
     "SwarmKey": os.getenv("swarmops_StorageSwarmKey", "Swarm_All"),
     #存储后端存储所有Swarm数据的Key索引
