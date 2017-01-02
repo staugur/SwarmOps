@@ -357,7 +357,7 @@ class ServiceManager(BASE_SWARM_ENGINE_API):
             logger.info(res)
             return res
 
-        #serviceSourceData = self.GET(service=serviceFlag, core=True, conversion=False).get("data")
+        serviceSourceData = self.GET(service=serviceFlag, core=True).get("data")
         logger.debug(serviceSourceData)
         if isinstance(serviceSourceData, (list, tuple)) and len(serviceSourceData) > 0:
             serviceSourceData = serviceSourceData[0]

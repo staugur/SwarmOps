@@ -382,8 +382,6 @@ function ServiceFill(serviceId) {
         success: function(res) {
             console.log(res);
             service = res.data[0];
-            console.log(service);
-            console.log(service.Name);
             document.getElementById("UpdateServiceName").value = service.Name;
             document.getElementById("UpdateServiceId").value = service.ID;
             document.getElementById("UpdateServiceImage").value = service.Image;
@@ -404,8 +402,8 @@ function UpdateService() {
         success: function(res) {
             console.log(res);
             if (res.success==true) {
-                alert("更新服务成功，服务ID是" + res.serviceId);
-                window.location.href="{{ url_for('ui.service') }}?id=" + res.serviceId;
+                alert("更新服务成功!");
+                window.location.href="{{ url_for('ui.service') }}";
             } else {
                 alert("更新服务失败，请重试提交或报告错误！\n错误原因是：" + res.msg);
             }
