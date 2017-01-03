@@ -125,6 +125,13 @@ def not_found(error=None):
     resp.status_code = 404
     return resp
 
+@app.errorhandler(403)
+def Permission_denied(error=None):
+    message = {
+        "msg": "Authentication failed, permission denied.",
+        "code": 403
+    }
+    return jsonify(message), 403
 
 if __name__ == '__main__':
     Host  = GLOBAL.get('Host')

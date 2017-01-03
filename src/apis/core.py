@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 
-from flask import Blueprint, request, g
+from flask import Blueprint, request, g, abort
 from flask_restful import Api, Resource
 from utils.public import logger
 
@@ -17,9 +17,7 @@ class Swarm(Resource):
         if g.auth:
             return g.swarm.GET(get, checkState=state, UpdateManager=update)
         else:
-            res = {"msg": "Authentication failed, permission denied.", "code": 403}
-            logger.warn(res)
-            return res, 403
+            return abort(403)
 
     def post(self):
         """ 向存储里添加一个swarm集群 """
@@ -30,9 +28,7 @@ class Swarm(Resource):
         if g.auth:
             return g.swarm.POST(swarmName=swarmname, swarmIp=swarmip)
         else:
-            res = {"msg": "Authentication failed, permission denied.", "code": 403}
-            logger.warn(res)
-            return res, 403 
+            return abort(403)
 
     def put(self):
         """ 设置活跃集群 """
@@ -43,9 +39,7 @@ class Swarm(Resource):
         if g.auth:    
             return g.swarm.PUT(name=swarmname, setActive=setActive)
         else:
-            res = {"msg": "Authentication failed, permission denied.", "code": 403}
-            logger.warn(res)
-            return res, 403 
+            return abort(403)
 
     def delete(self):
         """ 删除存储中的一个swarm集群 """
@@ -55,9 +49,7 @@ class Swarm(Resource):
         if g.auth:    
             return g.swarm.DELETE(name=swarmname)
         else:
-            res = {"msg": "Authentication failed, permission denied.", "code": 403}
-            logger.warn(res)
-            return res, 403
+            return abort(403)
 
 class Service(Resource):
 
@@ -75,9 +67,7 @@ class Service(Resource):
             else:
                 return g.service.GET(service, core, core_convert)
         else:
-            res = {"msg": "Authentication failed, permission denied.", "code": 403}
-            logger.warn(res)
-            return res, 403
+            return abort(403)
 
     def post(self):
         """ 创建服务 """
@@ -92,9 +82,7 @@ class Service(Resource):
         if g.auth:
             return g.service.POST(image=image,name=name,env=env,mount=mount,publish=publish,replicas=replicas)
         else:
-            res = {"msg": "Authentication failed, permission denied.", "code": 403}
-            logger.warn(res)
-            return res, 403
+            return abort(403)
 
     def put(self):
         """ 更新服务 """
@@ -113,9 +101,7 @@ class Service(Resource):
         if g.auth:
             return g.service.PUT(serviceFlag=flag, image=image, name=name, env=env, mount=mount, publish=publish, replicas=replicas, delay=delay, parallelism=parallelism)
         else:
-            res = {"msg": "Authentication failed, permission denied.", "code": 403}
-            logger.warn(res)
-            return res, 403
+            return abort(403)
 
     def delete(self):
         """ 删除服务 """
@@ -125,9 +111,7 @@ class Service(Resource):
         if g.auth:
             return g.service.DELETE(serviceFlag=flag)
         else:
-            res = {"msg": "Authentication failed, permission denied.", "code": 403}
-            logger.warn(res)
-            return res, 403 
+            return abort(403)
 
 class Node(Resource):
 
@@ -136,9 +120,7 @@ class Node(Resource):
         if g.auth:
             return g.node.GET()
         else:
-            res = {"msg": "Authentication failed, permission denied.", "code": 403}
-            logger.warn(res)
-            return res, 403
+            return abort(403)
 
     def post(self):
         """create a node into swarm cluster"""
@@ -148,9 +130,7 @@ class Node(Resource):
         if g.auth:
             return g.swarm_node.add(Ip, Role, g.swarm.getActive.get("managerToken"), g.swarm.getActive.get("workerToken"))
         else:
-            res = {"msg": "Authentication failed, permission denied.", "code": 403}
-            logger.warn(res)
-            return res, 403
+            return abort(403)
 
     def delete(self):
         """Remove a node to swarm cluster"""
@@ -161,9 +141,7 @@ class Node(Resource):
         if g.auth:
             return g.swarm_node.rm(nodeip, nodeflag, force)
         else:
-            res = {"msg": "Authentication failed, permission denied.", "code": 403}
-            logger.warn(res)
-            return res, 403
+            return abort(403)
 
     def put(self):
         """update node info in swarm cluster"""
@@ -172,9 +150,7 @@ class Node(Resource):
         if g.auth:
             return g.swarm_node.updateNode(**data)
         else:
-            res = {"msg": "Authentication failed, permission denied.", "code": 403}
-            logger.warn(res)
-            return res, 403
+            return abort(403)
 
 
 core_blueprint = Blueprint(__name__, __name__)
