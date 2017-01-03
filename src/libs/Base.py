@@ -1,14 +1,14 @@
 # -*- coding: utf8 -*-
 
-import requests
+import requests, json
 from SpliceURL import Splice
 from utils.public import logger
-
+from random import choice
 
 class BASE_SWARM_ENGINE_API:
 
 
-    def __init__(self, port=2375, timeout=3):
+    def __init__(self, port=2375, timeout=2):
         self.port      = port
         self.timeout   = timeout
         self.verify    = False
@@ -29,20 +29,25 @@ class BASE_SWARM_ENGINE_API:
     def _checkSwarmLeader(self, swarm):
         """ 查询swarm集群Leader """
 
-        logger.info("check swarm leader, the request info is %s" %swarm)
+        logger.info("check swarm %s leader, the request swarm manager is %s" %(swarm.get("name"), swarm.get("manager")))
         if swarm:
             try:
                 url  = Splice(netloc=swarm.get("manager")[0], port=self.port, path='/nodes').geturl
                 data = requests.get(url, timeout=self.timeout, verify=self.verify).json()
-                if isinstance(data, (list, tuple)):
-                    leader = ( _.get('ManagerStatus', {}).get('Addr').split(':')[0] for _ in data if _.get('ManagerStatus', {}).get('Leader') ).next()
-                else:
-                    leader = None
-                logger.info("get %s leader, request url is %s, response is %s, get leader is %s" %(swarm["name"], url, data, leader))
-            except Exception,e:
+            except requests.exceptions.Timeout, e:
                 logger.warn(e, exc_info=True)
+                try:
+                    url  = Splice(netloc=swarm.get("manager")[-1], port=self.port, path='/nodes').geturl
+                    data = requests.get(url, timeout=self.timeout, verify=self.verify).json()
+                except Exception,e:
+                    logger.error(e, exc_info=True)
+                    data = None
+            if isinstance(data, (list, tuple)):
+                leader = ( _.get('ManagerStatus', {}).get('Addr').split(':')[0] for _ in data if _.get('ManagerStatus', {}).get('Leader') ).next()
             else:
-                return leader
+                leader = None
+            logger.info("get %s leader, request url is %s, get leader is %s" %(swarm["name"], url, leader))
+            return leader
 
     def _checkSwarmHealth(self, leader):
         """ 根据Leader查询某swarm集群是否健康 """
@@ -77,6 +82,7 @@ class BASE_SWARM_ENGINE_API:
             NodeInfo = requests.get(NodeUrl, timeout=self.timeout, verify=self.verify).json()
         except Exception,e:
             logger.error(e, exc_info=True)
+            return {}
         else:
             logger.info("check node info, request url is %s ,response is %s" %(NodeUrl, NodeInfo))
             return NodeInfo
@@ -107,3 +113,18 @@ class BASE_SWARM_ENGINE_API:
             return []
         else:
             return managers
+
+    def _checkServiceTaskNode(self, leader, service):
+        """ 查询某service的实例节点 """
+
+        url   = Splice(netloc=leader, port=self.port, path='/tasks').geturl
+        logger.info("Get service %s task, that url is %s" %(service, url))
+        data  = requests.get(url, params={"filters": json.dumps({'desired-state':{'running':True}})}).json()
+        #data  = requests.get(url).json()
+        nodes = [ _['NodeID'] for _ in data if _['Status']['State'] == 'running' and _['ServiceID'] == service ]
+        ips   = []
+        for node in nodes:
+            nodeinfo = self._checkSwarmNode(leader, node)
+            ip = nodeinfo.get('ManagerStatus', {}).get('Addr', '').split(':')[0] or nodeinfo['Spec'].get('Labels', {}).get('ipaddr')
+            ips.append(ip)
+        return {"ips": ips, "nodes": nodes}

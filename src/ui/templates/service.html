@@ -3,26 +3,36 @@
 SwarmOps | Docker管理平台
 {% endblock %}
 {% block container %}
+{% set Services = g.service.GET(request.args.get("id", request.args.get("name")), core=True, core_convert=True).data %}
 {% if not Services %}
-<div class="alert alert-warning" role="alert">活跃集群中没有服务!!!</div>
+<div class="alert alert-danger" role="alert">没有服务或活跃集群异常!!!</div>
 {% endif %}
-<table class=" table table-bordered table-hover table-condensed table-responsive">
+<p>
+    <a href="{{ url_for('ui.misc', misc='AddService') }}"><button type="button" class="btn btn-success">添加服务</button></a>
+    <a href="{{ url_for('ui.misc', misc='DelService') }}"><button type="button" class="btn btn-danger">删除服务</button></a>
+    <a href="{{ url_for('ui.misc', misc='UpdateService') }}"><button type="button" class="btn btn-info">更新服务</button></a>
+    {% if request.args.get("show") %}
+    <a href="{{ url_for('ui.service') }}"><button type="button" class="btn btn-primary">隐藏展示</button></a>
+    {% else %}
+    <a href="{{ url_for('ui.service', show='all') }}"><button type="button" class="btn btn-primary">显示所有</button></a>
+    {% endif %}
+</p>
+<table class="table table-bordered table-hover table-condensed table-responsive">
     <thead>
         <tr class="active">
-            <th>ID</th>
-            <th>Name</th>
-            <th>Image</th>
-            <th>Env</th>
-            <th>Mounts</th>
-            <th>Replicas</th>
-            <th>CreatedAt</th>
-            <th>UpdatedAt</th>
-            <th>UpdateStatus</th>
+            <th style="vertical-align: middle; text-align: center;">ID</th>
+            <th style="vertical-align: middle; text-align: center;">Name</th>
+            <th style="vertical-align: middle; text-align: center;">Image</th>
+            <th style="vertical-align: middle; text-align: center;">Replicas</th>
+            <th style="vertical-align: middle; text-align: center;">Env</th>
+            <th style="vertical-align: middle; text-align: center;">Mounts</th>
             {% if request.args.get("show") %}
-            <th>NetMode</th>
-            <th>NetVip</th>
-            <th>NetPorts</th>
-            <th>Version</th>
+            <th style="vertical-align: middle; text-align: center;">CreatedAt</th>
+            <th style="vertical-align: middle; text-align: center;">UpdatedAt</th>
+            <th style="vertical-align: middle; text-align: center;">UpdateStatus</th>
+            <th style="vertical-align: middle; text-align: center;">NetMode</th>
+            <th style="vertical-align: middle; text-align: center;">NetVip</th>
+            <th style="vertical-align: middle; text-align: center;">NetPorts</th>
             {% endif %}
         </tr>
     </thead>
@@ -32,17 +42,37 @@ SwarmOps | Docker管理平台
             <td style='vertical-align: middle; text-align: center;'>{{ service.ID }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ service.Name }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ service.Image }}</td>
-            <td style='vertical-align: middle; text-align: center;'>{{ service.Env }}</td>
-            <td style='vertical-align: middle; text-align: center;'>{{ service.Mounts }}</td>
-            <td style='vertical-align: middle; text-align: center;'>{{ service.Replicas }}</td>
+            <td style='vertical-align: middle; text-align: center;'>
+            {{ service.Replicas }}<br/>
+            {% for ip in g.service.GetServiceNode(serviceId=service.ID).data.ips %}
+                <code>{{ ip }}</code><br/>
+            {% endfor %}
+            </td>
+            <td style='vertical-align: middle;'>
+            {% for env in service.Env or [] %}
+                {{ env }}<br/>
+            {% endfor %}
+            </td>
+            <td style='vertical-align: middle;'>
+            {% for mount in service.Mounts or [] %}
+                {{ mount }}<br/>
+            {% endfor %}
+            </td>
+            {% if request.args.get("show") %}
             <td style='vertical-align: middle; text-align: center;'>{{ service.CreatedAt }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ service.UpdatedAt }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ service.UpdateStatus }}</td>
-            {% if request.args.get("show") %}
             <td style='vertical-align: middle; text-align: center;'>{{ service.NetMode }}</td>
-            <td style='vertical-align: middle; text-align: center;'>{{ service.NetVip }}</td>
-            <td style='vertical-align: middle; text-align: center;'>{{ service.NetPorts }}</td>
-            <td style='vertical-align: middle; text-align: center;'>{{ service.Version }}</td>
+            <td style='vertical-align: middle;'>
+            {% for vip in service.NetVip or [] %}
+                {{ vip }}<br/>
+            {% endfor %}
+            </td>
+            <td style='vertical-align: middle;'>
+            {% for port in service.NetPorts or [] %}
+                {{ port }}<br/>
+            {% endfor %}
+            </td>
             {% endif %}
         </tr>
     {% endfor %}
@@ -52,7 +82,7 @@ SwarmOps | Docker管理平台
 {% block script %}
 <script type="text/javascript">
 // 服务数量
-document.getElementById("service_number").innerHTML= {{ Services|length }};
+document.getElementById("service_number").innerHTML= {{ g.service.GET(request.args.get("id", request.args.get("name"))).data|length }};
 
 // 更新导航
 var NavId=null;

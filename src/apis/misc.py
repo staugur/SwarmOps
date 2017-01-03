@@ -23,9 +23,7 @@ class Label(Resource):
                 ordertype  = request.args.get("order[0][dir]", 'asc')
             )
         else:
-            res = {"msg": "Authentication failed, permission denied.", "code": 403}
-            logger.warn(res)
-            return res, 403
+            return abort(403)
 
 class NodeForLabel(Resource):
 
@@ -42,9 +40,7 @@ class NodeForLabel(Resource):
                 ordertype  = request.args.get("order[0][dir]", "asc")
             )
         else:
-            res = {"msg": "Authentication failed, permission denied.", "code": 403}
-            logger.warn(res)
-            return res, 403
+            return abort(403)
 
 
 api.add_resource(Label, '/label/', endpoint='label')

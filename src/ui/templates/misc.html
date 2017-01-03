@@ -1,0 +1,428 @@
+{% extends "base.html" %}
+{% block title %}
+SwarmOps | Docker管理平台
+{% endblock %}
+{% block container %}
+
+{% if request.args.get("misc") == "AddSwarm" %}
+<form class="form-horizontal" role="form" id="AddSwarmForm">
+
+  <div class="form-group">
+    <label for="AddSwarmName" class="col-sm-12">Swarm Name&nbsp;<span class="glyphicon glyphicon-star-empty"></span></label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="AddSwarmName" name="name" placeholder="Swarm集群标识名称">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="AddSwarmIp" class="col-sm-12">Swarm Ip&nbsp;<span class="glyphicon glyphicon-star-empty"></span></label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="AddSwarmIp" name="ip" placeholder="Swarm集群任意节点IP">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class=" col-sm-12">
+      <button type="button" onclick=AddSwarm() class="btn btn-success">添加集群</button>
+    </div>
+  </div>
+
+</form>
+{% endif %}
+
+{% if request.args.get("misc") == "DelSwarm" %}
+<div class="alert alert-danger" role="alert">活跃集群<code>{{ g.swarm.getActive.name }}</code>不允许删除!!!</div>
+<strong class="text-success "><span class="glyphicon glyphicon-arrow-down"></span>Swarm集群标识名称列表<scan class="badge"> {{ g.swarm.getMember|length }}</scan><span class="glyphicon glyphicon-arrow-down"></span></strong>
+<br /><br />
+<p>{% for member in g.swarm.getMember %}<code class="text-muted"> {{ member }} </code>&nbsp;{% endfor %}</p><br />
+
+<form class="form-horizontal" role="form" id="DelSwarmForm">
+
+  <div class="form-group">
+    <label for="DelSwarmName" class="col-sm-12">Swarm Name</label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="DelSwarmName" name="name" placeholder="Swarm集群标识名称, 如果要删除多个集群, 请用空格区分">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class=" col-sm-12">
+      <button type="button" onclick=DelSwarm() class="btn btn-danger">删除集群</button>
+    </div>
+  </div>
+
+</form>
+{% endif %}
+
+{% if request.args.get("misc") == "AddService" %}
+<form class="form-horizontal" role="form" id="AddServiceForm">
+
+  <div class="form-group">
+    <label for="AddServiceName" class="col-sm-12">Service Name</label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="AddServiceName" name="name" placeholder="服务标识">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="AddServiceImage" class="col-sm-12">Service Image&nbsp;<span class="glyphicon glyphicon-star-empty"></span></label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="AddServiceImage" name="image" placeholder="服务镜像">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="AddServicereplicas" class="col-sm-12">Service Replicas&nbsp;<span class="glyphicon glyphicon-star-empty"></span></label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="AddServicereplicas" name="replicas" placeholder="服务副本(实例数), 默认值为1">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="AddServiceEnv" class="col-sm-12">Service Env</label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="AddServiceEnv" name="env" placeholder='服务环境变量, 格式是"key=value", 多个挂载以逗号分隔'>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="AddServiceMount" class="col-sm-12">Service Mount</label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="AddServiceMount" name="mount" placeholder='服务挂载, 格式是"src:target:true|false:mode", true|false代表只读、读写, mode固定值bind, 多个挂载以逗号分隔'>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="AddServicePublish" class="col-sm-12">Service Publish</label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="AddServicePublish" name="publish" placeholder='服务发现(端口映射), 格式是"src:target:protocol", protocol默认值tcp, 多个映射以逗号分隔'>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class=" col-sm-12">
+      <button type="button" onclick=AddService() class="btn btn-success">添加服务</button>
+    </div>
+  </div>
+
+</form>
+{% endif %}
+
+{% if request.args.get("misc") == "DelService" %}
+<strong class="text-success "><span class="glyphicon glyphicon-arrow-down"></span>服务标识名称列表<scan class="badge"> {{ g.service.GET().data|length }}</scan><span class="glyphicon glyphicon-arrow-down"></span></strong>
+<br />
+<br />
+<p>{% for service in g.service.GET(core=True, core_convert=True).data %}<code class="text-muted"><attr title="{{ service.Name }}">{{ service.ID }}</attr></code>&nbsp;{% endfor %}</p>
+<br />
+
+<form class="form-horizontal" role="form" id="DelServiceForm">
+
+  <div class="form-group">
+    <label for="DelServiceflag" class="col-sm-12">Service Flag</label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="DelServiceflag" name="name" placeholder="服务标识, 如果要删除多个服务, 请用空格区分">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class=" col-sm-12">
+      <button type="button" onclick=DelService() class="btn btn-danger">删除服务</button>
+    </div>
+  </div>
+
+</form>
+{% endif %}
+
+{% if request.args.get("misc") == "UpdateService" %}
+{% set Services = g.service.GET(core=True, core_convert=True).data %}
+
+<strong class="text-success "><span class="glyphicon glyphicon-arrow-down"></span>点击以下服务标识名称进行数据填充后再更新:&nbsp<scan class="badge"> {{ g.service.GET().data|length }}</scan><span class="glyphicon glyphicon-arrow-down"></span></strong>
+<br />
+<br />
+<p>{% for service in Services %}
+    <a href='javascript:ServiceFill("{{ service.ID }}")' title="对服务<{{ service.Name }}>进行数据填充"><code class="text-muted">{{ service.ID }}</code></a>&nbsp;{% endfor %}</p>
+<br />
+
+<form class="form-horizontal" role="form" id="UpdateServiceForm">
+
+  <div class="form-group">
+    <label for="UpdateServiceName" class="col-sm-12">Service Name</label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="UpdateServiceName" name="name" placeholder="服务标识">
+    </div>
+  </div>
+
+  <input type="hidden" class="form-control" id="UpdateServiceId" name="serviceId">
+
+  <div class="form-group">
+    <label for="UpdateServiceImage" class="col-sm-12">Service Image&nbsp;<span class="glyphicon glyphicon-star-empty"></span></label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="UpdateServiceImage" name="image" placeholder="服务镜像">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="UpdateServicereplicas" class="col-sm-12">Service Replicas&nbsp;<span class="glyphicon glyphicon-star-empty"></span></label>
+    <div class="col-sm-12">
+      <input type="number" class="form-control" id="UpdateServicereplicas" name="replicas" placeholder="服务副本(实例数), 默认值为1">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="UpdateServiceEnv" class="col-sm-12">Service Env</label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="UpdateServiceEnv" name="env" placeholder='服务环境变量, 格式是"key=value", 多个挂载以逗号分隔'>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="UpdateServiceMount" class="col-sm-12">Service Mount</label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="UpdateServiceMount" name="mount" placeholder='服务挂载, 格式是"src:target:true|false:mode", true|false代表只读、读写, mode固定值bind, 多个挂载以逗号分隔'>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="UpdateServicePublish" class="col-sm-12">Service Publish</label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="UpdateServicePublish" name="publish" placeholder='服务发现(端口映射), 格式是"src:target:protocol", protocol默认值tcp, 多个映射以逗号分隔'>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="UpdateServiceDelay" class="col-sm-12">Service Delay</label>
+    <div class="col-sm-12">
+      <input type="number" class="form-control" id="UpdateServiceDelay" name="delay" value=10 placeholder='服务更新之间的延迟秒数, 默认为10'>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="UpdateServiceParallelism" class="col-sm-12">Service Parallelism</label>
+    <div class="col-sm-12">
+      <input type="number" class="form-control" id="UpdateServiceParallelism" name="parallelism" value=1 placeholder='同时更新的任务数, 默认为1'>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class=" col-sm-12">
+      <button type="button" onclick=UpdateService() class="btn btn-info">更新服务</button>
+    </div>
+  </div>
+
+</form>
+{% endif %}
+
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+
+{% if request.args.get("misc") == "AddSwarm" %}
+function AddSwarm() {
+    $.ajax({
+        url: "{{ url_for('apis.core.swarm') }}",
+        method: 'POST',
+        datatype: 'json',
+        data: $('#AddSwarmForm').serialize(),
+        success: function(res) {
+            console.log(res);
+            if (res.success==true) {
+                alert("添加Swarm集群成功！");
+                window.location.href="{{ url_for('ui.index') }}";
+            } else {
+                alert("添加Swarm集群失败，请重试提交或报告错误！\n错误原因是：" + res.msg);
+            }
+        },
+    });
+}
+
+//更新导航
+var NavId=null;
+var As=document.getElementById('tab').getElementsByTagName('li');
+NavId = As[0];
+console.log(NavId)
+NavId.className='active';
+{% endif %}
+
+{% if request.args.get("misc") == "DelSwarm" %}
+function DelSwarm() {
+  var delname  = $("input#DelSwarmName").val()
+  if (delname) {
+    if(window.confirm("你确定要删除" + delname +"？")) {
+        var delnames = delname.split(" ");
+        var SUCCESS  = new Array();
+        var FAILED   = new Array();
+        console.log(delnames);
+        for (i=0;i<delnames.length ;i++ ) {
+            name = delnames[i];
+            if (name) {
+                $.ajax({
+                    url: "{{ url_for('apis.core.swarm') }}",
+                    method: 'DELETE',
+                    async: false,
+                    datatype: 'json',
+                    data: {"name": name},
+                    success: function(res) {
+                        console.log(res);
+                        if (res.success==true) {
+                            console.log("Delete Swarm Successfully:" + name);
+                            SUCCESS.push(name);
+                        } else {
+                            console.log("Delete Swarm Failed:" + name);
+                            FAILED.push(name);
+                        }
+                    },
+                });
+            }
+        }
+        if (SUCCESS.length!==0) {
+            alert("Swarm集群删除成功列表：" + SUCCESS);
+        }
+        if (FAILED.length!==0) {
+            alert("Swarm集群删除失败列表：" + FAILED);
+        }
+    }
+  } else {
+      alert("请填写要删除的Swarm集群标识名称！");
+  }
+}
+
+//更新导航
+var NavId=null;
+var As=document.getElementById('tab').getElementsByTagName('li');
+NavId = As[0];
+console.log(NavId)
+NavId.className='active';
+{% endif %}
+
+{% if request.args.get("misc") == "AddService" %}
+function AddService() {
+    $.ajax({
+        url: "{{ url_for('apis.core.service') }}",
+        method: 'POST',
+        datatype: 'json',
+        data: $('#AddServiceForm').serialize(),
+        success: function(res) {
+            console.log(res);
+            if (res.success==true) {
+                alert("添加服务成功，服务ID是" + res.serviceId);
+                window.location.href="{{ url_for('ui.service') }}?id=" + res.serviceId;
+            } else {
+                alert("添加服务失败，请重试提交或报告错误！\n错误原因是：" + res.msg);
+            }
+        },
+    });
+}
+
+// 更新导航
+var NavId=null;
+var As=document.getElementById('tab').getElementsByTagName('li');
+NavId = As[1];
+console.log(NavId)
+NavId.className='active';
+{% endif %}
+
+{% if request.args.get("misc") == "DelService" %}
+function DelService() {
+  var delService = $("input#DelServiceflag").val()
+  if (delService) {
+    if(window.confirm("你确定要删除" + delService +"？")) {
+        var services = delService.split(" ");
+        var SUCCESS  = new Array();
+        var FAILED   = new Array();
+        console.log(services);
+        for (i=0;i<services.length ;i++ ) {
+            flag = services[i];
+            if (flag) {
+                $.ajax({
+                    url: "{{ url_for('apis.core.service') }}",
+                    method: 'DELETE',
+                    async: false,
+                    datatype: 'json',
+                    data: {"flag": flag},
+                    success: function(res) {
+                        console.log(res);
+                        if (res.success==true) {
+                            console.log("Delete Service Successfully:" + flag);
+                            SUCCESS.push(flag);
+                        } else {
+                            console.log("Delete Service Failed:" + flag);
+                            FAILED.push(flag);
+                        }
+                    },
+                });
+            }
+        }
+        if (SUCCESS.length!==0) {
+            alert("服务删除成功列表：" + SUCCESS);
+        }
+        if (FAILED.length!==0) {
+            alert("服务删除失败列表：" + FAILED);
+        }
+    }
+  } else {
+      alert("请填写要删除的服务标识！");
+  }
+}
+
+// 更新导航
+var NavId=null;
+var As=document.getElementById('tab').getElementsByTagName('li');
+NavId = As[1];
+console.log(NavId)
+NavId.className='active';
+{% endif %}
+
+
+{% if request.args.get("misc") == "UpdateService" %}
+function ServiceFill(serviceId) {
+    $.ajax({
+        url: "{{ url_for('apis.core.service') }}?core=true&core_convert=true&id=" + serviceId,
+        method: 'GET',
+        datatype: 'json',
+        success: function(res) {
+            console.log(res);
+            service = res.data[0];
+            document.getElementById("UpdateServiceName").value = service.Name;
+            document.getElementById("UpdateServiceId").value = service.ID;
+            document.getElementById("UpdateServiceImage").value = service.Image;
+            document.getElementById("UpdateServicereplicas").value = service.Replicas;
+            document.getElementById("UpdateServiceEnv").value = service.Env;
+            document.getElementById("UpdateServiceMount").value = service.Mounts;
+            document.getElementById("UpdateServicePublish").value = service.NetPorts;
+        },
+    });
+}
+
+function UpdateService() {
+    $.ajax({
+        url: "{{ url_for('apis.core.service') }}",
+        method: 'PUT',
+        datatype: 'json',
+        data: $('#UpdateServiceForm').serialize(),
+        success: function(res) {
+            console.log(res);
+            if (res.success==true) {
+                alert("更新服务成功!");
+                window.location.href="{{ url_for('ui.service') }}";
+            } else {
+                alert("更新服务失败，请重试提交或报告错误！\n错误原因是：" + res.msg);
+            }
+        },
+        error: function(res) {
+            console.log(res);
+            alert(res.statusText);
+        }
+    });
+}
+
+
+// 更新导航
+var NavId=null;
+var As=document.getElementById('tab').getElementsByTagName('li');
+NavId = As[1];
+console.log(NavId)
+NavId.className='active';
+{% endif %}
+
+</script>
+{% endblock %}
