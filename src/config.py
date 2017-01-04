@@ -20,8 +20,8 @@ GLOBAL={
     "LogLevel": os.getenv("swarmops_loglevel", "DEBUG"),
     #应用程序写日志级别，目前有DEBUG，INFO，WARNING，ERROR，CRITICAL
 
-    "SwarmStorageMode": os.getenv("swarmops_swarmstoragemode", "redis"),
-    #存储Swarm集群信息的方式
+    "SwarmStorageMode": os.getenv("swarmops_swarmstoragemode", "local"),
+    #存储Swarm集群信息的方式, 可选`local(本地文件存储)`, `redis`
 
     "Interest.blog.Url": os.getenv("swarmops_interest_blog_url", "https://www.saintic.com/home/")
     #个人中心地址

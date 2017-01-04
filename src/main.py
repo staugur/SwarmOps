@@ -25,7 +25,7 @@ app.register_blueprint(ui_blueprint, url_prefix="/ui")
 app.register_blueprint(core_blueprint, url_prefix="/api")
 app.register_blueprint(misc_blueprint, url_prefix="/misc")
 
-swarm = MultiSwarmManager()
+swarm = MultiSwarmManager(SwarmStorageMode=GLOBAL["SwarmStorageMode"])
 
 #每个URL请求之前，定义初始化时间、requestId、用户验证结果等相关信息并绑定到g.
 @app.before_request

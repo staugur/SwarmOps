@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 
 
-import json, requests
+import json, requests, os
 from config import STORAGE
 from SpliceURL import Splice
 from utils.public import logger, RedisConnection, ip_check
@@ -10,47 +10,104 @@ from .Base import BASE_SWARM_ENGINE_API
 class MultiSwarmManager(BASE_SWARM_ENGINE_API):
 
 
-    def __init__(self, port=2375, timeout=2):
+    def __init__(self, port=2375, timeout=2, SwarmStorageMode="redis"):
         self.storage   = RedisConnection
         self.swarmKey  = STORAGE["SwarmKey"]
         self.ActiveKey = STORAGE["ActiveKey"]
         self.port      = port
         self.timeout   = timeout
         self.verify    = False
+        self._BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        self._ssm      = SwarmStorageMode
+        self._ssSwarms = os.path.join(self._BASE_DIR, 'logs/.swarms.db')
+        self._ssActive = os.path.join(self._BASE_DIR, 'logs/.activeSwarm.db')
         self._swarms   = self._unpickle
         self._active   = self._unpickleActive
 
     def _pickle(self, data):
         """ 序列化所有数据写入存储 """
-        res = self.storage.set(self.swarmKey, json.dumps(data))
+
+        if self._ssm == "local":
+            try:
+                with open(self._ssSwarms, "w") as f:
+                    json.dump(data, f)
+            except Exception,e:
+                logger.error(e, exc_info=True)
+                res = False
+            else:
+                res = True
+
+        elif self._ssm == "redis":
+            res = self.storage.set(self.swarmKey, json.dumps(data))
+
         logger.info("pickle data, content is %s, write result is %s" %(data, res))
         return res
 
     @property
     def _unpickle(self):
         """ 反序列化信息取出所有数据 """
-        res = self.storage.get(self.swarmKey)
-        logger.info("unpickle data is %s" %res)
-        if res:
-            return json.loads(res)
-        else:
-            return []
+
+        if self._ssm == "local":
+            try:
+                with open(self._ssSwarms, "r") as f:
+                    data = json.load(f)
+            except Exception,e:
+                logger.warn(e, exc_info=True)
+                res = []
+            else:
+                res = data or []
+
+        elif self._ssm == "redis":
+            res = self.storage.get(self.swarmKey)
+            res = json.loads(res) if res else []
+
+        logger.info("unpickle swarms data is %s" %res)
+        return res
 
     def _pickleActive(self, data):
         """ 序列化活跃集群数据写入存储 """
-        res = self.storage.set(self.ActiveKey, json.dumps(data))
+
+        if self._ssm == "local":
+            try:
+                with open(self._ssActive, "w") as f:
+                    json.dump(data, f)
+            except Exception,e:
+                logger.error(e, exc_info=True)
+                res = False
+            else:
+                res = True
+
+        elif self._ssm == "redis":
+            res = self.storage.set(self.ActiveKey, json.dumps(data))
+
         logger.info("pickle active data, content is %s, write result is %s" %(data, res))
         return res
 
     @property
     def _unpickleActive(self):
         """ 反序列化信息取出活跃集群 """
-        res = self.storage.get(self.ActiveKey)
-        logger.info("init active data is %s" %res)
-        if res:
-            return json.loads(res)
-        else:
-            return {}
+
+        if self._ssm == "local":
+            try:
+                with open(self._ssActive, "r") as f:
+                    data = json.load(f)
+            except Exception,e:
+                logger.warn(e, exc_info=True)
+                res = {}
+            else:
+                res = data or {}
+
+        elif self._ssm == "redis":
+            res = self.storage.get(self.ActiveKey)
+            res = json.loads(res) if res else {}
+
+        logger.info("unpickle active data is %s" %res)
+        return res
+
+    @property
+    def getMethod(self):
+        """ 查询当前系统Swarm数据存储方式 """
+        return self._ssm
 
     @property
     def getMember(self):
@@ -148,6 +205,8 @@ class MultiSwarmManager(BASE_SWARM_ENGINE_API):
                 res.update(data=self._checkSwarmLeader(self.getActive))
             elif get == "member":
                 res.update(data=self.getMember)
+            elif get == "method":
+                res.update(data=self.getMethod)
             else:
                 if self.isMember(get):
                     res.update(data=self.getOne(get))
