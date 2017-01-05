@@ -34,7 +34,9 @@ class BASE_SWARM_ENGINE_API:
             try:
                 url  = Splice(netloc=swarm.get("manager")[0], port=self.port, path='/nodes').geturl
                 data = requests.get(url, timeout=self.timeout, verify=self.verify).json()
-            except requests.exceptions.Timeout, e:
+                if "message" in data:
+                    raise TypeError("The response that first get leader is error, data is {}".format(data))
+            except Exception, e:
                 logger.warn(e, exc_info=True)
                 try:
                     url  = Splice(netloc=swarm.get("manager")[-1], port=self.port, path='/nodes').geturl
