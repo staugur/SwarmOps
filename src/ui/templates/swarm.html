@@ -3,7 +3,8 @@
 SwarmOps | Docker管理平台
 {% endblock %}
 {% block container %}
-{% set Swarms = g.swarm.getSwarm() %}
+{% set UpdateManager = True if request.args.get("UpdateManager", False) in ('true', 'True', True) else False %}
+{% set Swarms = g.swarm.getSwarm(checkState=true, UpdateManager=UpdateManager) %}
 {% set ActiveSwarm = g.swarm.getActive %}
 {% if not Swarms %}
 <div class="alert alert-warning" role="alert">当前系统无集群!!!</div>
@@ -14,6 +15,7 @@ SwarmOps | Docker管理平台
 <p>
     <a href="{{ url_for('ui.misc', misc='AddSwarm') }}"><button type="button" class="btn btn-success">添加集群</button></a>
     <a href="{{ url_for('ui.misc', misc='DelSwarm') }}"><button type="button" class="btn btn-danger">删除集群</button></a>
+    <a href="{{ url_for('ui.index', UpdateManager=true) }}"><button type="button" class="btn btn-info">更新集群</button></a>
 </p>
 <table class="table table-bordered table-hover table-condensed table-responsive">
     <thead>
@@ -27,7 +29,7 @@ SwarmOps | Docker管理平台
         </tr>
     </thead>
     <tbody>
-    {% for swarm in g.swarm.getSwarm(checkState=true) %}
+    {% for swarm in Swarms %}
         <tr>
         {%- if swarm.name == ActiveSwarm.name %}
             <td style="vertical-align: middle; text-align: center;"><attr title="当前为活跃集群" class="glyphicon glyphicon-ok-sign"></attr></td>

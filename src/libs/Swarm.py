@@ -161,14 +161,14 @@ class MultiSwarmManager(BASE_SWARM_ENGINE_API):
     def getSwarm(self, checkState=False, UpdateManager=False):
         """ 查询存储中所有Swarm集群信息(并检查健康状态) """
 
-        logger.info("get all swarm and check state(%s) for all swarm cluster, start" %checkState)
+        logger.info("get all swarm and check state(%s) for all swarm cluster with UpdateManager(%s), start" %(checkState, UpdateManager))
         swarms = []
         for swarm in self._swarms:
             if checkState == True:
                 swarm.update(state=self._checkSwarmHealth(self._checkSwarmLeader(swarm)))
             elif "state" in swarm:
                 swarm.pop("state")
-            elif UpdateManager == True:
+            if UpdateManager == True:
                 logger.info("Update manager in getSwarm, start")
                 try:
                     manager=self._checkSwarmManager(self._checkSwarmLeader(swarm))
