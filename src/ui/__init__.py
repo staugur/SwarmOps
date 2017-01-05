@@ -43,3 +43,6 @@ def storage():
     else:
         return redirect(url_for("login"))
 
+@ui_blueprint.route("/test/")
+def test():
+    return render_template("s.html")

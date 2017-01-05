@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}
+  Chosen: A jQuery Plugin by Harvest to Tame Unwieldy Select Boxes
+{% endblock %}
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('ui.static', filename='css/chosen.min.css') }}">
+{% endblock %}
+
+{% block container %}
+
+
+<form class="form-horizontal" role="form" id="DelServiceForm">
+
+  <div class="form-group">
+    <label for="DelServiceflag" class="col-sm-12">Service Flag</label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="DelServiceflag" name="name" placeholder="服务标识, 如果要删除多个服务, 请用空格区分">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="DelServiceflag" class="col-sm-12">Service Flag</label>
+
+      <div class="col-sm-12 side-by-side clearfix">
+        <div>
+          <em>Into This</em>
+          <select data-placeholder="Choose a Country..." class="chosen-select" multiple style="width:350px;" tabindex="4">
+            <option value=""></option>
+            <option value="United States">United States</option>
+            <option value="United Kingdom">United Kingdom</option>
+            <option value="Angola">Angola</option>
+            <option value="Anguilla">Anguilla</option>
+            <option value="Bahamas">Bahamas</option>
+            <option value="Bahrain">Bahrain</option>
+            <option value="Bangladesh">Bangladesh</option>
+            <option value="Barbados">Barbados</option>
+            <option value="Zambia">Zambia</option>
+            <option value="Zimbabwe">Zimbabwe</option>
+          </select>
+        </div>
+      </div>
+
+  </div>
+
+  <div class="form-group">
+    <div class=" col-sm-12">
+      <button type="button" onclick=DelService() class="btn btn-danger">删除服务</button>
+    </div>
+  </div>
+
+</form>
+
+{% endblock %}
+
+{% block script %}
+  <!-- Import chosen js -->
+  <script src="{{ url_for('ui.static', filename='js/chosen.jquery.min.js') }}" type="text/javascript"></script>
+  <script type="text/javascript">
+    var config = {
+      '.chosen-select'           : {},
+      '.chosen-select-deselect'  : {allow_single_deselect:true},
+      '.chosen-select-no-single' : {disable_search_threshold:10},
+      '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+      '.chosen-select-width'     : {width:"95%"}
+    }
+    for (var selector in config) {
+      $(selector).chosen(config[selector]);
+    }
+  </script>
+{% endblock %}
