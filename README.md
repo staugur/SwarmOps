@@ -43,6 +43,7 @@ MIT
 ![Swarms][2]
 ![Services][3]
 ![Nodes][4]
+![Storages][5]
 
 
 ## Api Design
@@ -73,3 +74,4 @@ MIT
   [2]: ./misc/swarm.png "集群"
   [3]: ./misc/service.png "服务"
   [4]: ./misc/node.png "节点"
+  [4]: ./misc/storage.png "存储"
