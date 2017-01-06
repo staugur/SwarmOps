@@ -18,7 +18,7 @@ from libs.Node import NodeManager
 from libs.Swarm import MultiSwarmManager
 from libs.Service import ServiceManager
 
-__version__ = '0.0.1'
+__version__ = '0.0.1-rc2'
 
 app = Flask(__name__)
 app.register_blueprint(ui_blueprint, url_prefix="/ui")
@@ -35,7 +35,7 @@ def before_request():
     g.sessionId = request.cookies.get("sessionId", "")
     g.username  = request.cookies.get("username", "")
     g.expires   = request.cookies.get("time", "")
-    g.auth      = True#isLogged_in('.'.join([ g.username, g.expires, g.sessionId ]))
+    g.auth      = isLogged_in('.'.join([ g.username, g.expires, g.sessionId ]))
     g.swarm     = swarm
     g.service   = ServiceManager(ActiveSwarm=g.swarm.getActive)
     g.node      = NodeManager(ActiveSwarm=g.swarm.getActive)
