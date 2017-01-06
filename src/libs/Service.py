@@ -362,22 +362,16 @@ class ServiceManager(BASE_SWARM_ENGINE_API):
         if isinstance(serviceSourceData, (list, tuple)) and len(serviceSourceData) > 0:
             serviceSourceData = serviceSourceData[0]
             serviceFlag2ID  = serviceSourceData.get("ID")
-            defaultName     = serviceSourceData.get("Name")
-            defaultEnv      = serviceSourceData.get("Env")
-            defaultMount    = serviceSourceData.get("Mounts")
-            defaultPublish  = serviceSourceData.get("NetPorts")
-            defaultImage    = serviceSourceData.get("Image")
-            defaultReplicas = serviceSourceData.get("Replicas")
             defaultVersion  = serviceSourceData.get("Version")
             try:
-                image       = params.get("image") or defaultImage
-                name        = params.get("name") or defaultName
-                env         = self.commaConvert(params.get("env")) if params.get("env") else defaultEnv
-                mount       = self.commaConvert(params.get("mount")) if params.get("mount") else defaultMount
-                publish     = self.commaConvert(params.get("publish")) if params.get("publish") else defaultPublish
-                replicas    = int(params.get("replicas")) if params.get("replicas") else defaultReplicas
-                delay       = int(params.get("delay")) if isinstance(params.get("delay"), int) else 10
-                parallelism = int(params.get("parallelism")) if isinstance(params.get("parallelism"), int) else 1
+                image       = params.get("image")
+                name        = params.get("name")
+                env         = self.commaConvert(params.get("env"))
+                mount       = self.commaConvert(params.get("mount"))
+                publish     = self.commaConvert(params.get("publish"))
+                replicas    = int(params.get("replicas"))
+                delay       = int(params.get("delay", 10))
+                parallelism = int(params.get("parallelism", 1))
             except Exception,e:
                 logger.warn(e, exc_info=True)
                 res.update(msg="parameters error", code=50001)

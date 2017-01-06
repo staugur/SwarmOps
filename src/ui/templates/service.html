@@ -45,7 +45,13 @@ SwarmOps | Docker管理平台
             <td style='vertical-align: middle; text-align: center;'>
             {{ service.Replicas }}<br/>
             {% for ip in g.service.GetServiceNode(serviceId=service.ID).data.ips %}
-                <code>{{ ip }}</code><br/>
+                {% for port in service.NetPorts %}
+                    {% if port %}
+                      <a href="http://{{ ip }}:{{ port.split(':')[0] }}" target="_blank"><code>{{ ip }}:{{ port.split(":")[0] }}</code></a><br/>
+                    {% else %}
+                      <code>{{ ip }}</code><br/>
+                    {% endif %}
+                {% endfor %}
             {% endfor %}
             </td>
             <td style='vertical-align: middle;'>

@@ -151,7 +151,7 @@ SwarmOps | Docker管理平台
 {% if request.args.get("misc") == "UpdateService" %}
 {% set Services = g.service.GET(core=True, core_convert=True).data %}
 
-<strong class="text-success "><span class="glyphicon glyphicon-arrow-down"></span>点击以下服务标识名称进行数据填充后再更新:&nbsp<scan class="badge"> {{ g.service.GET().data|length }}</scan><span class="glyphicon glyphicon-arrow-down"></span></strong>
+<strong class="text-success "><span class="glyphicon glyphicon-arrow-down"></span>点击以下服务标识名称进行数据填充后再更新:&nbsp<scan class="badge"> {{ Services|length }}</scan><span class="glyphicon glyphicon-arrow-down"></span></strong>
 <br />
 <br />
 <p>{% for service in Services %}
