@@ -4,6 +4,13 @@ SwarmOps | Docker管理平台
 {% endblock %}
 {% block container %}
 
+{% if request.args.get("misc") in ("DelService", "DelSwarm") %}
+{% block head %}
+    <!-- Import chosen css -->
+    <link rel="stylesheet" href="{{ url_for('ui.static', filename='css/chosen.min.css') }}">
+{% endblock %}
+{% endif %}
+
 {% if request.args.get("misc") == "AddSwarm" %}
 <form class="form-horizontal" role="form" id="AddSwarmForm">
 
@@ -31,18 +38,26 @@ SwarmOps | Docker管理平台
 {% endif %}
 
 {% if request.args.get("misc") == "DelSwarm" %}
-<div class="alert alert-danger" role="alert">活跃集群<code>{{ g.swarm.getActive.name }}</code>不允许删除!!!</div>
-<strong class="text-success "><span class="glyphicon glyphicon-arrow-down"></span>Swarm集群标识名称列表<scan class="badge"> {{ g.swarm.getMember|length }}</scan><span class="glyphicon glyphicon-arrow-down"></span></strong>
-<br /><br />
-<p>{% for member in g.swarm.getMember %}<code class="text-muted"> {{ member }} </code>&nbsp;{% endfor %}</p><br />
+{% set ActiveName = g.swarm.getActive.name %}
+<div class="alert alert-danger" role="alert">活跃集群<code>{{ ActiveName }}</code>不允许删除!!!</div>
 
 <form class="form-horizontal" role="form" id="DelSwarmForm">
 
   <div class="form-group">
-    <label for="DelSwarmName" class="col-sm-12">Swarm Name</label>
-    <div class="col-sm-12">
-      <input type="text" class="form-control" id="DelSwarmName" name="name" placeholder="Swarm集群标识名称, 如果要删除多个集群, 请用空格区分">
-    </div>
+      <label for="DelSwarmName" class="col-sm-12">
+        <p class="text-success "><span class="glyphicon glyphicon-arrow-down"></span>Swarm集群标识名称列表<scan class="badge"> {{ g.swarm.getMember|length }}</scan><span class="glyphicon glyphicon-arrow-down"></span></p>
+      </label>
+      <div class="col-sm-12">
+          <select id="DelSwarmName" data-placeholder="选择一个或多个集群删除" class="chosen-select" multiple tabindex="4" style="width: 100%">
+          {% for member in g.swarm.getMember %}
+            {%- if member == ActiveName %}
+              <option value="{{ member }}" disabled>{{ member }}</option>
+            {%- else %}
+              <option value="{{ member }}">{{ member }}</option>
+            {%- endif %}
+          {% endfor %}
+          </select>
+      </div>
   </div>
 
   <div class="form-group">
@@ -109,19 +124,19 @@ SwarmOps | Docker管理平台
 {% endif %}
 
 {% if request.args.get("misc") == "DelService" %}
-<strong class="text-success "><span class="glyphicon glyphicon-arrow-down"></span>服务标识名称列表<scan class="badge"> {{ g.service.GET().data|length }}</scan><span class="glyphicon glyphicon-arrow-down"></span></strong>
-<br />
-<br />
-<p>{% for service in g.service.GET(core=True, core_convert=True).data %}<code class="text-muted"><attr title="{{ service.Name }}">{{ service.ID }}</attr></code>&nbsp;{% endfor %}</p>
-<br />
-
 <form class="form-horizontal" role="form" id="DelServiceForm">
 
   <div class="form-group">
-    <label for="DelServiceflag" class="col-sm-12">Service Flag</label>
-    <div class="col-sm-12">
-      <input type="text" class="form-control" id="DelServiceflag" name="name" placeholder="服务标识, 如果要删除多个服务, 请用空格区分">
-    </div>
+      <label for="DelServiceflag" class="col-sm-12">
+          <p class="text-success "><span class="glyphicon glyphicon-arrow-down"></span>服务标识名称列表<scan class="badge"> {{ g.service.GET().data|length }}</scan><span class="glyphicon glyphicon-arrow-down"></span></p>
+      </label>
+      <div class="col-sm-12">
+          <select id="DelServiceflag" data-placeholder="选择一个或多个服务删除" class="chosen-select" multiple tabindex="4" style="width: 100%">
+          {% for service in g.service.GET(core=True, core_convert=True).data %}
+              <option value="{{ service.ID }}">{{ service.Name }} &lt;{{ service.ID }}&gt;</option>
+          {% endfor %}
+          </select>
+      </div>
   </div>
 
   <div class="form-group">
@@ -214,6 +229,12 @@ SwarmOps | Docker管理平台
 
 {% endblock %}
 {% block script %}
+
+{% if request.args.get("misc") in ("DelService", "DelSwarm") %}
+<!-- Import chosen js -->
+<script src="{{ url_for('ui.static', filename='js/chosen.jquery.min.js') }}" type="text/javascript"></script>
+{% endif %}
+
 <script type="text/javascript">
 
 {% if request.args.get("misc") == "AddSwarm" %}
@@ -244,11 +265,25 @@ NavId.className='active';
 {% endif %}
 
 {% if request.args.get("misc") == "DelSwarm" %}
+var config = {
+    '.chosen-select'           : {},
+    '.chosen-select-deselect'  : {allow_single_deselect:true},
+    '.chosen-select-no-single' : {disable_search_threshold:10},
+    '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+    '.chosen-select-width'     : {width:"95%"}
+}
+for (var selector in config) {
+    $(selector).chosen(config[selector]);
+}
+
 function DelSwarm() {
-  var delname  = $("input#DelSwarmName").val()
+  //var delname  = $("input#DelSwarmName").val()
+  var delname = $('#DelSwarmName').val();
+  console.log(delname);
   if (delname) {
     if(window.confirm("你确定要删除" + delname +"？")) {
-        var delnames = delname.split(" ");
+        //var delnames = delname.split(" ");
+        var delnames = delname;
         var SUCCESS  = new Array();
         var FAILED   = new Array();
         console.log(delnames);
@@ -280,6 +315,7 @@ function DelSwarm() {
         if (FAILED.length!==0) {
             alert("Swarm集群删除失败列表：" + FAILED);
         }
+        document.location.reload(); //重载当前页面
     }
   } else {
       alert("请填写要删除的Swarm集群标识名称！");
@@ -322,11 +358,25 @@ NavId.className='active';
 {% endif %}
 
 {% if request.args.get("misc") == "DelService" %}
+var config = {
+    '.chosen-select'           : {},
+    '.chosen-select-deselect'  : {allow_single_deselect:true},
+    '.chosen-select-no-single' : {disable_search_threshold:10},
+    '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+    '.chosen-select-width'     : {width:"95%"}
+}
+for (var selector in config) {
+    $(selector).chosen(config[selector]);
+}
+
 function DelService() {
-  var delService = $("input#DelServiceflag").val()
+  //var delService = $("input#DelServiceflag").val()
+  var delService = $('#DelServiceflag').val();
+  console.log(delService);
   if (delService) {
     if(window.confirm("你确定要删除" + delService +"？")) {
-        var services = delService.split(" ");
+        //var services = delService.split(" ");
+        var services = delService;
         var SUCCESS  = new Array();
         var FAILED   = new Array();
         console.log(services);
@@ -358,6 +408,7 @@ function DelService() {
         if (FAILED.length!==0) {
             alert("服务删除失败列表：" + FAILED);
         }
+        document.location.reload(); //重载当前页面
     }
   } else {
       alert("请填写要删除的服务标识！");

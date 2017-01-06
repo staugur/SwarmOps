@@ -7,7 +7,7 @@ MIT
 
 
 ## Environment
-> 1. Python Version: 2.6, 2.7
+> 1. Python Version: 2.7
 > 2. Web Framework: Flask, Flask-RESTful
 > 3. Required Modules: requirements.txt
 
