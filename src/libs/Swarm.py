@@ -19,8 +19,8 @@ class MultiSwarmManager(BASE_SWARM_ENGINE_API):
         self.verify    = False
         self._BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self._ssm      = SwarmStorageMode
-        self._ssSwarms = os.path.join(self._BASE_DIR, 'logs/.swarms.db')
-        self._ssActive = os.path.join(self._BASE_DIR, 'logs/.activeSwarm.db')
+        self._ssSwarms = os.path.join(self._BASE_DIR, 'logs', self.swarmKey)
+        self._ssActive = os.path.join(self._BASE_DIR, 'logs', self.ActiveKey)
         self._swarms   = self._unpickle
         self._active   = self._unpickleActive
 
@@ -298,3 +298,38 @@ class MultiSwarmManager(BASE_SWARM_ENGINE_API):
         logger.info(res)
         return res
 
+    def InitSwarm(self, AdvertiseAddr, ForceNewCluster=False):
+        """ 初始化集群 """
+        res  = {"msg": None, "code": 0, "success": False}
+
+        AdvertiseAddr = AdvertiseAddr.strip()
+        ForceNewCluster = True if ForceNewCluster in ("true", "True", True) else False
+
+        url = Splice(netloc=AdvertiseAddr, port=self.port, path='/swarm/init').geturl
+        try:
+            r = requests.post(url, data=json.dumps({"ListenAddr": "0.0.0.0", "AdvertiseAddr": AdvertiseAddr, "ForceNewCluster": ForceNewCluster}), headers={"Content-Type": "application/json"})
+        except Exception,e:
+            logger.error(e, exc_info=True)
+            res.update(msg="Node Error", code=-1001)
+        else:
+            if r.status_code == 200:
+                res.update(success=True, data=r.text)
+            else:
+                res.update(msg="InitSwarm Error", code=-1002)
+
+        logger.info(res)
+        return res
+
+    def JoinSwarm(self, ip, role):
+
+        res  = {"msg": None, "code": 0, "success": False}
+
+        if not self.getActive:
+            res.update(msg="No Active Swarm", code=-1003)
+
+        if not role in ("Manager", "Worker"):
+            res.update(msg="role error", code=-1004)
+
+        res.update(success=self._JoinSwarm(ip=ip.strip(), role=role, swarm=self._active))
+        logger.info(res)
+        return res

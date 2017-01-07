@@ -116,6 +116,7 @@ class Service(Resource):
 class Node(Resource):
 
     def get(self):
+        """ 查询节点 """
 
         if g.auth:
             return g.node.GET()
@@ -123,12 +124,12 @@ class Node(Resource):
             return abort(403)
 
     def post(self):
-        """create a node into swarm cluster"""
+        """ 向集群添加节点 """
 
         Ip   = request.form.get("ip")
         Role = request.form.get("role", "worker")
         if g.auth:
-            return g.swarm_node.add(Ip, Role, g.swarm.getActive.get("managerToken"), g.swarm.getActive.get("workerToken"))
+            return g.node.POST(Ip, Role, g.swarm.getActive.get("managerToken"), g.swarm.getActive.get("workerToken"))
         else:
             return abort(403)
 
@@ -152,9 +153,52 @@ class Node(Resource):
         else:
             return abort(403)
 
+class InitSwarm(Resource):
+
+    def post(self):
+        """ 向存储里添加一个swarm集群 """
+
+        ip    = request.form.get("ip")
+        force = True if request.form.get("force", False) in ("true", "True", True) else False
+
+        if g.auth:
+            return g.swarm.InitSwarm(AdvertiseAddr=ip, ForceNewCluster=force)
+        else:
+            return abort(403)
+
+class JoinSwarm(Resource):
+
+    def post(self):
+        """ 加入一个swarm集群 """
+
+        ip   = request.form.get("ip")
+        role = request.form.get("role", "Worker")
+        logger.info(request.form)
+        return True
+
+        if g.auth:
+            return g.swarm.JoinSwarm(ip=ip, role=role)
+        else:
+            return abort(403)
+
+class LeaveSwarm(Resource):
+
+    def post(self):
+        """ 离开一个swarm集群 """
+
+        ip    = request.form.get("ip")
+        force = True if request.form.get("force", False) in ("true", "True", True) else False
+
+        if g.auth:
+            return g.swarm.LeaveSwarm(AdvertiseAddr=ip, ForceNewCluster=force)
+        else:
+            return abort(403)
 
 core_blueprint = Blueprint(__name__, __name__)
 api = Api(core_blueprint)
 api.add_resource(Swarm, '/swarm', '/swarm/', endpoint='swarm')
 api.add_resource(Service, '/service', '/service/', endpoint='service')
 api.add_resource(Node, '/node', '/node/', endpoint='node')
+api.add_resource(InitSwarm, '/swarm/init', '/swarm/init/', endpoint='InitSwarm')
+api.add_resource(JoinSwarm, '/swarm/join', '/swarm/join/', endpoint='JoinSwarm')
+api.add_resource(LeaveSwarm, '/swarm/leave', '/swarm/leave/', endpoint='LeaveSwarm')

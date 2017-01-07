@@ -4,7 +4,7 @@ SpliceURL>=1.2
 tornado
 gevent
 setproctitle
-docker-py
+docker>=2.0.0
 requests
 supervisor
 redis

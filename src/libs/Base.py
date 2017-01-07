@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 
-import requests, json
+import requests, json, docker
 from SpliceURL import Splice
 from utils.public import logger
 from random import choice
@@ -130,3 +130,17 @@ class BASE_SWARM_ENGINE_API:
             ip = nodeinfo.get('ManagerStatus', {}).get('Addr', '').split(':')[0] or nodeinfo['Spec'].get('Labels', {}).get('ipaddr')
             ips.append(ip)
         return {"ips": ips, "nodes": nodes}
+
+    def _JoinSwarm(self, node_ip, role, swarm):
+        """ 节点加入集群 """
+
+        token   = self._checkSwarmToken(self._checkSwarmLeader(swarm)).get(role, "Worker")
+        client  = docker.DockerClient(base_url="tcp://{}:2375".format(node_ip), version="auto", timeout=self.timeout)
+
+        try:
+            res = client.swarm.join(remote_addrs=swarm["manager"], listen_addr="0.0.0.0", advertise_addr=node_ip, join_token=token)
+        except docker.errors.APIError,e:
+            logger.error(e, exc_info=True)
+            return False
+        else:
+            return res

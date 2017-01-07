@@ -11,6 +11,41 @@ SwarmOps | Docker管理平台
 {% endblock %}
 {% endif %}
 
+
+{% if request.args.get("misc") == "InitSwarm" %}
+<form class="form-horizontal" role="form" id="InitSwarmForm">
+
+  <div class="form-group">
+    <label for="InitSwarmIp" class="col-sm-12">Swarm Ip&nbsp;<span class="glyphicon glyphicon-star-empty"></span></label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="InitSwarmIp" name="ip" placeholder="初始化Swarm集群的主节点IP">
+    </div>
+  </div>
+
+  <div class="radio">
+    <label>
+      <input type="radio" name="force" id="InitSwarmForce" value="false" checked>
+      非强制创建一个新的集群。
+    </label>
+  </div>
+  <div class="radio">
+    <label>
+      <input type="radio" name="force" id="InitSwarmForce" value="true">
+      强制创建一个新的集群，即使节点本身已经是集群。
+    </label>
+  </div>
+  <br />
+
+  <div class="form-group">
+    <div class=" col-sm-12">
+      <button type="button" onclick=InitSwarm() class="btn btn-primary">初始化集群</button>
+    </div>
+  </div>
+
+</form>
+{% endif %}
+
+
 {% if request.args.get("misc") == "AddSwarm" %}
 <form class="form-horizontal" role="form" id="AddSwarmForm">
 
@@ -36,6 +71,7 @@ SwarmOps | Docker管理平台
 
 </form>
 {% endif %}
+
 
 {% if request.args.get("misc") == "DelSwarm" %}
 {% set ActiveName = g.swarm.getActive.name %}
@@ -68,6 +104,7 @@ SwarmOps | Docker管理平台
 
 </form>
 {% endif %}
+
 
 {% if request.args.get("misc") == "AddService" %}
 <form class="form-horizontal" role="form" id="AddServiceForm">
@@ -123,6 +160,7 @@ SwarmOps | Docker管理平台
 </form>
 {% endif %}
 
+
 {% if request.args.get("misc") == "DelService" %}
 <form class="form-horizontal" role="form" id="DelServiceForm">
 
@@ -147,6 +185,7 @@ SwarmOps | Docker管理平台
 
 </form>
 {% endif %}
+
 
 {% if request.args.get("misc") == "UpdateService" %}
 {% set Services = g.service.GET(core=True, core_convert=True).data %}
@@ -227,6 +266,41 @@ SwarmOps | Docker管理平台
 </form>
 {% endif %}
 
+
+{% if request.args.get("misc") == "AddNode" %}
+<form class="form-horizontal" role="form" id="AddNodeForm">
+
+  <div class="form-group">
+    <label for="AddNodeIp" class="col-sm-12">Node Ip&nbsp;<span class="glyphicon glyphicon-star-empty"></span></label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="AddNodeIp" name="ip" placeholder="节点IP">
+    </div>
+  </div>
+
+  <div class="radio">
+    <label>
+      <input type="radio" name="role" id="AddNodeRole" value="Worker" checked>
+      加入集群作为工作节点
+    </label>
+  </div>
+  <div class="radio">
+    <label>
+      <input type="radio" name="role" id="AddNodeRole" value="Manager">
+      加入集群作为管理节点
+    </label>
+  </div>
+  <br />
+
+  <div class="form-group">
+    <div class=" col-sm-12">
+      <button type="button" onclick=AddNode() class="btn btn-success">添加节点</button>
+    </div>
+  </div>
+
+</form>
+{% endif %}
+
+
 {% endblock %}
 {% block script %}
 
@@ -255,7 +329,6 @@ function AddSwarm() {
         },
     });
 }
-
 //更新导航
 var NavId=null;
 var As=document.getElementById('tab').getElementsByTagName('li');
@@ -263,6 +336,34 @@ NavId = As[0];
 console.log(NavId)
 NavId.className='active';
 {% endif %}
+
+
+{% if request.args.get("misc") == "InitSwarm" %}
+function InitSwarm() {
+    $.ajax({
+        url: "{{ url_for('apis.core.InitSwarm') }}",
+        method: 'POST',
+        datatype: 'json',
+        data: $('#InitSwarmForm').serialize(),
+        success: function(res) {
+            console.log(res);
+            if (res.success==true) {
+                alert("初始化Swarm集群成功！");
+                window.location.href="{{ url_for('ui.index') }}";
+            } else {
+                alert("初始化Swarm集群失败，请重试提交或报告错误！\n错误原因是：" + res.msg);
+            }
+        },
+    });
+}
+//更新导航
+var NavId=null;
+var As=document.getElementById('tab').getElementsByTagName('li');
+NavId = As[0];
+console.log(NavId)
+NavId.className='active';
+{% endif %}
+
 
 {% if request.args.get("misc") == "DelSwarm" %}
 var config = {
@@ -275,7 +376,6 @@ var config = {
 for (var selector in config) {
     $(selector).chosen(config[selector]);
 }
-
 function DelSwarm() {
   //var delname  = $("input#DelSwarmName").val()
   var delname = $('#DelSwarmName').val();
@@ -321,7 +421,6 @@ function DelSwarm() {
       alert("请填写要删除的Swarm集群标识名称！");
   }
 }
-
 //更新导航
 var NavId=null;
 var As=document.getElementById('tab').getElementsByTagName('li');
@@ -329,6 +428,7 @@ NavId = As[0];
 console.log(NavId)
 NavId.className='active';
 {% endif %}
+
 
 {% if request.args.get("misc") == "AddService" %}
 function AddService() {
@@ -348,7 +448,6 @@ function AddService() {
         },
     });
 }
-
 // 更新导航
 var NavId=null;
 var As=document.getElementById('tab').getElementsByTagName('li');
@@ -356,6 +455,7 @@ NavId = As[1];
 console.log(NavId)
 NavId.className='active';
 {% endif %}
+
 
 {% if request.args.get("misc") == "DelService" %}
 var config = {
@@ -368,7 +468,6 @@ var config = {
 for (var selector in config) {
     $(selector).chosen(config[selector]);
 }
-
 function DelService() {
   //var delService = $("input#DelServiceflag").val()
   var delService = $('#DelServiceflag').val();
@@ -414,7 +513,6 @@ function DelService() {
       alert("请填写要删除的服务标识！");
   }
 }
-
 // 更新导航
 var NavId=null;
 var As=document.getElementById('tab').getElementsByTagName('li');
@@ -443,7 +541,6 @@ function ServiceFill(serviceId) {
         },
     });
 }
-
 function UpdateService() {
     $.ajax({
         url: "{{ url_for('apis.core.service') }}",
@@ -465,8 +562,6 @@ function UpdateService() {
         }
     });
 }
-
-
 // 更新导航
 var NavId=null;
 var As=document.getElementById('tab').getElementsByTagName('li');
@@ -475,5 +570,35 @@ console.log(NavId)
 NavId.className='active';
 {% endif %}
 
+
+{% if request.args.get("misc") == "AddNode" %}
+function AddNode() {
+    $.ajax({
+        url: "{{ url_for('apis.core.JoinSwarm') }}",
+        method: 'POST',
+        datatype: 'json',
+        data: $('#AddNodeForm').serialize(),
+        success: function(res) {
+            console.log(res);
+            if (res.success==true) {
+                alert("节点加入集群成功!");
+                window.location.href="{{ url_for('ui.node') }}";
+            } else {
+                alert("节点加入集群失败，请重试提交或报告错误！\n错误原因是：" + res.msg);
+            }
+        },
+        error: function(res) {
+            console.log(res);
+            alert(res.statusText);
+        }
+    });
+}
+// 更新导航
+var NavId=null;
+var As=document.getElementById('tab').getElementsByTagName('li');
+NavId = As[2];
+console.log(NavId)
+NavId.className='active';
+{% endif %}
 </script>
 {% endblock %}
