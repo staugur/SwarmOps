@@ -649,7 +649,7 @@ function NodeFill(node) {
             console.log(res);
             node = res.data[0];
             document.getElementById("UpdateNodeID").value = node[1];
-            document.getElementById("UpdateNodeRole").innerHTML = ", 当前角色为" + node[2];
+            document.getElementById("UpdateNodeRole").innerHTML = "&nbsp;当前角色为" + node[2] + "&nbsp;";
             if (node[2]=="worker") {
                 $("#UpdateNodeRoleWorker").attr("checked","checked");
             } else {
