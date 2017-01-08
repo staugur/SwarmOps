@@ -90,7 +90,7 @@ class BASE_SWARM_ENGINE_API:
             return NodeInfo
 
     def _checkSwarmNode(self, leader, node=None):
-        """ 查询节点 """
+        """ 查询集群节点 """
         try:
             path     = "/nodes/" + node if node else "/nodes"
             NodeUrl  = Splice(netloc=leader, port=self.port, path=path).geturl
@@ -135,7 +135,7 @@ class BASE_SWARM_ENGINE_API:
         """ 节点加入集群 """
 
         token   = self._checkSwarmToken(self._checkSwarmLeader(swarm)).get(role, "Worker")
-        client  = docker.DockerClient(base_url="tcp://{}:2375".format(node_ip), version="auto", timeout=self.timeout)
+        client  = docker.DockerClient(base_url="tcp://{}:{}".format(node_ip, self.port), version="auto", timeout=self.timeout)
 
         try:
             res = client.swarm.join(remote_addrs=swarm["manager"], listen_addr="0.0.0.0", advertise_addr=node_ip, join_token=token)
@@ -144,3 +144,25 @@ class BASE_SWARM_ENGINE_API:
             return False
         else:
             return res
+
+    def _UpdateNode(self, leader, node_id, node_role, labels={}):
+        """ 更新节点信息(Labels、Role等) """
+
+        client = docker.DockerClient(base_url="tcp://{}:{}".format(leader, self.port), version="auto", timeout=self.timeout)
+
+        node_spec = {
+            'Availability': 'active',
+            'Role': node_role,
+            'Labels': labels
+        }
+        logger.info("Update node spec data is {} for node_id {})".format(node_spec, node_id))
+
+        try:
+            node = client.nodes.get(node_id)
+            res  = node.update(node_spec)
+        except docker.errors.APIError,e:
+            logger.error(e, exc_info=True)
+            return False
+        else:
+            return res
+

@@ -194,7 +194,7 @@ SwarmOps | Docker管理平台
 <br />
 <br />
 <p>{% for service in Services %}
-    <a href='javascript:ServiceFill("{{ service.ID }}")' title="对服务<{{ service.Name }}>进行数据填充"><code class="text-muted">{{ service.ID }}</code></a>&nbsp;{% endfor %}</p>
+    <a href='javascript:ServiceFill("{{ service.ID }}")' title="对服务<{{ service.Name }}>进行数据填充"><code class="text-muted">{{ service.Name }}</code></a>&nbsp;{% endfor %}</p>
 <br />
 
 <form class="form-horizontal" role="form" id="UpdateServiceForm">
@@ -294,6 +294,43 @@ SwarmOps | Docker管理平台
   <div class="form-group">
     <div class=" col-sm-12">
       <button type="button" onclick=AddNode() class="btn btn-success">添加节点</button>
+    </div>
+  </div>
+
+</form>
+{% endif %}
+
+
+{% if request.args.get("misc") == "UpdateNode" %}
+{% set Nodes = g.node.GET().data %}
+
+<strong class="text-success "><span class="glyphicon glyphicon-arrow-down"></span>点击以下节点标识名称进行数据填充后再更新:&nbsp<scan class="badge"> {{ Nodes|length }}</scan><span class="glyphicon glyphicon-arrow-down"></span></strong>
+<br />
+<br />
+<p>{% for node in Nodes %}
+    <a href='javascript:NodeFill("{{ node[1] }}")' title="对节点<{{ node[0] }}>进行数据填充"><code class="text-muted">{{ node[0] }}</code></a>&nbsp;{% endfor %}</p>
+<br />
+
+<form class="form-horizontal" role="form" id="UpdateNodeForm">
+
+  <input type="hidden" class="form-control" id="UpdateNodeID" name="node_id">
+
+  <div class="form-group">
+    <label for="UpdateNodeLabels" class="col-sm-12">更新节点标签</label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="UpdateNodeLabels" name="node_labels" placeholder="节点标签, 请输入k/v键值对, 多对标签以逗号分隔, 例如ipaddr=NodeIp, environment=dev">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-sm-12">更新节点角色<code id="UpdateNodeRole"></code></label>
+    <div class="radio col-sm-12"><label><input type="radio" id="UpdateNodeRoleWorker" name="node_role" value="Worker">设定为工作节点</label></div>
+    <div class="radio col-sm-12"><label><input type="radio" id="UpdateNodeRoleManager" name="node_role" value="Manager">设定为管理节点</label></div>
+  </div>
+
+  <div class="form-group">
+    <div class=" col-sm-12">
+      <button type="button" onclick=UpdateNode() class="btn btn-info">更新节点</button>
     </div>
   </div>
 
@@ -574,7 +611,7 @@ NavId.className='active';
 {% if request.args.get("misc") == "AddNode" %}
 function AddNode() {
     $.ajax({
-        url: "{{ url_for('apis.core.JoinSwarm') }}",
+        url: "{{ url_for('apis.core.node') }}",
         method: 'POST',
         datatype: 'json',
         data: $('#AddNodeForm').serialize(),
@@ -600,5 +637,55 @@ NavId = As[2];
 console.log(NavId)
 NavId.className='active';
 {% endif %}
+
+
+{% if request.args.get("misc") == "UpdateNode" %}
+function NodeFill(node) {
+    $.ajax({
+        url: "{{ url_for('apis.core.node') }}?node=" + node,
+        method: 'GET',
+        datatype: 'json',
+        success: function(res) {
+            console.log(res);
+            node = res.data[0];
+            document.getElementById("UpdateNodeID").value = node[1];
+            document.getElementById("UpdateNodeRole").innerHTML = ", 当前角色为" + node[2];
+            if (node[2]=="worker") {
+                $("#UpdateNodeRoleWorker").attr("checked","checked");
+            } else {
+                $("#UpdateNodeRoleManager").attr("checked","checked");
+            }
+        },
+    });
+}
+function UpdateNode() {
+    $.ajax({
+        url: "{{ url_for('apis.core.node') }}",
+        method: 'PUT',
+        datatype: 'json',
+        data: $('#UpdateNodeForm').serialize(),
+        success: function(res) {
+            console.log(res);
+            if (res.success==true) {
+                alert("更新节点成功!");
+                window.location.href="{{ url_for('ui.node') }}";
+            } else {
+                alert("更新节点失败，请重试提交或报告错误！\n错误原因是：" + res.msg);
+            }
+        },
+        error: function(res) {
+            console.log(res);
+            alert(res.statusText);
+        }
+    });
+}
+// 更新导航
+var NavId=null;
+var As=document.getElementById('tab').getElementsByTagName('li');
+NavId = As[2];
+console.log(NavId)
+NavId.className='active';
+{% endif %}
+
 </script>
 {% endblock %}

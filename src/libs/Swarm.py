@@ -319,17 +319,3 @@ class MultiSwarmManager(BASE_SWARM_ENGINE_API):
 
         logger.info(res)
         return res
-
-    def JoinSwarm(self, ip, role):
-
-        res  = {"msg": None, "code": 0, "success": False}
-
-        if not self.getActive:
-            res.update(msg="No Active Swarm", code=-1003)
-
-        if not role in ("Manager", "Worker"):
-            res.update(msg="role error", code=-1004)
-
-        res.update(success=self._JoinSwarm(ip=ip.strip(), role=role, swarm=self._active))
-        logger.info(res)
-        return res

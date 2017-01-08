@@ -40,6 +40,7 @@ def before_request():
     g.service   = ServiceManager(ActiveSwarm=g.swarm.getActive)
     g.node      = NodeManager(ActiveSwarm=g.swarm.getActive)
     logger.info("Start Once Access, and this requestId is %s, auth(%s)" %(g.requestId, g.auth))
+    app.logger.info(app.url_map)
 
 #每次返回数据中，带上响应头，包含本次请求的requestId，以及允许所有域跨域访问API, 记录访问日志.
 @app.after_request

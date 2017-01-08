@@ -49,3 +49,15 @@ def isLogged_in(cookie_str):
     else:
         logger.info("Not Logged in")
         return False
+
+def string2dict(string):
+    """ 把规律性字符串转化为字典 """
+    if string:
+        data = {}
+        for _ in re.split(comma_Pat, string):
+            k, v = _.split("=")
+            data.update(k=v)
+    else:
+        data = {}
+    logger.info("change string2dict, return {}".format(data))
+    return data
