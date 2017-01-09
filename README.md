@@ -52,7 +52,7 @@ MIT
 
 ## ChangeLog
 
-**v0.0.1**
+**v0.0.1-rc1**
 
 > 0. SwarmOps Api、UI
 > 1. 集群查询、添加、删除与设置活跃集群
@@ -68,6 +68,17 @@ MIT
 > 11. Node查询
 > 12. 存储后端UI
 
+**v0.0.1-rc2**
+> 0. 调整403返回
+> 1. Swarm数据存储方式增加本地存储
+> 2. 修复manager降级后健康检查的bug
+> 3. 修复无法更新集群的bug，UI增加更新集群按钮
+> 4. 删除功能采用Jquery chosen plugin选择多项
+> 5. 修复更新时读取默认配置的逻辑错误
+> 6. UI展现服务的replicas, 增加url显示
+> 7. 增加初始化Swarm集群功能按钮
+> 8. 增加节点加入集群的功能(并自动更新一条节点label)
+> 9. 增加更新节点(Role、Labels)的功能
 
 
   [1]: ./misc/SwarmOpsApi.png

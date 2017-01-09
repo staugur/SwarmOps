@@ -1,6 +1,6 @@
-## **SwarmOps Api Document for Swarm Engine**
+## **SwarmOps Api Document**
 
-* 动作类接口通常返回success=True/False, 数据类接口通常返回data *
+*动作类接口通常返回success=True/False, 数据类接口通常返回data*
 
 ----------
 
@@ -9,6 +9,7 @@
 ### 1.节点接口
 
 **查询Swarm上所有可用节点，并组织好节点信息返回。**
+
 *说明：必须在cookies中传入username和Esessionid。*
 
 1.1 URL
@@ -186,6 +187,7 @@ force(bool): 是否强制删除，默认值False。
 ### 2.标签接口
 
 **查询Swarm上所有可用节点的Label，并组织好节点信息返回。**
+
 *说明：必须在cookies中传入username和Esessionid。*
 
 2.1 URL
@@ -256,6 +258,7 @@ order[0][dir](str)：排序方式，升序(asc，默认)，降序(desc)。
 ### 3.标签查询节点接口
 
 **查询Swarm上某个或某些Label所在的节点，并组织好节点信息返回。**
+
 *说明：必须在cookies中传入username和Esessionid。*
 
 3.1 URL
@@ -331,6 +334,7 @@ order[0][dir](str)：排序方式，升序(asc，默认)，降序(desc)。
 ### 4.服务管理接口
 
 **CURL/增删查改 SWARM集群的services**
+
 *说明：必须在cookies中传入username和Esessionid。*
 
 4.1 URL
@@ -653,6 +657,7 @@ flag/serviceId/serviceName/id/name: 服务的Name或Id
 ### 5.SWARM管理接口
 
 **CURL/增删查改 SWARM集群信息，默认集群配置在config.py中，允许添加swarm集群，添加完后默认集群为刚添加的集群。**
+
 *说明：必须在cookies中传入username和Esessionid。*
 
 5.1 URL
