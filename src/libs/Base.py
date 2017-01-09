@@ -145,6 +145,19 @@ class BASE_SWARM_ENGINE_API:
         else:
             return res
 
+    def _LeaveSwarm(self, node_ip, force=False):
+        """ 节点离开集群 """
+
+        client  = docker.DockerClient(base_url="tcp://{}:{}".format(node_ip, self.port), version="auto", timeout=self.timeout)
+
+        try:
+            res = client.swarm.leave(force=force)
+        except docker.errors.APIError,e:
+            logger.error(e, exc_info=True)
+            return False
+        else:
+            return res
+
     def _UpdateNode(self, leader, node_id, node_role, labels={}):
         """ 更新节点信息(Labels、Role等) """
 
@@ -161,6 +174,9 @@ class BASE_SWARM_ENGINE_API:
             node = client.nodes.get(node_id)
             res  = node.update(node_spec)
         except docker.errors.APIError,e:
+            logger.error(e, exc_info=True)
+            return False
+        except Exception,e:
             logger.error(e, exc_info=True)
             return False
         else:

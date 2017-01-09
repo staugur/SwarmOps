@@ -56,7 +56,7 @@ def string2dict(string):
         data = {}
         for _ in re.split(comma_Pat, string):
             k, v = _.split("=")
-            data.update(k=v)
+            data.update({k:v})
     else:
         data = {}
     logger.info("change string2dict, return {}".format(data))

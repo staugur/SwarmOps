@@ -74,28 +74,65 @@ class NodeManager(BASE_SWARM_ENGINE_API):
             logger.info(res)
             return res
 
+        #Get Active Swarm Nodes Id Before adding a node
+        nodesId1 = [ node[1] for node in self.GET()["data"] ]
+        logger.info("The nodesId one before adding a node is {}".format(nodesId1))
+        #Add a node
         res.update(success=self._JoinSwarm(node_ip=ip.strip(), role=role, swarm=self.swarm))
+        #Set node labels and Update it
+        nodesId2 = [ node[1] for node in self.GET()["data"] ]
+        logger.info("The nodesId one after adding a node is {}".format(nodesId2))
+        for nodeId in nodesId2:
+            if nodeId not in nodesId1:
+                logger.info("POST node, id is {}".format(nodeId))
+                UpdateMsg = self.PUT(node_id=nodeId, node_role=role, node_labels={"ipaddr": ip.strip()})
+                if UpdateMsg["success"] == False:
+                    res.update(msg="Update Node Labels Failed")
+                else:
+                    res.update(msg=UpdateMsg["msg"])
+
         logger.info(res)
         return res
 
-    def PUT(self, node_id, node_role, labels=''):
+    def PUT(self, node_id, node_role, node_labels):
         """ 更新节点 """
 
-        res  = {"msg": None, "code": 0, "success": False}
+        res = {"msg": None, "code": 0, "success": False}
 
         if not self.leader:
             res.update(msg="No Active Swarm", code=-1005)
             logger.info(res)
             return res
 
-        if not role in ("Manager", "Worker"):
+        if not node_role in ("Manager", "Worker"):
             res.update(msg="role error", code=-1006)
             logger.info(res)
             return res
 
-        labels = string2dict(labels)
+        if isinstance(node_labels, (str, unicode)):
+            labels = string2dict(node_labels)
+        elif isinstance(node_labels, dict):
+            labels = node_labels
+        else:
+            res.update(msg="node_labels error", code=-1007)
+            logger.info(res)
+            return res
 
         res.update(success=self._UpdateNode(leader=self.leader, node_id=node_id, node_role=node_role, labels=labels))
         logger.info(res)
         return res
 
+    def DELETE(self, ip, force):
+        """ 节点离开集群 """
+
+        res   = {"msg": None, "code": 0, "success": False}
+        force = True if force in ("true", "True", True) else False
+
+        if not self.leader:
+            res.update(msg="No Active Swarm", code=-1008)
+            logger.info(res)
+            return res
+
+        res.update(success=self._LeaveSwarm(node_ip=ip.strip(), force=force))
+        logger.info(res)
+        return res

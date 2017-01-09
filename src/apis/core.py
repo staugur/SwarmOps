@@ -136,13 +136,13 @@ class Node(Resource):
             return abort(403)
 
     def delete(self):
-        """Remove a node to swarm cluster"""
+        """ 节点离开集群 """
 
-        nodeip   = request.form.get("ip")
-        nodeflag = request.form.get("flag")
-        force    = True if request.form.get("force") in ("true", "True", True) else False
+        node_ip = request.form.get("ip")
+        force  = True if request.form.get("force") in ("true", "True", True) else False
+
         if g.auth:
-            return g.swarm_node.rm(nodeip, nodeflag, force)
+            return g.node.DELETE(ip=node_ip, force=force)
         else:
             return abort(403)
 
@@ -152,9 +152,10 @@ class Node(Resource):
         node_id     = request.form.get("node_id")
         node_role   = request.form.get("node_role")
         node_labels = request.form.get("node_labels")
+        logger.debug("{}, {}, {}".format(node_id, node_role, node_labels))
 
         if g.auth:
-            return g.node.PUT(node_id=node_id, node_role=node_role, labels=node_labels)
+            return g.node.PUT(node_id=node_id, node_role=node_role, node_labels=node_labels)
         else:
             return abort(403)
 
@@ -171,23 +172,9 @@ class InitSwarm(Resource):
         else:
             return abort(403)
 
-class LeaveSwarm(Resource):
-
-    def post(self):
-        """ 离开一个swarm集群 """
-
-        ip    = request.form.get("ip")
-        force = True if request.form.get("force", False) in ("true", "True", True) else False
-
-        if g.auth:
-            return g.swarm.LeaveSwarm(AdvertiseAddr=ip, ForceNewCluster=force)
-        else:
-            return abort(403)
-
 core_blueprint = Blueprint(__name__, __name__)
 api = Api(core_blueprint)
 api.add_resource(Swarm, '/swarm', '/swarm/', endpoint='swarm')
 api.add_resource(Service, '/service', '/service/', endpoint='service')
 api.add_resource(Node, '/node', '/node/', endpoint='node')
 api.add_resource(InitSwarm, '/swarm/init', '/swarm/init/', endpoint='InitSwarm')
-api.add_resource(LeaveSwarm, '/swarm/leave', '/swarm/leave/', endpoint='LeaveSwarm')
