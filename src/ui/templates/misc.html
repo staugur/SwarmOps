@@ -65,7 +65,7 @@ SwarmOps | Docker管理平台
 
   <div class="form-group">
     <div class=" col-sm-12">
-      <button type="button" onclick=AddSwarm() class="btn btn-success">添加集群</button>
+      <button type="button" id="AddSwarmSubmit" onclick=AddSwarm() class="btn btn-success">添加集群</button>
     </div>
   </div>
 
@@ -153,7 +153,7 @@ SwarmOps | Docker管理平台
 
   <div class="form-group">
     <div class=" col-sm-12">
-      <button type="button" onclick=AddService() class="btn btn-success">添加服务</button>
+      <button type="button" id="AddServiceSubmit" onclick=AddService() class="btn btn-success">添加服务</button>
     </div>
   </div>
 
@@ -291,7 +291,7 @@ SwarmOps | Docker管理平台
 
   <div class="form-group">
     <div class=" col-sm-12">
-      <button type="button" onclick=AddNode() class="btn btn-success">添加节点</button>
+      <button type="button" id="AddNodeSubmit" onclick=AddNode() class="btn btn-success">添加节点</button>
     </div>
   </div>
 
@@ -389,6 +389,10 @@ function AddSwarm() {
         method: 'POST',
         datatype: 'json',
         data: $('#AddSwarmForm').serialize(),
+        beforeSend: function () {
+            // 禁用按钮防止重复提交
+            $("#AddSwarmSubmit").attr({ disabled: "disabled" });
+        },
         success: function(res) {
             console.log(res);
             if (res.success==true) {
@@ -508,6 +512,10 @@ function AddService() {
         method: 'POST',
         datatype: 'json',
         data: $('#AddServiceForm').serialize(),
+        beforeSend: function () {
+            // 禁用按钮防止重复提交
+            $("#AddServiceSubmit").attr({ disabled: "disabled" });
+        },
         success: function(res) {
             console.log(res);
             if (res.success==true) {
@@ -649,6 +657,10 @@ function AddNode() {
         method: 'POST',
         datatype: 'json',
         data: $('#AddNodeForm').serialize(),
+        beforeSend: function () {
+            // 禁用按钮防止重复提交
+            $("#AddNodeSubmit").attr({ disabled: "disabled" });
+        },
         success: function(res) {
             console.log(res);
             if (res.success==true) {
