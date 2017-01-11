@@ -22,9 +22,6 @@ GLOBAL={
 
     "SwarmStorageMode": os.getenv("swarmops_swarmstoragemode", "local"),
     #存储Swarm集群信息的方式, 可选`local(本地文件存储)`, `redis`
-
-    "Interest.blog.Url": os.getenv("swarmops_interest_blog_url", "https://www.saintic.com/home/")
-    #个人中心地址
 }
 
 #生产环境配置段
@@ -52,8 +49,11 @@ STORAGE={
 SSO={
 
     "SSO.URL": os.getenv("swarmops_ssourl", "https://passport.saintic.com"),
-    #The passport(SSO Authentication System) Web Site URL.
+    #认证系统passport的地址
 
     "SSO.PROJECT": PRODUCT["ProcessName"],
-    #SSO request application.
+    #SSO请求的应用名称
+
+    "SSO.AllowedUserList": ("admin", "swarmops")
+    #SSO允许登陆的用户列表
 }

@@ -28,7 +28,11 @@
         <li><a href="{{ url_for('ui.service') }}" id="service" title="Services">服务 <span class="badge" id="service_number"></span></a></li>
         <li><a href="{{ url_for('ui.node') }}" id="node" title="Nodes">节点 <span class="badge" id="node_number"></span></a></li>
         <li><a href="{{ url_for('ui.storage') }}" id="storage" title="Storages">存储 </a></li>
-        <li><a href="{{ url_for('home') }}" target="_blank" id="home">个人中心</a></li>
+        {% if g.auth %}
+        <li><a href="{{ url_for('logout') }}" title="Do you want to leave, {{ g.username }}?">注销</a></li>
+        {% else %}
+        <li><a href="{{ url_for('home') }}">登录</a></li>
+        {% endif %}
     </ul>
 	<p></p></br>
 

@@ -35,6 +35,9 @@ def before_request():
     g.sessionId = request.cookies.get("sessionId", "")
     g.username  = request.cookies.get("username", "")
     g.expires   = request.cookies.get("time", "")
+    if g.username and g.username not in SSO["SSO.AllowedUserList"]:
+        logger.info("SwarmOps is not allowed to login without {}.".format(SSO["SSO.AllowedUserList"]))
+        return redirect(SSO["SSO.URL"])
     g.auth      = isLogged_in('.'.join([ g.username, g.expires, g.sessionId ]))
     g.swarm     = swarm
     g.service   = ServiceManager(ActiveSwarm=g.swarm.getActive)
