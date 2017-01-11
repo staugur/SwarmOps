@@ -116,14 +116,14 @@ class BASE_SWARM_ENGINE_API:
         else:
             return managers
 
-    def _checkServiceTaskNode(self, leader, service):
-        """ 查询某service的实例节点 """
+    def _checkServiceTaskNode(self, leader, serviceId):
+        """ 查询某service(ID)的实例节点 """
 
         url   = Splice(netloc=leader, port=self.port, path='/tasks').geturl
-        logger.info("Get service %s task, that url is %s" %(service, url))
+        logger.info("Get service %s task, that url is %s" %(serviceId, url))
         data  = requests.get(url, params={"filters": json.dumps({'desired-state':{'running':True}})}).json()
         #data  = requests.get(url).json()
-        nodes = [ _['NodeID'] for _ in data if _['Status']['State'] == 'running' and _['ServiceID'] == service ]
+        nodes = [ _['NodeID'] for _ in data if _['Status']['State'] == 'running' and _['ServiceID'] == serviceId ]
         ips   = []
         for node in nodes:
             nodeinfo = self._checkSwarmNode(leader, node)

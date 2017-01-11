@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}
+SwarmOps | Docker管理平台
+{% endblock %}
+
+{% block container %}
+
+{% set serviceId = request.args.get("serviceId") %}
+
+{% set Services  = g.service.GET(core=True, core_convert=True).data %}
+
+{% if Services %}
+<strong class="text-success "><span class="glyphicon glyphicon-arrow-down"></span>点击以下服务标识名称生成Nginx配置样例:&nbsp<scan class="badge"> {{ Services|length }}</scan><span class="glyphicon glyphicon-arrow-down"></span></strong>
+<br /><br />
+<p>
+{% for service in Services %}
+    <code>
+      <a href="{{ url_for('ui.nginx', serviceId=service.ID) }}">{{ service.Name }}</a>&nbsp;
+    </code>
+{% endfor %}
+</p>
+{% else %}
+<div class="alert alert-danger" role="alert">没有服务或活跃集群异常!!!</div>
+{% endif %}
+
+{% if serviceId %}
+<h3>生成Nginx配置样例:&nbsp;<code>{{ serviceId }}</code></h3>
+<div id="GenerateNginxDiv">
+    {% if serviceId %}
+        <pre><code>{{ g.service.GetServiceNode(serviceId=serviceId, getBackend=true).data.nginx }}</code></pre>
+    {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+// 更新导航
+var NavId=null;
+var As=document.getElementById('tab').getElementsByTagName('li');
+NavId = As[4];
+console.log(NavId)
+NavId.className='active';
+
+{% if request.args.get('serviceId') %}
+// 定时刷新Nginx配置样例
+$(document).ready(function () { 
+    setInterval("GenerateNginx()",5000);
+}); 
+function GenerateNginx() {
+    $.ajax({
+        url: "{{ url_for('apis.core.service') }}?task=true&getBackend=true&id={{ request.args.get('serviceId') }}",
+        method: 'GET',
+        datatype: 'json',
+        success: function(res) {
+            nginx = res.data.nginx;
+            console.log(nginx);
+            templ = "<pre><code>" + nginx + "</code></pre>";
+            $("#GenerateNginxDiv").replaceWith(templ);
+        },
+        error: function(res) {
+            console.error(res);
+            $("#GenerateNginxDiv").replaceWith(res.statusText);
+        }
+    });
+}
+{% endif %}
+
+</script>
+{% endblock %}

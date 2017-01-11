@@ -18,7 +18,7 @@ from libs.Node import NodeManager
 from libs.Swarm import MultiSwarmManager
 from libs.Service import ServiceManager
 
-__version__ = '0.0.1-rc2'
+__version__ = '0.0.1'
 
 app = Flask(__name__)
 app.register_blueprint(ui_blueprint, url_prefix="/ui")
@@ -103,7 +103,7 @@ def sso():
     ticket = request.args.get("ticket")
     if not ticket:
         logger.info("sso ticket get failed")
-        return abort(403)
+        return """<html><head><title>正在跳转中……</title><meta http-equiv="Content-Language" content="zh-CN"><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf8"><meta http-equiv="refresh" content="1.0;url={}"></head><body></b>用户未授权, 返回登录, 请重新认证!<b></body></html>""".format(url_for("logout"))
     logger.info("ticket: %s" %ticket)
     username, expires, sessionId = ticket.split('.')
     if username and username not in SSO["SSO.AllowedUserList"]:

@@ -138,12 +138,45 @@ class ServiceManager(BASE_SWARM_ENGINE_API):
         logger.info(res)
         return res
 
-    def GetServiceNode(self, serviceId):
-        """ 查询某service正在运行的实例数所在node(IP) """
+    def GetServiceNode(self, serviceId, getBackend=False):
+        """ 查询某service(ID)正在运行的实例数所在node(IP), 并且生成nginx配置样例 """
+
         res = {"msg": None, "code": 0}
 
         if self.leader:
-            res.update(data=self._checkServiceTaskNode(leader=self.leader, service=serviceId))
+            data = self._checkServiceTaskNode(leader=self.leader, serviceId=serviceId)
+            if getBackend in ("true", "True", True):
+                serviceData    = self.GET(service=serviceId, core=True, core_convert=True)["data"][0]
+                upstreamName   = "{}_{}".format(serviceData["Name"], serviceId)
+                upstreamServer = ""
+                upstreamMisc   = []
+                for ip in data["ips"]:
+                    for port in serviceData["NetPorts"]:
+                        if port:
+                            port = port.split(':')[0]
+                            entry= "{}:{}".format(ip, port)
+                            upstreamMisc.append(entry)
+                            upstreamServer += "server {};".format(entry)
+                NginxExampleForManager = """
+upstream %s {
+    %s
+}
+server {
+    listen 80;
+    server_name your.domain.com;
+    charset utf8;
+    location / {
+        proxy_pass http://%s;
+        proxy_set_header X-Forwared-For $proxy_add_x_forwarded_for ;
+        proxy_set_header Host $http_host ;
+        proxy_set_header X-Real-IP  $remote_addr;
+        proxy_set_header X-Forwarded-For $remote_addr;
+    }
+}
+""" %(upstreamName, upstreamServer, upstreamName)
+                logger.info("GetServiceNode and getBackend, serviceId is {}, generate nginx example is {}".format(serviceId, NginxExampleForManager))
+                data.update(nginx=NginxExampleForManager, misc=upstreamMisc)
+            res.update(data=data)
         else:
             res.update(msg="No active swarm cluster", code=30021)
 

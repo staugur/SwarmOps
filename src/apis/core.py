@@ -59,11 +59,12 @@ class Service(Resource):
         service = request.args.get("id", request.args.get("name", None))
         core    = True if request.args.get("core", True) in ("True", "true", True) else False
         core_convert = True if request.args.get("core_convert", True) in ("True", "true", True) else False
-        task    = True if request.args.get("task", False) in ("True", "true", True) else False
+        getNode = True if request.args.get("getNode", False) in ("True", "true", True) else False
+        getBackend = True if request.args.get("getBackend", False) in ("True", "true", True) else False
 
         if g.auth:
-            if task:
-                return g.service.GetServiceNode(serviceId=service)
+            if getNode or getBackend:
+                return g.service.GetServiceNode(serviceId=service, getBackend=getBackend)
             else:
                 return g.service.GET(service, core, core_convert)
         else:

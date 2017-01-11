@@ -42,3 +42,10 @@ def storage():
         return render_template("storage.html")
     else:
         return redirect(url_for("login"))
+
+@ui_blueprint.route("/nginx/")
+def nginx():
+    if g.auth:
+        return render_template("nginx.html")
+    else:
+        return redirect(url_for("login"))
