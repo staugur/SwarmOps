@@ -156,10 +156,10 @@ class ServiceManager(BASE_SWARM_ENGINE_API):
                             port = port.split(':')[0]
                             entry= "{}:{}".format(ip, port)
                             upstreamMisc.append(entry)
-                            upstreamServer += "server {};".format(entry)
+                            upstreamServer += "server {};\n".format(entry)
                 NginxExampleForManager = """
 upstream %s {
-    %s
+%s
 }
 server {
     listen 80;
@@ -173,7 +173,7 @@ server {
         proxy_set_header X-Forwarded-For $remote_addr;
     }
 }
-""" %(upstreamName, upstreamServer, upstreamName)
+""" %(upstreamName, upstreamServer.strip(), upstreamName)
                 logger.info("GetServiceNode and getBackend, serviceId is {}, generate nginx example is {}".format(serviceId, NginxExampleForManager))
                 data.update(nginx=NginxExampleForManager, misc=upstreamMisc)
             res.update(data=data)
