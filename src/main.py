@@ -8,7 +8,7 @@
 
 import time, json, datetime, SpliceURL
 from urllib import urlencode
-from flask import Flask, request, g, jsonify, redirect, make_response, url_for
+from flask import Flask, request, g, jsonify, redirect, make_response, url_for, abort
 from config import GLOBAL, PRODUCT, SSO
 from utils.public import logger, gen_requestId, isLogged_in, md5
 from ui import ui_blueprint
@@ -35,9 +35,6 @@ def before_request():
     g.sessionId = request.cookies.get("sessionId", "")
     g.username  = request.cookies.get("username", "")
     g.expires   = request.cookies.get("time", "")
-    if g.username and g.username not in SSO["SSO.AllowedUserList"]:
-        logger.info("SwarmOps is not allowed to login without {}.".format(SSO["SSO.AllowedUserList"]))
-        return redirect(SSO["SSO.URL"])
     g.auth      = isLogged_in('.'.join([ g.username, g.expires, g.sessionId ]))
     g.swarm     = swarm
     g.service   = ServiceManager(ActiveSwarm=g.swarm.getActive)
@@ -104,8 +101,14 @@ def logout():
 @app.route('/sso/')
 def sso():
     ticket = request.args.get("ticket")
+    if not ticket:
+        logger.info("sso ticket get failed")
+        return abort(403)
     logger.info("ticket: %s" %ticket)
     username, expires, sessionId = ticket.split('.')
+    if username and username not in SSO["SSO.AllowedUserList"]:
+        logger.info("SwarmOps is not allowed to login with {}.".format(username))
+        return redirect(url_for("sso"))
     if expires == 'None':
         UnixExpires = None
     else:

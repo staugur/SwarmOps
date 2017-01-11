@@ -54,6 +54,6 @@ SSO={
     "SSO.PROJECT": PRODUCT["ProcessName"],
     #SSO请求的应用名称
 
-    "SSO.AllowedUserList": ("admin", "swarmops")
+    "SSO.AllowedUserList": ("admin", )
     #SSO允许登陆的用户列表
 }
