@@ -157,8 +157,7 @@ class ServiceManager(BASE_SWARM_ENGINE_API):
                             entry= "{}:{}".format(ip, port)
                             upstreamMisc.append(entry)
                             upstreamServer += "server {};\n".format(entry)
-                NginxExampleForManager = """
-upstream %s {
+                NginxExampleForManager = """upstream %s {
 %s
 }
 server {
