@@ -44,6 +44,7 @@ MIT
 ![Services][3]
 ![Nodes][4]
 ![Storages][5]
+![Nginx][6]
 
 
 ## Api Design
@@ -80,9 +81,30 @@ MIT
 > 8. 增加节点加入集群的功能(并自动更新一条节点label)
 > 9. 增加更新节点(Role、Labels)的功能
 
+**v0.0.1**
+> 1. SSO登录设置允许的登录列表
+> 2. 服务的Nginx配置样例生成
+> 3. 添加操作增加disable submit防止重复提交
+
+
+## Release Note
+
+*Release 0.0.1*
+
+作为第一个正式发布版本，SwarmOps实现了对Docker Swarm模式的集群管理。
+
+```
+1. UI/API可以初始化、管理多个Swarm集群
+2. UI/API可以增删查服务
+3. UI/API可以增删查改节点
+4. UI/API可以查询服务的其他属性, 例如replicas节点，并生成Nginx样例配置
+5. 数据持久化存储local或redis, 使用redis可以多点部署
+```
+
 
   [1]: ./misc/SwarmOpsApi.png
   [2]: ./misc/swarm.png "集群"
   [3]: ./misc/service.png "服务"
   [4]: ./misc/node.png "节点"
   [5]: ./misc/storage.png "存储"
+  [6]: ./misc/nginx.png "Nginx配置样例"
