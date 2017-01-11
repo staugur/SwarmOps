@@ -51,7 +51,7 @@ $(document).ready(function () {
 }); 
 function GenerateNginx() {
     $.ajax({
-        url: "{{ url_for('apis.core.service') }}?task=true&getBackend=true&id={{ request.args.get('serviceId') }}",
+        url: "{{ url_for('apis.core.service') }}?getNode=true&getBackend=true&id={{ request.args.get('serviceId') }}",
         method: 'GET',
         datatype: 'json',
         success: function(res) {
