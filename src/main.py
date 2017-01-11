@@ -18,7 +18,7 @@ from libs.Node import NodeManager
 from libs.Swarm import MultiSwarmManager
 from libs.Service import ServiceManager
 
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 
 app = Flask(__name__)
 app.register_blueprint(ui_blueprint, url_prefix="/ui")

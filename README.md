@@ -91,7 +91,7 @@ MIT
 
 ####Release 0.0.1
 
-*作为第一个正式发布版本，SwarmOps实现了对Docker Swarm模式的集群管理。*
+*作为第一个正式发布版本，SwarmOps实现了对Docker Swarm模式的集群管理，所有操作均采用API形式。*
 
 ```
 1. UI/API可以初始化、管理多个Swarm集群
@@ -99,6 +99,7 @@ MIT
 3. UI/API可以增删查改节点
 4. UI/API可以查询服务的其他属性, 例如replicas节点，并生成Nginx样例配置
 5. 数据持久化存储local或redis, 使用redis可以多点部署
+6. 认证采用passport, 并设置只允许登陆的用户列表
 ```
 
 
