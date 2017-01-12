@@ -62,3 +62,10 @@ STORAGE={
     "ActiveKey": os.getenv("swarmops_StorageActiveKey", "Swarm_Active"),
     #存储后端存储活跃集群数据的Key索引
 }
+
+#私有仓配置段
+REGISTRY={
+    "RegistryAddr": "https://docker.emarbox.com",
+    "RegistryVersion": 1,
+    "RegistryAuthentication": None
+}

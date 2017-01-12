@@ -6,7 +6,7 @@
 import time, json, datetime, SpliceURL
 from urllib import urlencode
 from flask import Flask, request, g, jsonify, redirect, make_response, url_for, abort
-from config import GLOBAL, PRODUCT, SSO, STORAGE
+from config import GLOBAL, PRODUCT, SSO, STORAGE, REGISTRY
 from utils.public import logger, gen_requestId, isLogged_in, md5
 from ui import ui_blueprint
 from apis.core import core_blueprint
@@ -15,6 +15,7 @@ from libs.Node import NodeManager
 from libs.Swarm import MultiSwarmManager
 from libs.Service import ServiceManager
 from libs.Network import NetworkManager
+from libs.Registry import RegistryManager
 
 __version__ = '0.0.2'
 __author__  = 'Mr.tao'
@@ -37,11 +38,12 @@ def before_request():
     g.sessionId = request.cookies.get("sessionId", "")
     g.username  = request.cookies.get("username", "")
     g.expires   = request.cookies.get("time", "")
-    g.auth      = True#isLogged_in('.'.join([ g.username, g.expires, g.sessionId ]))
+    g.auth      = isLogged_in('.'.join([ g.username, g.expires, g.sessionId ]))
     g.swarm     = swarm
     g.service   = ServiceManager(ActiveSwarm=g.swarm.getActive)
     g.node      = NodeManager(ActiveSwarm=g.swarm.getActive)
     g.network   = NetworkManager(ActiveSwarm=g.swarm.getActive)
+    g.registry  = RegistryManager(Registry=REGISTRY)
     g.sysInfo   = {"Version": __version__, "Author": __author__, "Email": __email__, "Doc": __doc__}
     logger.info("Start Once Access, and this requestId is %s, auth(%s)" %(g.requestId, g.auth))
 
