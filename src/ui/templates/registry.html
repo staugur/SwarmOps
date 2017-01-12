@@ -15,11 +15,13 @@ Registry | SwarmOps - Docker管理平台
 <div>
     <p><scan class="glyphicon glyphicon-info-sign"></scan>私有仓地址:&nbsp;<kbd>{{ g.registry.url }}</kbd></p>
     <p><scan class="glyphicon glyphicon-info-sign"></scan>私有仓版本:&nbsp;<kbd>v{{ g.registry.version }}</kbd></p>
+    <p><scan class="glyphicon glyphicon-info-sign"></scan>私有仓状态:
     {% if g.registry.status %}
-    <p><scan class="glyphicon glyphicon-info-sign"></scan>私有仓状态:&nbsp; <b class="text-success">OK</b></p>
+        <b class="text-success">OK</b>
     {% else %}
-    <p><scan class="glyphicon glyphicon-info-sign"></scan>私有仓状态:&nbsp; <b class="text-danger">Fail</b></p>
+        <b class="text-danger">Fail</b>
     {% endif %}
+    </p>
     <div class="input-group col-md-4" style="margin-top:0px positon:relative">  
         <span class="input-group-addon btn btn-primary">查询</span><input type="text" class="form-control input-lg" placeholder="搜索私有仓镜像">
     </div>
@@ -30,7 +32,7 @@ Registry | SwarmOps - Docker管理平台
         <tr class="active">
             <th style="vertical-align: middle; text-align: center;">Repository</th>
             <th style="vertical-align: middle; text-align: center;">Description</th>
-            <th style="vertical-align: middle; text-align: center;">Action</th>
+            <th style="vertical-align: middle; text-align: center;">Operations</th>
         </tr>
     </thead>
     <tbody>
@@ -41,12 +43,11 @@ Registry | SwarmOps - Docker管理平台
             <td style='vertical-align: middle; text-align: center;'>
                 <!-- Single button -->
                 <div class="btn-group">
-                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
-                        Action <span class="caret"></span>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        动作 <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
+                        <li><a href="#"><scan class="text-danger">Another action</scan></a></li>
                         <li><a href="#">Something else here</a></li>
                         <li><a href="#">Separated link</a></li>
                     </ul>
