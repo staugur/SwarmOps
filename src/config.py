@@ -65,7 +65,7 @@ STORAGE={
 
 #私有仓配置段
 REGISTRY={
-    "RegistryAddr": "https://docker.emarbox.com",
+    "RegistryAddr": "https://registry.saintic.com",
     "RegistryVersion": 1,
     "RegistryAuthentication": None
 }

@@ -14,7 +14,7 @@ class NodeManager(BASE_SWARM_ENGINE_API):
         self.verify    = False
         self.swarm     = ActiveSwarm
         self.leader    = self._checkSwarmLeader(self.swarm) if self.swarm != {} else None
-        logger.info("Node Api, ActiveSwarm is %s, the leader is %s" %(self.swarm, self.leader))
+        logger.info("Node Api Init, ActiveSwarm is %s, the leader is %s" %(self.swarm, self.leader))
 
     def GET(self, node=None):
         """ 查询所有可用的节点群，并组织返回节点信息 """

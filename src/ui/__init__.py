@@ -63,3 +63,10 @@ def registry():
         return render_template("registry.html")
     else:
         return redirect(url_for("login"))
+
+@ui_blueprint.route("/registry/<imageId>")
+def registryImageId(imageId):
+    if g.auth:
+        return render_template("image.html")
+    else:
+        return redirect(url_for("login"))

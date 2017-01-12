@@ -14,7 +14,7 @@ class NetworkManager(BASE_SWARM_ENGINE_API):
         self.verify    = False
         self.swarm     = ActiveSwarm
         self.leader    = self._checkSwarmLeader(self.swarm) if self.swarm != {} else None
-        logger.info("Network Api, ActiveSwarm is %s, the leader is %s" %(self.swarm, self.leader))
+        logger.info("Network Api Init, ActiveSwarm is %s, the leader is %s" %(self.swarm, self.leader))
 
     def GET(self, networkId=None):
         """ 查询所有可用的网络, 并组织返回网络信息 """

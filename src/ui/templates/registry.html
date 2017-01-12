@@ -5,14 +5,58 @@ Registry | SwarmOps - Docker管理平台
 {% endblock %}
 
 {% block container %}
-{% if not Registries %}
-<div class="alert alert-info" role="alert">当前系统无私有仓!!!</div>
-{% endif %}
+{% set registies = g.registry._list_all_repository %}
+<!--
 <p>
     <a href="{{ url_for('ui.misc', misc='AddRegistry') }}"><button type="button" class="btn btn-success">添加私有仓</button></a>
     <a href="{{ url_for('ui.misc', misc='DelRegistry') }}"><button type="button" class="btn btn-danger">删除私有仓</button></a>
 </p>
-{{ g.registry.GET() }}
+-->
+<div>
+    <p><scan class="glyphicon glyphicon-info-sign"></scan>私有仓地址:&nbsp;<kbd>{{ g.registry.url }}</kbd></p>
+    <p><scan class="glyphicon glyphicon-info-sign"></scan>私有仓版本:&nbsp;<kbd>v{{ g.registry.version }}</kbd></p>
+    {% if g.registry.status %}
+    <p><scan class="glyphicon glyphicon-info-sign"></scan>私有仓状态:&nbsp; <b class="text-success">OK</b></p>
+    {% else %}
+    <p><scan class="glyphicon glyphicon-info-sign"></scan>私有仓状态:&nbsp; <b class="text-danger">Fail</b></p>
+    {% endif %}
+    <div class="input-group col-md-4" style="margin-top:0px positon:relative">  
+        <span class="input-group-addon btn btn-primary">查询</span><input type="text" class="form-control input-lg" placeholder="搜索私有仓镜像">
+    </div>
+</div>
+{% if g.registry.status %}
+<table class="table table-bordered table-hover table-condensed table-responsive">
+    <thead>
+        <tr class="active">
+            <th style="vertical-align: middle; text-align: center;">Repository</th>
+            <th style="vertical-align: middle; text-align: center;">Description</th>
+            <th style="vertical-align: middle; text-align: center;">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for registry in registies %}
+        <tr>
+            <td style='vertical-align: middle; text-align: center;'>{{ registry.name }}</td>
+            <td style='vertical-align: middle; text-align: center;'>{{ registry.description }}</td>
+            <td style='vertical-align: middle; text-align: center;'>
+                <!-- Single button -->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+                        Action <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li><a href="#">Separated link</a></li>
+                    </ul>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endif %}
 {% endblock %}
 
 {% block script %}
