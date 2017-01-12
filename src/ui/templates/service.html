@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}
-SwarmOps | Docker管理平台
+Service | SwarmOps - Docker管理平台
 {% endblock %}
 {% block container %}
 {% set Services = g.service.GET(request.args.get("id", request.args.get("name")), core=True, core_convert=True).data %}

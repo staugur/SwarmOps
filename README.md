@@ -102,6 +102,12 @@ MIT
 6. 认证采用passport, 并设置只允许登陆的用户列表
 ```
 
+## TODO
+
+> 1. Network
+> 2. Registry
+> 3. Service Optimization
+
 
   [1]: ./misc/SwarmOpsApi.png
   [2]: ./misc/swarm.png "集群"

@@ -19,9 +19,14 @@
 
 <div class="container">
 
+    <div class="header">
+    <p>
+        <a href="{{ url_for('ui.index') }}"><img src="{{ url_for('ui.static', filename='img/logo.png') }}" alt="{{ self.title() }}" title="{{ self.title() }}" class="img-circle img-responsive" width="6%"></a>
+        <b>{{ self.title() }}</b><sub class="text-lowercase"><code class="text-info">v{{ g.sysInfo.Version }}</code></sub>
+    </p>
+    </div>
     <br />
-    <p><strong>{{ self.title() }}</strong></p>
-	<br />
+
     <!-- 导航 -->
     <ul class="nav nav-tabs" id="tab">
         <li><a href="{{ url_for('ui.index') }}" id="swarm" title="Swarms">集群 <span class="badge" id="swarm_number"></span></a></li>
@@ -29,6 +34,7 @@
         <li><a href="{{ url_for('ui.node') }}" id="node" title="Nodes">节点 <span class="badge" id="node_number"></span></a></li>
         <li><a href="{{ url_for('ui.storage') }}" id="storage" title="Storages">存储 </a></li>
         <li><a href="{{ url_for('ui.nginx') }}" id="nginx" title="Nginx">Nginx </a></li>
+        <li><a href="{{ url_for('ui.network') }}" id="network" title="Networks">网络 </a></li>
         {% if g.auth %}
         <li><a href="{{ url_for('logout') }}" title="Do you want to leave, {{ g.username }}?">注销</a></li>
         {% else %}
@@ -44,8 +50,11 @@
     <nav class="navbar navbar-default text-center">
     <div class="navbar-inner navbar-content-center">
         <p class="text-muted credit" style="padding: 10px;">
-              Copyright &copy; 2016 SaintIC.&nbsp;&nbsp;All rights reserved.&nbsp;&nbsp;Originate by <a href="https://github.com/staugur/SwarmOps/" target="_blank" title="{{ self.title() }}">SwarmOps</a>&nbsp;
-              <a href="https://github.com/staugur/passport/" target="_blank" title="Passport Auth System">Passport</a>&nbsp;
+              Copyright &copy; 2016-2017 SaintIC.&nbsp;&nbsp;
+              All rights reserved.&nbsp;&nbsp;
+              Originate by <a href="https://github.com/staugur/SwarmOps/" target="_blank" title="{{ g.sysInfo.Doc }}">SwarmOps</a>&nbsp;
+              <a href="https://github.com/staugur/passport/" target="_blank" title="Passport Auth System">Passport</a>.&nbsp;&nbsp;
+              Contact Author:&nbsp;<a href="mailto:{{ g.sysInfo.Email }}">{{ g.sysInfo.Author }}</a>
         </p>
     </div>
     </nav>

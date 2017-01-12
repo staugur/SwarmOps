@@ -1,10 +1,7 @@
 # -*- coding:utf-8 -*-
-'''
-@Date:       2016-10
-@Author:     Mr.tao <staugur@saintic.com>
-@Website:    www.saintic.com
-@Introduce:  Manage swarm clusters to provide a more concise and compact intermediate layer web application with ui.
-'''
+# SetDate: 2016-10
+# Website: www.saintic.com
+#
 
 import time, json, datetime, SpliceURL
 from urllib import urlencode
@@ -19,6 +16,10 @@ from libs.Swarm import MultiSwarmManager
 from libs.Service import ServiceManager
 
 __version__ = '0.0.2'
+__author__  = 'Mr.tao'
+__email__   = 'staugur@saintic.com'
+__doc__     = 'Manage swarm clusters to provide a more concise and compact intermediate layer web application with ui.'
+
 
 app = Flask(__name__)
 app.register_blueprint(ui_blueprint, url_prefix="/ui")
@@ -39,6 +40,7 @@ def before_request():
     g.swarm     = swarm
     g.service   = ServiceManager(ActiveSwarm=g.swarm.getActive)
     g.node      = NodeManager(ActiveSwarm=g.swarm.getActive)
+    g.sysInfo   = {"Version": __version__, "Author": __author__, "Email": __email__, "Doc": __doc__}
     logger.info("Start Once Access, and this requestId is %s, auth(%s)" %(g.requestId, g.auth))
 
 #每次返回数据中，带上响应头，包含本次请求的requestId，以及允许所有域跨域访问API, 记录访问日志.

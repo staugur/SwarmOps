@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}
-SwarmOps | Docker管理平台
+Swarm | SwarmOps - Docker管理平台
 {% endblock %}
 {% block container %}
 {% set UpdateManager = True if request.args.get("UpdateManager", False) in ('true', 'True', True) else False %}

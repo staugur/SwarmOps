@@ -49,3 +49,10 @@ def nginx():
         return render_template("nginx.html")
     else:
         return redirect(url_for("login"))
+
+@ui_blueprint.route("/network/")
+def network():
+    if g.auth:
+        return render_template("network.html")
+    else:
+        return redirect(url_for("login"))
