@@ -22,7 +22,7 @@ class ServiceManager(BASE_SWARM_ENGINE_API):
         self.verify    = False
         self.timeout   = timeout
         self.swarm     = ActiveSwarm
-        self.leader    = self._checkSwarmLeader(self.swarm)
+        self.leader    = self._checkSwarmLeader(self.swarm) if self.swarm != {} else None
         self.commaConvert = lambda string:[ l for l in re.split(comma_Pat, string) if l ]
         logger.info("Service Api Init, ActiveSwarm is %s, the leader is %s" %(self.swarm, self.leader))
 

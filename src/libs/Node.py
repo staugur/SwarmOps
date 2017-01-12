@@ -13,7 +13,7 @@ class NodeManager(BASE_SWARM_ENGINE_API):
         self.timeout   = timeout
         self.verify    = False
         self.swarm     = ActiveSwarm
-        self.leader    = self._checkSwarmLeader(self.swarm)
+        self.leader    = self._checkSwarmLeader(self.swarm) if self.swarm != {} else None
         logger.info("Node Api, ActiveSwarm is %s, the leader is %s" %(self.swarm, self.leader))
 
     def GET(self, node=None):
