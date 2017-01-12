@@ -182,3 +182,14 @@ class BASE_SWARM_ENGINE_API:
         else:
             return res
 
+    def _checkSwarmNetwork(self, leader, networkId=None):
+        """ 查询集群网络 """
+        try:
+            path    = "/networks/" + networkId if networkId else "/networks"
+            NetUrl  = Splice(netloc=leader, port=self.port, path=path).geturl
+            NetData = requests.get(NetUrl, timeout=self.timeout, verify=self.verify).json()
+        except Exception,e:
+            logger.error(e, exc_info=True)
+        else:
+            logger.info("check networks, request url is %s ,response is %s" %(NetUrl, NetData))
+            return NetData

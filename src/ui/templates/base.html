@@ -22,7 +22,7 @@
     <div class="header">
     <p>
         <a href="{{ url_for('ui.index') }}"><img src="{{ url_for('ui.static', filename='img/logo.png') }}" alt="{{ self.title() }}" title="{{ self.title() }}" class="img-circle img-responsive" width="6%"></a>
-        <b>{{ self.title() }}</b><sub class="text-lowercase"><code class="text-info">v{{ g.sysInfo.Version }}</code></sub>
+        <b>{{ self.title() }}</b><sub class="text-lowercase"><kbd>v{{ g.sysInfo.Version }}</kbd></sub>
     </p>
     </div>
     <br />
@@ -35,10 +35,9 @@
         <li><a href="{{ url_for('ui.storage') }}" id="storage" title="Storages">存储 </a></li>
         <li><a href="{{ url_for('ui.nginx') }}" id="nginx" title="Nginx">Nginx </a></li>
         <li><a href="{{ url_for('ui.network') }}" id="network" title="Networks">网络 </a></li>
+        <li><a href="{{ url_for('ui.registry') }}" id="registry" title="Registries">私有仓 </a></li>
         {% if g.auth %}
         <li><a href="{{ url_for('logout') }}" title="Do you want to leave, {{ g.username }}?">注销</a></li>
-        {% else %}
-        <li><a href="{{ url_for('home') }}">登录</a></li>
         {% endif %}
     </ul>
 	<p></p></br>

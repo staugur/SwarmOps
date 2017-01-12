@@ -5,6 +5,38 @@ Network | SwarmOps - Docker管理平台
 {% endblock %}
 
 {% block container %}
+{% set Networks = g.network.GET().data %}
+{% if not Networks %}
+<div class="alert alert-danger" role="alert">活跃集群异常!!!</div>
+{% endif %}
+<p>
+    <a href="{{ url_for('ui.misc', misc='AddNetwork') }}"><button type="button" class="btn btn-success">创建网络</button></a>
+    <a href="{{ url_for('ui.misc', misc='DelNetwork') }}"><button type="button" class="btn btn-danger">删除网络</button></a>
+</p>
+<table class="table table-bordered table-hover table-condensed table-responsive">
+    <thead>
+        <tr class="active">
+            <th style="vertical-align: middle; text-align: center;">NetworkId</th>
+            <th style="vertical-align: middle; text-align: center;">Name</th>
+            <th style="vertical-align: middle; text-align: center;">Driver</th>
+            <th style="vertical-align: middle; text-align: center;">Scope</th>
+            <!--
+            <th style="vertical-align: middle; text-align: center;">IPAM</th>
+            <th style="vertical-align: middle; text-align: center;">Containers</th>
+            -->
+        </tr>
+    </thead>
+    <tbody>
+    {% for network in Networks %}
+        <tr>
+            <td style='vertical-align: middle; text-align: center;'>{{ network[0] }}</td>
+            <td style='vertical-align: middle; text-align: center;'>{{ network[1] }}</td>
+            <td style='vertical-align: middle; text-align: center;'>{{ network[2] }}</td>
+            <td style='vertical-align: middle; text-align: center;'>{{ network[3] }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
 {% endblock %}
 
 {% block script %}

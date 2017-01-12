@@ -56,3 +56,10 @@ def network():
         return render_template("network.html")
     else:
         return redirect(url_for("login"))
+
+@ui_blueprint.route("/registry/")
+def registry():
+    if g.auth:
+        return render_template("registry.html")
+    else:
+        return redirect(url_for("login"))

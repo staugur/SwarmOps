@@ -173,9 +173,44 @@ class InitSwarm(Resource):
         else:
             return abort(403)
 
+class Network(Resource):
+
+    def get(self):
+        """ 查询网络 """
+
+        if g.auth:
+            return g.network.GET(networkId=request.args.get("networkId", None))
+        else:
+            return abort(403)
+
+    def post(self):
+        """ 创建网络 """
+
+        ip   = request.form.get("ip")
+        role = request.form.get("role", "Worker")
+        logger.info(request.form)
+
+        if g.auth:
+            return g.node.POST(ip=ip, role=role)
+        else:
+            return abort(403)
+
+    def delete(self):
+        """ 删除网络 """
+
+        node_ip = request.form.get("ip")
+        force  = True if request.form.get("force") in ("true", "True", True) else False
+
+        if g.auth:
+            return g.node.DELETE(ip=node_ip, force=force)
+        else:
+            return abort(403)
+
+
 core_blueprint = Blueprint(__name__, __name__)
 api = Api(core_blueprint)
 api.add_resource(Swarm, '/swarm', '/swarm/', endpoint='swarm')
 api.add_resource(Service, '/service', '/service/', endpoint='service')
 api.add_resource(Node, '/node', '/node/', endpoint='node')
 api.add_resource(InitSwarm, '/swarm/init', '/swarm/init/', endpoint='InitSwarm')
+api.add_resource(Network, '/network', '/network/', endpoint='network')
