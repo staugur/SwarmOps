@@ -16,6 +16,7 @@ Registry | SwarmOps - Docker管理平台
     {% else %}
         <b class="text-danger">Fail</b>
     {% endif %}
+    <p><scan class="glyphicon glyphicon-info-sign"></scan>当前标签数量:&nbsp;<span class="badge">{{ tags|length }}</scan></p>
     </p>
 </div>
 {% if g.registry.status %}
