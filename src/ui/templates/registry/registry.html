@@ -27,7 +27,7 @@ Registry | SwarmOps - Docker管理平台
 <form class="form-search form-horizontal" action="?q=" method="" id="SearchForm">
   <div class="input-group search-input-group">
     <button type="button" onclick=SearchRepository() class="btn btn-primary">查询</button>
-    <input type="text" name="q" placeholder="搜索私有仓镜像" value="{{ request.args.get('q') }}">
+    <input type="text" name="q" placeholder="搜索私有仓镜像" value="{{ request.args.get('q','') }}">
   </div>
 </form>
 </div>
