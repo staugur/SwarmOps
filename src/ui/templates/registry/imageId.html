@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}
+Registry | SwarmOps - Docker管理平台
+{% endblock %}
+
+{% block container %}
+
+{% set imageIdInfo = g.registry._get_imageId_info(imageId) %}
+<div>
+    <p><scan class="glyphicon glyphicon-info-sign"></scan>私有仓地址:&nbsp;<kbd>{{ g.registry.url }}</kbd></p>
+    <p><scan class="glyphicon glyphicon-info-sign"></scan>私有仓版本:&nbsp;<kbd>v{{ g.registry.version }}</kbd></p>
+    <p><scan class="glyphicon glyphicon-info-sign"></scan>私有仓状态:
+    {% if g.registry.status %}
+        <b class="text-success">OK</b>
+    {% else %}
+        <b class="text-danger">Fail</b>
+    {% endif %}
+    </p>
+</div>
+{% if g.registry.status %}
+<div>
+<table class="table table-bordered table-hover table-condensed table-responsive">
+    <tbody>
+    {% for k, v in imageIdInfo.iteritems() %}
+        <tr>
+            <td style='vertical-align: middle;'>{{ k }}</td>
+            <td style='vertical-align: middle;'>
+            {% if k == "parent" %}
+            <a href="{{ url_for('ui.registryImageId', imageId=v) }}" target="_blank">{{ v }}</a>
+            {% elif k in ("os", "author", "architecture", "docker_version") %}
+            <code>{{ v }}</code>
+            {% else %}
+            {{ v }}
+            {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+// 更新导航
+var NavId=null;
+var As=document.getElementById('tab').getElementsByTagName('li');
+NavId = As[6];
+console.log(NavId)
+NavId.className='active';
+
+</script>
+{% endblock %}

@@ -60,13 +60,20 @@ def network():
 @ui_blueprint.route("/registry/")
 def registry():
     if g.auth:
-        return render_template("registry.html")
+        return render_template("registry/registry.html")
+    else:
+        return redirect(url_for("login"))
+
+@ui_blueprint.route("/registry/<namespace>/<repository_name>/")
+def registryImageName(namespace, repository_name):
+    if g.auth:
+        return render_template("registry/imageName.html", imageName="{}/{}".format(namespace, repository_name))
     else:
         return redirect(url_for("login"))
 
 @ui_blueprint.route("/registry/<imageId>")
 def registryImageId(imageId):
     if g.auth:
-        return render_template("image.html")
+        return render_template("registry/imageId.html", imageId=imageId)
     else:
         return redirect(url_for("login"))

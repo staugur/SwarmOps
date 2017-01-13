@@ -38,7 +38,7 @@ def before_request():
     g.sessionId = request.cookies.get("sessionId", "")
     g.username  = request.cookies.get("username", "")
     g.expires   = request.cookies.get("time", "")
-    g.auth      = True#isLogged_in('.'.join([ g.username, g.expires, g.sessionId ]))
+    g.auth      = isLogged_in('.'.join([ g.username, g.expires, g.sessionId ]))
     g.swarm     = swarm
     g.service   = ServiceManager(ActiveSwarm=g.swarm.getActive)
     g.node      = NodeManager(ActiveSwarm=g.swarm.getActive)
@@ -46,6 +46,7 @@ def before_request():
     g.registry  = RegistryManager(Registry=REGISTRY)
     g.sysInfo   = {"Version": __version__, "Author": __author__, "Email": __email__, "Doc": __doc__}
     logger.info("Start Once Access, and this requestId is %s, auth(%s)" %(g.requestId, g.auth))
+    app.logger.info(app.url_map)
 
 #每次返回数据中，带上响应头，包含本次请求的requestId，以及允许所有域跨域访问API, 记录访问日志.
 @app.after_request

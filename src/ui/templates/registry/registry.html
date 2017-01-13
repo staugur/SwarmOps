@@ -22,9 +22,13 @@ Registry | SwarmOps - Docker管理平台
         <b class="text-danger">Fail</b>
     {% endif %}
     </p>
-    <div class="input-group col-md-4" style="margin-top:0px positon:relative">  
-        <span class="input-group-addon btn btn-primary">查询</span><input type="text" class="form-control input-lg" placeholder="搜索私有仓镜像">
-    </div>
+
+<form class="form-search form-horizontal">
+  <div class="input-group search-input-group">
+    <button type="submit" class="btn btn-primary">查询</button>
+    <input type="text" placeholder="搜索私有仓镜像">
+  </div>
+</form>
 </div>
 {% if g.registry.status %}
 <table class="table table-bordered table-hover table-condensed table-responsive">
@@ -35,23 +39,13 @@ Registry | SwarmOps - Docker管理平台
             <th style="vertical-align: middle; text-align: center;">Operations</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="list_repository">
     {% for registry in registies %}
         <tr>
-            <td style='vertical-align: middle; text-align: center;'>{{ registry.name }}</td>
+            <td style='vertical-align: middle; text-align: center; width: 60%'><a href="{{ url_for('ui.registryImageName', namespace=registry.name.split('/')[0], repository_name=registry.name.split('/')[-1]) }}">{{ "{}/{}".format(g.registry.url.split("://")[-1].strip("/"), registry.name) }}</a></td>
             <td style='vertical-align: middle; text-align: center;'>{{ registry.description }}</td>
             <td style='vertical-align: middle; text-align: center;'>
-                <!-- Single button -->
-                <div class="btn-group">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                        动作 <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="#"><scan class="text-danger">Another action</scan></a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li><a href="#">Separated link</a></li>
-                    </ul>
-                </div>
+                <a href="javascript:DeleteRepository('{{ registry.name }}')" title="确认删除镜像: {{ registry.name }}&nbsp;?"><scan class="text-danger glyphicon glyphicon-trash"></scan></a>
             </td>
         </tr>
     {% endfor %}
@@ -68,6 +62,27 @@ var As=document.getElementById('tab').getElementsByTagName('li');
 NavId = As[6];
 console.log(NavId)
 NavId.className='active';
+
+// 删除镜像
+function DeleteRepository(repository_name) {
+    $.ajax({
+        url: "{{ url_for('apis.core.registry') }}?repository_name=" + repository_name,
+        method: 'DELETE',
+        datatype: 'json',
+        success: function(res) {
+            console.log(res);
+            if (res.success==true) {
+                alert("镜像" + repository_name + "删除成功！");
+            } else {
+                alert("镜像" + repository_name + "删除失败！");
+            }
+            window.location.reload();
+        },
+        error: function(error){
+            console.log(error);
+        }
+    });
+}
 
 </script>
 {% endblock %}
