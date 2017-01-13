@@ -65,7 +65,12 @@ STORAGE={
 
 #私有仓配置段
 REGISTRY={
-    "RegistryAddr": "https://registry.saintic.com",
-    "RegistryVersion": 1,
-    "RegistryAuthentication": None
+    "RegistryAddr": os.getenv("swarmops_RegistryAddr", "https://registry.saintic.com"),
+    #私有仓地址, 例如https://docker.io, http://ip:port
+
+    "RegistryVersion": os.getenv("swarmops_RegistryVersion", 1),
+    #私有仓版本, 1、2
+
+    "RegistryAuthentication": os.getenv("swarmops_RegistryAuthentication", None)
+    #认证, 目前不可用
 }
