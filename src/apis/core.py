@@ -98,9 +98,10 @@ class Service(Resource):
         replicas    = request.form.get("replicas")
         delay       = request.form.get("delay")
         parallelism = request.form.get("parallelism")
+        USType      = request.form.get("UpdateServiceType", "api")
 
         if g.auth:
-            return g.service.PUT(serviceFlag=flag, image=image, name=name, env=env, mount=mount, publish=publish, replicas=replicas, delay=delay, parallelism=parallelism)
+            return g.service.PUT(serviceFlag=flag, image=image, name=name, env=env, mount=mount, publish=publish, replicas=replicas, delay=delay, parallelism=parallelism, UpdateServiceType=USType)
         else:
             return abort(403)
 
