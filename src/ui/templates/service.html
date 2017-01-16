@@ -20,8 +20,8 @@ Service | SwarmOps - Docker管理平台
 <table class="table table-bordered table-hover table-condensed table-responsive">
     <thead>
         <tr class="active">
-            <th style="vertical-align: middle; text-align: center;">ID</th>
             <th style="vertical-align: middle; text-align: center;">Name</th>
+            <th style="vertical-align: middle; text-align: center;">ID</th>
             <th style="vertical-align: middle; text-align: center;">Image</th>
             <th style="vertical-align: middle; text-align: center;">Replicas</th>
             <th style="vertical-align: middle; text-align: center;">Env</th>
@@ -39,8 +39,17 @@ Service | SwarmOps - Docker管理平台
     <tbody>
     {% for service in Services %}
         <tr>
+            <td style='vertical-align: middle; text-align: center;'>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" style="width: 100px; max-width: 200px">{{ service.Name }} <span class="caret"></span></button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#"><scan class="text-success">SUCCESS</scan></a></li>
+                        <li><a href="#"><scan class="text-warning">INFO</a></a></li>
+                        <li><a href="#"><scan class="text-danger">DANGER</a></a></li>
+                    </ul>
+                </div>
+            </td>
             <td style='vertical-align: middle; text-align: center;'>{{ service.ID }}</td>
-            <td style='vertical-align: middle; text-align: center;'>{{ service.Name }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ service.Image }}</td>
             <td style='vertical-align: middle; text-align: center;'>
             {{ service.Replicas }}<br/>
