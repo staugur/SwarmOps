@@ -425,9 +425,9 @@ server {
                     env         = self.commaConvert(params.get("env")) if params.get("env") else defaultEnv
                     mount       = self.commaConvert(params.get("mount")) if params.get("mount") else defaultMount
                     publish     = self.commaConvert(params.get("publish")) if params.get("publish") else defaultPublish
-                    replicas    = int(params.get("replicas")) or defaultReplicas
-                    delay       = int(params.get("delay")) or 10
-                    parallelism = int(params.get("parallelism")) or 1
+                    replicas    = int(params.get("replicas")) if params.get("replicas") else defaultReplicas
+                    delay       = int(params.get("delay")) if params.get("delay") else 10
+                    parallelism = int(params.get("parallelism")) if params.get("parallelism") else 1
             except Exception,e:
                 logger.warn(e, exc_info=True)
                 res.update(msg="parameters error", code=50001)
