@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base/base.html" %}
 {% block title %}
 Storage | SwarmOps - Docker管理平台
 {% endblock %}
@@ -60,7 +60,7 @@ Storage | SwarmOps - Docker管理平台
 // 更新导航
 var NavId=null;
 var As=document.getElementById('tab').getElementsByTagName('li');
-NavId = As[3];
+NavId = As[5];
 console.log(NavId)
 NavId.className='active';
 </script>

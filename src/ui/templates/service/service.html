@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base/base.html" %}
 {% block title %}
 Service | SwarmOps - Docker管理平台
 {% endblock %}
@@ -8,14 +8,8 @@ Service | SwarmOps - Docker管理平台
 <div class="alert alert-danger" role="alert">没有服务或活跃集群异常!!!</div>
 {% endif %}
 <p>
-    <a href="{{ url_for('ui.misc', misc='AddService') }}"><button type="button" class="btn btn-success">添加服务</button></a>
-    <a href="{{ url_for('ui.misc', misc='DelService') }}"><button type="button" class="btn btn-danger">删除服务</button></a>
-    <a href="{{ url_for('ui.misc', misc='UpdateService') }}"><button type="button" class="btn btn-info">更新服务</button></a>
-    {% if request.args.get("show") %}
-    <a href="{{ url_for('ui.service') }}"><button type="button" class="btn btn-primary">隐藏展示</button></a>
-    {% else %}
-    <a href="{{ url_for('ui.service', show='all') }}"><button type="button" class="btn btn-primary">显示所有</button></a>
-    {% endif %}
+    <a href="javascript:ServiceCreate()"><button type="button" class="btn btn-success">创建服务</button></a>
+    <a href="javascript: ServiceDeleteMore()"><button type="button" class="btn btn-danger">批量删除服务</button></a>
 </p>
 <table class="table table-bordered table-hover table-condensed table-responsive">
     <thead>
@@ -41,11 +35,12 @@ Service | SwarmOps - Docker管理平台
         <tr>
             <td style='vertical-align: middle; text-align: center;'>
                 <div class="btn-group">
-                    <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" style="width: 100px; max-width: 200px">{{ service.Name }} <span class="caret"></span></button>
+                    <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" style="width: auto; min-width: 120px; max-width: 200px">{{ service.Name }} <span class="caret"></span></button>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="#"><scan class="text-success">SUCCESS</scan></a></li>
-                        <li><a href="#"><scan class="text-warning">INFO</a></a></li>
-                        <li><a href="#"><scan class="text-danger">DANGER</a></a></li>
+                        <li><a href="javascript:ServiceShowNginx('{{ service.ID }}')"><scan class="text-success">查看Nginx配置样例</scan></a></li>
+                        <li><a href="javascript:ServiceDetail('{{ service.ID }}')"><scan class="text-warning">查看详细数据</a></a></li>
+                        <li><a href="javascript:ServiceDelete('{{ service.ID }}')"><scan class="text-danger">删除服务</a></a></li>
+                        <li><a href="javascript:ServiceUpdate('{{ service.ID }}')"><scan class="text-info">更新服务</a></a></li>
                     </ul>
                 </div>
             </td>
@@ -105,5 +100,94 @@ var As=document.getElementById('tab').getElementsByTagName('li');
 NavId = As[1];
 console.log(NavId)
 NavId.className='active';
+
+// iframe层显示服务Nginx样例
+function ServiceShowNginx(serviceId) {
+    layer.open({
+        type: 2,
+        title: 'Nginx配置样例',
+        shadeClose: true,
+        shade: 0.8,
+        area: ['680px', '90%'],
+        content: '{{ url_for("ui.nginx") }}?serviceId=' + serviceId
+    });
+}
+
+// 询问框、iframe层删除服务
+function ServiceDelete(serviceId) {
+    layer.confirm('你确定要删除此服务?', {
+        btn: ['确认删除','我再想想']
+    }, function(){
+        console.warn("将要删除服务"+serviceId);
+        if (serviceId) {
+            $.ajax({
+                url: "{{ url_for('apis.core.service') }}",
+                method: 'DELETE',
+                async: false,
+                datatype: 'json',
+                data: {"serviceId": serviceId},
+                success: function(res) {
+                    console.log(res);
+                    if (res.success==true) {
+                        layer.msg("Delete Service Successfully", {icon: 1});
+                    } else {
+                        layer.msg("Delete Service Failed", {icon: 2});
+                    }
+                },
+            });
+            document.location.reload(); //重载当前页面
+        };
+    }, function() {
+        console.log("canel");
+    });
+}
+
+// iframe层删除多个服务
+function ServiceDeleteMore() {
+    layer.open({
+        type: 2,
+        title: '批量删除服务',
+        shadeClose: true,
+        shade: 0.8,
+        area: ['680px', '90%'],
+        content: '{{ url_for("ui.service_delete") }}'
+    });
+}
+
+// iframe层更新服务
+function ServiceUpdate(serviceId) {
+    layer.open({
+        type: 2,
+        title: '更新服务',
+        shadeClose: true,
+        shade: 0.8,
+        area: ['800px', '90%'],
+        content: '{{ url_for("ui.service_update") }}?serviceId=' + serviceId
+    });
+}
+
+// iframe层创建服务
+function ServiceCreate() {
+    layer.open({
+        type: 2,
+        title: '创建服务',
+        shadeClose: true,
+        shade: 0.8,
+        area: ['800px', '90%'],
+        content: '{{ url_for("ui.service_create") }}'
+    });
+}
+
+// iframe层服务详细信息
+function ServiceDetail() {
+    layer.open({
+        type: 2,
+        title: '查看详细服务信息',
+        shadeClose: true,
+        shade: 0.8,
+        area: ['680px', '90%'],
+        content: '{{ url_for("ui.service_detail") }}'
+    });
+}
 </script>
 {% endblock %}

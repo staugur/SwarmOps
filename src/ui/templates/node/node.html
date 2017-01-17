@@ -1,0 +1,65 @@
+{% extends "base/base.html" %}
+{% block title %}
+Node | SwarmOps - Docker管理平台
+{% endblock %}
+{% block container %}
+{% set Nodes = g.node.GET().data %}
+{% if not Nodes %}
+<div class="alert alert-danger" role="alert">活跃集群异常!!!</div>
+{% endif %}
+<p>
+    <a href="{{ url_for('ui.misc', misc='AddNode') }}"><button type="button" class="btn btn-success">添加节点</button></a>
+    <a href="{{ url_for('ui.misc', misc='DelNode') }}"><button type="button" class="btn btn-danger">删除节点</button></a>
+    <a href="{{ url_for('ui.misc', misc='UpdateNode') }}"><button type="button" class="btn btn-info">更新节点</button></a>
+</p>
+<table class="table table-bordered table-hover table-condensed table-responsive">
+    <thead>
+        <tr class="active">
+            <th style="vertical-align: middle; text-align: center;">Host</th>
+            <th style="vertical-align: middle; text-align: center;">ID</th>
+            <th style="vertical-align: middle; text-align: center;">角色</th>
+            <th style="vertical-align: middle; text-align: center;">状态:有效:可达</th>
+            <th style="vertical-align: middle; text-align: center;">硬件资源</th>
+            <th style="vertical-align: middle; text-align: center;">标签</th>
+            <th style="vertical-align: middle; text-align: center;">时间</th>
+            <th style="vertical-align: middle; text-align: center;">版本</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for node in Nodes %}
+        <tr>
+            <td style='vertical-align: middle; text-align: center;'>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" style="width: 150px; max-width: 200px">{{ node[0] }} <span class="caret"></span></button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#"><scan class="text-success">SUCCESS</scan></a></li>
+                        <li><a href="#"><scan class="text-warning">INFO</a></a></li>
+                        <li><a href="#"><scan class="text-danger">DANGER</a></a></li>
+                    </ul>
+                </div>
+            </td>
+            <td style='vertical-align: middle; text-align: center;'>{{ node[1] }}</td>
+            <td style='vertical-align: middle; text-align: center;'>{{ node[2] }}</td>
+            <td style='vertical-align: middle; text-align: center;'>{{ "{}:{}:{}".format(node[3], node[4], node[5]) }}</td>
+            <td style='vertical-align: middle; text-align: center;'>{{ "CPU:{}\nMemory:{}G".format(node[6], node[7]) }}</td>
+            <td style='vertical-align: middle; text-align: center;'>{{ node[9] }}</td>
+            <td style='vertical-align: middle; text-align: center;'>{{ "Create:{}\nUpdate:{}".format(node[10], node[11]) }}</td>
+            <td style='vertical-align: middle; text-align: center;'>{{ node[12] }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+// 节点数量
+document.getElementById("node_number").innerHTML= {{ g.node.GET().data|length }};
+
+// 更新导航
+var NavId=null;
+var As=document.getElementById('tab').getElementsByTagName('li');
+NavId = As[2];
+console.log(NavId)
+NavId.className='active';
+</script>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base/micro.html" %}
+
+{% block title %}
+Service Nginx | SwarmOps - Docker管理平台
+{% endblock %}
+
+{% block container %}
+{% set serviceId = request.args.get("serviceId") %}
+<h3>Nginx配置样例:&nbsp;<code>{{ serviceId }}</code></h3>
+<div id="GenerateNginxDiv">
+    <pre><code>{{ g.service.GetServiceNode(serviceId=serviceId, getBackend=true).data.nginx }}</code></pre>
+</div>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+// 定时刷新Nginx配置样例
+$(document).ready(function () {
+    setInterval("GenerateNginx()",5000);
+});
+function GenerateNginx() {
+    $.ajax({
+        url: "{{ url_for('apis.core.service') }}?getNode=true&getBackend=true&id={{ request.args.get('serviceId') }}",
+        method: 'GET',
+        datatype: 'json',
+        success: function(res) {
+            nginx = res.data.nginx;
+            console.log(nginx);
+            templ = "<pre><code>" + nginx + "</code></pre>";
+            $("#GenerateNginxDiv").replaceWith(templ);
+        },
+        error: function(res) {
+            console.error(res);
+            $("#GenerateNginxDiv").replaceWith(res.statusText);
+        }
+    });
+}
+</script>
+{% endblock %}

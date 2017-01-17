@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base/base.html" %}
 
 {% block title %}
 Registry | SwarmOps - Docker管理平台
@@ -48,7 +48,7 @@ Registry | SwarmOps - Docker管理平台
 // 更新导航
 var NavId=null;
 var As=document.getElementById('tab').getElementsByTagName('li');
-NavId = As[6];
+NavId = As[4];
 console.log(NavId)
 NavId.className='active';
 

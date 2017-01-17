@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base/base.html" %}
 
 {% block title %}
 Network | SwarmOps - Docker管理平台
@@ -44,7 +44,7 @@ Network | SwarmOps - Docker管理平台
 // 更新导航
 var NavId=null;
 var As=document.getElementById('tab').getElementsByTagName('li');
-NavId = As[5];
+NavId = As[3];
 console.log(NavId)
 NavId.className='active';
 

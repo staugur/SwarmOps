@@ -1,0 +1,87 @@
+{% extends "base/micro.html" %}
+
+{% block title %}
+Service Create | SwarmOps - Docker管理平台
+{% endblock %}
+
+{% block container %}
+
+<form class="form-horizontal" role="form" id="AddServiceForm">
+
+  <div class="form-group">
+    <label for="AddServiceName" class="col-sm-12">Service Name</label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="AddServiceName" name="name" placeholder="服务标识">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="AddServiceImage" class="col-sm-12">Service Image&nbsp;<span class="glyphicon glyphicon-star-empty"></span></label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="AddServiceImage" name="image" placeholder="服务镜像">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="AddServicereplicas" class="col-sm-12">Service Replicas&nbsp;<span class="glyphicon glyphicon-star-empty"></span></label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="AddServicereplicas" name="replicas" placeholder="服务副本(实例数), 默认值为1">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="AddServiceEnv" class="col-sm-12">Service Env</label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="AddServiceEnv" name="env" placeholder='服务环境变量, 格式是"key=value", 多个环境变量以逗号分隔'>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="AddServiceMount" class="col-sm-12">Service Mount</label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="AddServiceMount" name="mount" placeholder='服务挂载, 格式是"src:target:true|false:mode", true|false代表只读、读写, mode固定值bind, 多个挂载以逗号分隔'>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="AddServicePublish" class="col-sm-12">Service Publish</label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="AddServicePublish" name="publish" placeholder='服务发现(端口映射), 格式是"src:target:protocol", protocol默认值tcp, 多个端口映射以逗号分隔'>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class=" col-sm-12">
+      <button type="button" id="AddServiceSubmit" onclick=AddService() class="btn btn-success">添加服务</button>
+    </div>
+  </div>
+
+</form>
+
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+function AddService() {
+    $.ajax({
+        url: "{{ url_for('apis.core.service') }}",
+        method: 'POST',
+        datatype: 'json',
+        data: $('#AddServiceForm').serialize(),
+        beforeSend: function () {
+            // 禁用按钮防止重复提交
+            $("#AddServiceSubmit").attr({ disabled: "disabled" });
+        },
+        success: function(res) {
+            console.log(res);
+            if (res.success==true) {
+                alert("添加服务成功，服务ID是" + res.serviceId);
+                window.location.href="{{ url_for('ui.service') }}?id=" + res.serviceId;
+            } else {
+                alert("添加服务失败，请重试提交或报告错误！\n错误原因是：" + res.msg);
+            }
+        },
+    });
+}
+</script>
+{% endblock %}

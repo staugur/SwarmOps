@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base/base.html" %}
 {% block title %}
 Swarm | SwarmOps - Docker管理平台
 {% endblock %}
@@ -25,8 +25,7 @@ Swarm | SwarmOps - Docker管理平台
             <th style="vertical-align: middle; text-align: center;">Name</th>
             <th style="vertical-align: middle; text-align: center;">Manager</th>
             <th style="vertical-align: middle; text-align: center;">State</th>
-            <th style="vertical-align: middle; text-align: center;">ManagerToken</th>
-            <th style="vertical-align: middle; text-align: center;">WorkerToken</th>
+            <th style="vertical-align: middle; text-align: center;">Token</th>
         </tr>
     </thead>
     <tbody>
@@ -53,8 +52,7 @@ Swarm | SwarmOps - Docker管理平台
             {% else %}
             <td style='vertical-align: middle; text-align: center;' class="text-danger">{{ swarm.state }}</td>
             {% endif %}
-            <td style='vertical-align: middle;'>{{ swarm.managerToken }}</td>
-            <td style='vertical-align: middle;'>{{ swarm.workerToken }}</td>
+            <td style='vertical-align: middle;'>{{ "Manager:  {}".format(swarm.managerToken) }}<br/>{{ "Worker: {}".format(swarm.workerToken) }}</td>
         </tr>
     {% endfor %}
     </tbody>

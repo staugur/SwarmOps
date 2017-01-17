@@ -1,0 +1,36 @@
+{% extends "base/micro.html" %}
+
+{% block title %}
+Service Detail | SwarmOps - Docker管理平台
+{% endblock %}
+
+{% block container %}
+{% set serviceId = request.args.get("serviceId") %}
+{% set service   = g.service.GET(service=serviceId, core=true, core_convert=true).data[0] %}
+{% set service_d = g.service.GET(service=serviceId, core=false, core_convert=false).data[0] %}
+
+<blockquote>
+<h3 class="text-success">简略信息</h3>
+<div>
+    <p><i>服务标识</i>: {{ service.ID }}</p>
+    <p><i>服务名称</i>: {{ service.Name }}</p>
+    <p><i>服务镜像</i>: {{ service.Image }}</p>
+    <p><i>环境变量</i>: {{ service.Env }}</p>
+    <p><i>挂载目录</i>: {{ service.Mounts }}</p>
+    <p><i>端口映射</i>: {{ service.NetPorts }}</p>
+    <p><i>实例数</i>: {{ service.Replicas }}</p>
+    <p><i>创建时间</i>: {{ service.CreatedAt }}</p>
+    <p><i>更新时间</i>: {{ service.UpdatedAt }}</p>
+    <p><i>服务标签</i>: {{ service.Labels }}</p>
+    <p><i>网络模式</i>: {{ service.NetMode }}</p>
+    <p><i>VIP</i>: {{ service.NetVip }}</p>
+    <p><i>版本</i>: {{ service.Version }}</p>
+    <p><i>更新状态</i>: {{ service.UpdateStatus }}</p>
+</div>
+</blockquote>
+
+<blockquote>
+<h3 class="text-primary">详细信息</h3>
+<pre><code>{{ service_d }}</code></pre>
+</blockquote>
+{% endblock %}

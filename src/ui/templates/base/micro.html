@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 引入 Bootstrap -->
+    <link href="{{ url_for('ui.static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    {% block head %}{% endblock %}
+    <!-- HTML5 Shim 和 Respond.js 用于让 IE8 支持 HTML5元素和媒体查询 -->
+    <!-- 注意： 如果通过 file://  引入 Respond.js 文件，则该文件无法起效果 -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+    <link href="{{ url_for('ui.static', filename='img/favicon.ico') }}" rel="icon" type="image/x-icon" />
+    <link href="{{ url_for('ui.static', filename='img/favicon.ico') }}" rel="shortcut icon" type="image/x-icon" />
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header">
+    <p>
+        <img src="{{ url_for('ui.static', filename='img/logo.png') }}" alt="{{ self.title() }}" title="{{ self.title() }}" class="img-circle" width="8%"><br/>
+        <b>{{ self.title() }}</b><sub class="text-lowercase"><kbd>v{{ g.sysInfo.Version }}</kbd></sub>
+    </p>
+    </div>
+    <br />
+
+    {% block container %}{% endblock %}
+
+    </br>
+    </br>
+</div>
+
+<script src="{{ url_for('ui.static', filename='js/jquery-3.1.0.min.js') }}"></script>
+<script src="{{ url_for('ui.static', filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('ui.static', filename='layer/layer.js') }}"></script>
+{% block script %}{% endblock %}
+</body>
+</html>
