@@ -41,9 +41,9 @@ Node | SwarmOps - Docker管理平台
             <td style='vertical-align: middle; text-align: center;'>{{ node[1] }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ node[2] }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ "{}:{}:{}".format(node[3], node[4], node[5]) }}</td>
-            <td style='vertical-align: middle; text-align: center;'>{{ "CPU:{}\nMemory:{}G".format(node[6], node[7]) }}</td>
+            <td style='vertical-align: middle; text-align: center;'>{{ "CPU:{}".format(node[6]) }}<br/>{{ "Memory:{}G".format(node[7]) }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ node[9] }}</td>
-            <td style='vertical-align: middle; text-align: center;'>{{ "Create:{}\nUpdate:{}".format(node[10], node[11]) }}</td>
+            <td style='vertical-align: middle; text-align: center;'>{{ "Create:{}".format(node[10]) }}<br/>{{ "Update:{}".format(node[11]) }}</td>
             <td style='vertical-align: middle; text-align: center;'>{{ node[12] }}</td>
         </tr>
     {% endfor %}

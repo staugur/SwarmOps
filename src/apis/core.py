@@ -255,6 +255,19 @@ class Registry(Resource):
         else:
             return abort(403)
 
+class RollingUpgradeService(Resource):
+
+    def post(self):
+        """ 滚动升级服务 """
+
+        tag = request.form.get("tag")
+        sid = request.form.get("serviceId")
+
+        if g.auth:
+            return g.service.RollingUpgrade(serviceFlag=sid, tag=tag)
+        else:
+            return abort(403)
+
 core_blueprint = Blueprint(__name__, __name__)
 api = Api(core_blueprint)
 api.add_resource(Swarm, '/swarm', '/swarm/', endpoint='swarm')
@@ -263,3 +276,4 @@ api.add_resource(Node, '/node', '/node/', endpoint='node')
 api.add_resource(InitSwarm, '/swarm/init', '/swarm/init/', endpoint='InitSwarm')
 api.add_resource(Network, '/network', '/network/', endpoint='network')
 api.add_resource(Registry, '/registry', '/registry/', endpoint='registry')
+api.add_resource(RollingUpgradeService, '/rollingupgradeservice', '/rollingupgradeservice/', endpoint='rollingupgradeservice')

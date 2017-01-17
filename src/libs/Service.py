@@ -537,3 +537,32 @@ server {
         logger.info(res)
         return res
 
+    def RollingUpgrade(self, serviceFlag, tag):
+        """ 服务滚动升级 """
+
+        res = {"msg": None, "code": 0}
+        logger.info("Update service flag(id/name) is %s, tag is %s" %(serviceFlag, tag))
+
+        #check params
+        if not serviceFlag:
+            logger.warn("service id/name is empty")
+            res.update(msg="service id/name is empty", code=60000)
+            logger.info(res)
+            return res
+
+        if not tag:
+            res.update(msg="tag error", code=60001)
+            logger.info(res)
+            return res
+
+        #check leader
+        if not self.leader:
+            res.update(msg="No active swarm", code=-1000)
+            logger.info(res)
+            return res
+
+        data  = self.GET(service=serviceFlag, core=True, core_convert=False).get("data")[0]
+        Image = "{}:{}".format(data.get("Image").split(":")[0], tag)
+        res.update(self.PUT(serviceFlag, image=Image))
+        logger.info(res)
+        return res
