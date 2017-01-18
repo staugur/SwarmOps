@@ -79,6 +79,7 @@ function AddService() {
                 window.location.href="{{ url_for('ui.service') }}?id=" + res.serviceId;
             } else {
                 alert("添加服务失败，请重试提交或报告错误！\n错误原因是：" + res.msg);
+                document.location.reload(); //重载当前页面
             }
         },
     });

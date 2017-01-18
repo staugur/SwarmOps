@@ -8,9 +8,8 @@ Node | SwarmOps - Docker管理平台
 <div class="alert alert-danger" role="alert">活跃集群异常!!!</div>
 {% endif %}
 <p>
-    <a href="{{ url_for('ui.misc', misc='AddNode') }}"><button type="button" class="btn btn-success">添加节点</button></a>
-    <a href="{{ url_for('ui.misc', misc='DelNode') }}"><button type="button" class="btn btn-danger">删除节点</button></a>
-    <a href="{{ url_for('ui.misc', misc='UpdateNode') }}"><button type="button" class="btn btn-info">更新节点</button></a>
+    <a href="javascript:NodeAdd()"><button type="button" class="btn btn-success">添加节点</button></a>
+    <a href="javascript:NodeDeleteMore()"><button type="button" class="btn btn-danger">批量删除节点</button></a>
 </p>
 <table class="table table-bordered table-hover table-condensed table-responsive">
     <thead>
@@ -32,9 +31,8 @@ Node | SwarmOps - Docker管理平台
                 <div class="btn-group">
                     <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" style="width: 150px; max-width: 200px">{{ node[0] }} <span class="caret"></span></button>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="#"><scan class="text-success">SUCCESS</scan></a></li>
-                        <li><a href="#"><scan class="text-warning">INFO</a></a></li>
-                        <li><a href="#"><scan class="text-danger">DANGER</a></a></li>
+                        <li><a href="javascript:NodeUpdate('{{ node[1] }}')"><scan class="text-primary">更新节点</a></a></li>
+                        <li><a href="javascript:NodeDelete('{{ node[0] }}')"><scan class="text-danger">非强制删除节点</a></a></li>
                     </ul>
                 </div>
             </td>
@@ -61,5 +59,71 @@ var As=document.getElementById('tab').getElementsByTagName('li');
 NavId = As[2];
 console.log(NavId)
 NavId.className='active';
+
+// 询问框、iframe层删除单个节点
+function NodeDelete(nodeIp) {
+    layer.confirm('你确定要删除此节点?', {
+        btn: ['确认删除','我再想想']
+    }, function(){
+        console.warn("将要删除节点"+nodeIp);
+        if (nodeIp) {
+            $.ajax({
+                url: "{{ url_for('apis.core.node') }}",
+                method: 'DELETE',
+                async: false,
+                datatype: 'json',
+                data: {"ip": nodeIp, "force": false},
+                success: function(res) {
+                    console.log(res);
+                    if (res.success==true) {
+                        layer.msg("Delete Node Successfully", {icon: 1, time: 3*1000});
+                        document.location.reload(); //重载当前页面
+                    } else {
+                        layer.msg("Delete Node Failed. "+res.msg, {icon: 2, time: 15*1000});
+                    }
+                },
+            });
+        }
+    }, function() {
+        console.log("canel");
+    });
+}
+
+// iframe层删除多个节点
+function NodeDeleteMore() {
+    layer.open({
+        type: 2,
+        title: '批量删除节点',
+        shadeClose: true,
+        shade: 0.8,
+        area: ['680px', '90%'],
+        content: '{{ url_for("ui.node_delete") }}'
+    });
+}
+
+// iframe层更新节点
+function NodeUpdate(nodeId) {
+    layer.open({
+        type: 2,
+        title: '更新节点',
+        shadeClose: true,
+        shade: 0.8,
+        area: ['800px', '90%'],
+        content: '{{ url_for("ui.node_update") }}?nodeId=' + nodeId
+    });
+}
+
+// iframe层添加节点
+function NodeAdd() {
+    layer.open({
+        type: 2,
+        title: '添加节点',
+        shadeClose: true,
+        shade: 0.8,
+        area: ['800px', '90%'],
+        content: '{{ url_for("ui.node_add") }}'
+    });
+}
+
 </script>
 {% endblock %}

@@ -1,0 +1,83 @@
+{% extends "base/micro.html" %}
+
+{% block title %}
+Node Update | SwarmOps - Docker管理平台
+{% endblock %}
+
+{% block container %}
+<form class="form-horizontal" role="form" id="UpdateNodeForm">
+
+  <input type="hidden" class="form-control" id="UpdateNodeID" name="node_id">
+  <input type="hidden" class="form-control" id="UpdateNodeType" name="UpdateNodeType" value="ui">
+
+  <div class="form-group">
+    <label for="UpdateNodeLabels" class="col-sm-12">更新节点标签</label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="UpdateNodeLabels" name="node_labels" placeholder="节点标签, 请输入k/v键值对, 多对标签以逗号分隔, 例如ipaddr=NodeIp, environment=dev">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-sm-12">更新节点角色<code id="UpdateNodeRole"></code></label>
+    <div class="radio col-sm-12"><label><input type="radio" id="UpdateNodeRoleWorker" name="node_role" value="Worker">设定为Worker工作节点</label></div>
+    <div class="radio col-sm-12"><label><input type="radio" id="UpdateNodeRoleManager" name="node_role" value="Manager">设定为Manager管理节点</label></div>
+  </div>
+
+  <div class="form-group">
+    <div class=" col-sm-12">
+      <button type="button" onclick=UpdateNode() class="btn btn-info">更新节点</button>
+    </div>
+  </div>
+
+</form>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+$(document).ready(function () {
+    var nodeId = "{{ request.args.get('nodeId') }}"
+    $.ajax({
+        url: "{{ url_for('apis.core.node') }}?node=" + nodeId,
+        method: 'GET',
+        datatype: 'json',
+        success: function(res) {
+            console.log(res);
+            node = res.data[0];
+            document.getElementById("UpdateNodeID").value = node[1];
+            document.getElementById("UpdateNodeLabels").value = node[9];
+            document.getElementById("UpdateNodeRole").innerHTML = "&nbsp;当前角色为&nbsp;" + node[2] + "&nbsp;";
+            if (node[2]=="worker") {
+                console.log("UpdateNodeRoleWorker sets it");
+                $("#UpdateNodeRoleManager").removeAttr("checked");//不选中Manager
+                $("#UpdateNodeRoleWorker").attr("checked","checked");//选中Worker
+            } else {
+                console.log("UpdateNodeRoleManager sets it");
+                $("#UpdateNodeRoleWorker").removeAttr("checked");//不选中Worker
+                $("#UpdateNodeRoleManager").attr("checked","checked");//选中Manager
+            }
+        },
+    });
+});
+function UpdateNode() {
+    $.ajax({
+        url: "{{ url_for('apis.core.node') }}",
+        method: 'PUT',
+        datatype: 'json',
+        data: $('#UpdateNodeForm').serialize(),
+        success: function(res) {
+            console.log(res);
+            if (res.success==true) {
+                alert("更新节点成功!");
+                document.location.reload(); //重载当前页面
+            } else {
+                alert("更新节点失败，请重试提交或报告错误！\n错误原因是：" + res.msg);
+            }
+        },
+        error: function(res) {
+            console.log(res);
+            alert(res.statusText);
+        }
+    });
+}
+</script>
+{% endblock %}

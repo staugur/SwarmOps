@@ -60,6 +60,28 @@ def node():
     else:
         return redirect(url_for("login"))
 
+@ui_blueprint.route("/node/add/")
+def node_add():
+    if g.auth:
+        return render_template("node/add.html")
+    else:
+        return redirect(url_for("login"))
+
+@ui_blueprint.route("/node/update/")
+def node_update():
+    if g.auth:
+        return render_template("node/update.html")
+    else:
+        return redirect(url_for("login"))
+
+@ui_blueprint.route("/node/delete/")
+def node_delete():
+    if g.auth:
+        return render_template("node/delete.html")
+    else:
+        return redirect(url_for("login"))
+
+'''misc route'''
 @ui_blueprint.route("/misc/")
 def misc():
     if g.auth:

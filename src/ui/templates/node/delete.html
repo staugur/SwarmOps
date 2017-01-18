@@ -1,0 +1,107 @@
+{% extends "base/micro.html" %}
+
+{% block title %}
+Node Delete | SwarmOps - Docker管理平台
+{% endblock %}
+
+{% block head %}
+    <!-- Import chosen css -->
+    <link rel="stylesheet" href="{{ url_for('ui.static', filename='css/chosen.min.css') }}">
+{% endblock %}
+
+{% block container %}
+{% set Nodes = g.node.GET().data %}
+<form class="form-horizontal" role="form" id="DelNodeForm">
+
+  <div class="form-group">
+      <label for="DelNodeflag" class="col-sm-12">
+          <p class="text-success "><span class="glyphicon glyphicon-arrow-down"></span>节点标识名称列表<scan class="badge"> {{ Nodes|length }}</scan><span class="glyphicon glyphicon-arrow-down"></span></p>
+      </label>
+      <div class="col-sm-12">
+          <select id="DelNodeflag" data-placeholder="选择一个或多个节点删除(Manager节点需要选中强制离开集群)" class="chosen-select" multiple tabindex="4" style="width: 100%">
+          {% for node in Nodes %}
+              {% if node[2] == "Leader" or node[3] == "down" or node[5] == "unreachable" %}
+              <option value="{{ node[0] }}" disabled>{{ node[0] }} &lt;{{ node[2] }}&gt; &lt;{{ node[3] }}&gt; &lt;{{ node[4] }}&gt;</option>
+              {% else %}
+              <option value="{{ node[0] }}">{{ node[0] }} &lt;{{ node[2] }}&gt; &lt;{{ node[3] }}&gt; &lt;{{ node[4] }}&gt;</option>
+              {% endif %}
+          {% endfor %}
+          </select>
+      </div>
+  </div>
+
+  <div class="form-group">
+    <div class="radio col-sm-12"><label><input type="radio" name="force" value="False" checked>非强制离开集群</label></div>
+    <div class="radio col-sm-12"><label><input type="radio" name="force" value="True">强制离开集群</label></div>
+  </div>
+
+  <div class="form-group">
+    <div class=" col-sm-12">
+      <button type="button" onclick=DelNode() class="btn btn-danger">批量删除节点</button>
+    </div>
+  </div>
+
+</form>
+{% endblock %}
+
+{% block script %}
+<!-- Import chosen js -->
+<script src="{{ url_for('ui.static', filename='js/chosen.jquery.min.js') }}" type="text/javascript"></script>
+<script type="text/javascript">
+var config = {
+    '.chosen-select'           : {},
+    '.chosen-select-deselect'  : {allow_single_deselect:true},
+    '.chosen-select-no-single' : {disable_search_threshold:10},
+    '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+    '.chosen-select-width'     : {width:"95%"}
+}
+for (var selector in config) {
+    $(selector).chosen(config[selector]);
+}
+function DelNode() {
+  var DelNode = $('#DelNodeflag').val();
+  var force = $('#DelNodeForm input[name="force"]:checked ').val();
+  console.log(DelNode);
+  console.log(force);
+  if (DelNode) {
+    if(window.confirm("你确定要删除" + DelNode +"?")) {
+        var nodes = DelNode;
+        var SUCCESS  = new Array();
+        var FAILED   = new Array();
+        console.log(nodes);
+        for (i=0;i<nodes.length ;i++ ) {
+            flag = nodes[i];
+            if (flag) {
+                $.ajax({
+                    url: "{{ url_for('apis.core.node') }}",
+                    method: 'DELETE',
+                    async: false,
+                    datatype: 'json',
+                    data: {"ip": flag, "force": force},
+                    success: function(res) {
+                        console.log(res);
+                        if (res.success==true) {
+                            console.log("Delete Node Successfully:" + flag);
+                            SUCCESS.push(flag);
+                        } else {
+                            console.log("Delete Node Failed:" + flag);
+                            FAILED.push(flag);
+                        }
+                    },
+                });
+            }
+        }
+        if (SUCCESS.length!==0) {
+            alert("节点删除成功列表：" + SUCCESS);
+        }
+        if (FAILED.length!==0) {
+            alert("节点删除失败列表：" + FAILED);
+        }
+        document.location.reload(); //重载当前页面
+    }
+  } else {
+      alert("请填写要删除的节点标识！");
+  }
+}
+</script>
+{% endblock %}

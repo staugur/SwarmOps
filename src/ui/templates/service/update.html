@@ -5,9 +5,6 @@ Service Update | SwarmOps - Docker管理平台
 {% endblock %}
 
 {% block container %}
-{% set serviceId = request.args.get("serviceId") %}
-{% set service = g.service.GET(service=serviceId, core=True, core_convert=True).data[0] %}
-
 <form class="form-horizontal" role="form" id="UpdateServiceForm">
 
   <div class="form-group">

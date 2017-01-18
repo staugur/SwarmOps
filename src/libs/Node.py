@@ -77,7 +77,11 @@ class NodeManager(BASE_SWARM_ENGINE_API):
         nodesId1 = [ node[1] for node in self.GET()["data"] ]
         logger.info("The nodesId one before adding a node is {}".format(nodesId1))
         #Add a node
-        res.update(success=self._JoinSwarm(node_ip=ip.strip(), role=role, swarm=self.swarm))
+        result = self._JoinSwarm(node_ip=ip.strip(), role=role, swarm=self.swarm)
+        if isinstance(result, (list, tuple)) and False in result:
+            res.update(msg=result[-1])
+        else:
+            res.update(success=result)
         #Set node labels and Update it
         nodesId2 = [ node[1] for node in self.GET()["data"] ]
         logger.info("The nodesId one after adding a node is {}".format(nodesId2))
@@ -132,6 +136,10 @@ class NodeManager(BASE_SWARM_ENGINE_API):
             logger.info(res)
             return res
 
-        res.update(success=self._LeaveSwarm(node_ip=ip.strip(), force=force))
+        result = self._LeaveSwarm(node_ip=ip.strip(), force=force)
+        if isinstance(result, (list, tuple)) and False in data:
+            res.update(msg=result[-1])
+        else:
+            res.update(success=result)
         logger.info(res)
         return res

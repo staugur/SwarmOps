@@ -37,11 +37,11 @@ Service | SwarmOps - Docker管理平台
                 <div class="btn-group">
                     <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" style="width: auto; min-width: 120px; max-width: 200px">{{ service.Name }} <span class="caret"></span></button>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="javascript:ServiceShowNginx('{{ service.ID }}')"><scan class="text-primary">查看Nginx配置样例</scan></a></li>
-                        <li><a href="javascript:ServiceDetail('{{ service.ID }}')"><scan class="text-primary">查看详细数据</a></a></li>
-                        <li><a href="javascript:ServiceDelete('{{ service.ID }}')"><scan class="text-danger">删除服务</a></a></li>
-                        <li><a href="javascript:ServiceUpdate('{{ service.ID }}')"><scan class="text-primary">更新服务</a></a></li>
                         <li><a href="javascript:ServiceRollingUpgrade('{{ service.ID }}')"><scan class="text-success">滚动升级</a></a></li>
+                        <li><a href="javascript:ServiceUpdate('{{ service.ID }}')"><scan class="text-primary">更新服务</a></a></li>
+                        <li><a href="javascript:ServiceDetail('{{ service.ID }}')"><scan class="text-primary">详细信息</a></a></li>
+                        <li><a href="javascript:ServiceDelete('{{ service.ID }}')"><scan class="text-danger">删除服务</a></a></li>
+                        <li><a href="javascript:ServiceShowNginx('{{ service.ID }}')"><scan class="text-primary">Nginx配置</scan></a></li>
                     </ul>
                 </div>
             </td>
@@ -114,7 +114,7 @@ function ServiceShowNginx(serviceId) {
     });
 }
 
-// 询问框、iframe层删除服务
+// 询问框、iframe层删除单个服务
 function ServiceDelete(serviceId) {
     layer.confirm('你确定要删除此服务?', {
         btn: ['确认删除','我再想想']
@@ -130,13 +130,13 @@ function ServiceDelete(serviceId) {
                 success: function(res) {
                     console.log(res);
                     if (res.success==true) {
-                        layer.msg("Delete Service Successfully", {icon: 1});
+                        layer.msg("Delete Service Successfully", {icon: 1, time: 3*1000});
+                        document.location.reload(); //重载当前页面
                     } else {
-                        layer.msg("Delete Service Failed", {icon: 2});
+                        layer.msg("Delete Service Failed. "+res.msg, {icon: 2, time: 15*1000});
                     }
                 },
             });
-            document.location.reload(); //重载当前页面
         };
     }, function() {
         console.log("canel");
@@ -207,7 +207,7 @@ function ServiceRollingUpgrade(serviceId) {
                     layer.msg("RollingUpgrade Service Successfully", {icon: 1, time: 3*1000});
                     document.location.reload(); //重载当前页面
                 } else {
-                    layer.alert('RollingUpgrade Service Failed, because ' + res.msg, {icon: 2, time: 10*1000});
+                    layer.alert('RollingUpgrade Service Failed, because ' + res.msg, {icon: 2, time: 15*1000});
                 }
             },
         });

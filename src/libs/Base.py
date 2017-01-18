@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 
-import requests, json, docker
+import requests, json, docker, re
 from SpliceURL import Splice
 from utils.public import logger
 from random import choice
@@ -9,9 +9,14 @@ class BASE_SWARM_ENGINE_API:
 
 
     def __init__(self, port=2375, timeout=2):
-        self.port      = port
-        self.timeout   = timeout
-        self.verify    = False
+        self.port     = port
+        self.timeout  = timeout
+        self.verify   = False
+        self.errpat   = re.compile(r'(?<=\(\").*?(?=\"\))')
+
+    def _errmsg(self, e):
+        """ 将docker接口报错括号中字符串提取出来 """
+        return re.search(self.errpat, "{}".format(e)).group()
 
     def _checkSwarmToken(self, leader):
         """ 根据Leader查询集群令牌 """
@@ -141,7 +146,9 @@ class BASE_SWARM_ENGINE_API:
             res = client.swarm.join(remote_addrs=swarm["manager"], listen_addr="0.0.0.0", advertise_addr=node_ip, join_token=token)
         except docker.errors.APIError,e:
             logger.error(e, exc_info=True)
-            return False
+            pat = re.compile(r'(?<=\(\").*?(?=\"\))')
+            msg = re.search(pat, "{}".format(e)).group()
+            return (False, msg)
         else:
             return res
 
@@ -154,7 +161,9 @@ class BASE_SWARM_ENGINE_API:
             res = client.swarm.leave(force=force)
         except docker.errors.APIError,e:
             logger.error(e, exc_info=True)
-            return False
+            pat = re.compile(r'(?<=\(\").*?(?=\"\))')
+            msg = re.search(pat, "{}".format(e)).group()
+            return (False, msg)
         else:
             return res
 
