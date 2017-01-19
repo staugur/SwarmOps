@@ -112,7 +112,7 @@ function ServiceShowNginx(serviceId) {
         shadeClose: true,
         shade: 0.8,
         area: ['680px', '90%'],
-        content: '{{ url_for("ui.nginx") }}?serviceId=' + serviceId
+        content: '{{ url_for("ui.service_nginx") }}?serviceId=' + serviceId
     });
 }
 

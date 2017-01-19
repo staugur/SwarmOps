@@ -14,8 +14,8 @@ Swarm | SwarmOps - Docker管理平台
 {% endif %}
 <p>
     <a href="{{ url_for('ui.index') }}"><button type="button" class="btn btn-default"><i class="icon-repeat"></i> Reload</button></a>
-    <a href="{{ url_for('ui.misc', misc='AddSwarm') }}"><button type="button" class="btn btn-success">添加集群</button></a>
-    <a href="{{ url_for('ui.misc', misc='InitSwarm') }}"><button type="button" class="btn btn-primary">初始化集群</button></a>
+    <a href="javascript:SwarmAdd()"><button type="button" class="btn btn-success">添加集群</button></a>
+    <a href="javascript:SwarmInit()"><button type="button" class="btn btn-primary">初始化集群</button></a>
 </p>
 <table class="table table-bordered table-hover table-condensed table-responsive">
     <thead>
@@ -125,5 +125,28 @@ function SwarmDelete(name) {
     });
 }
 
+// iframe层添加集群
+function SwarmAdd() {
+    layer.open({
+        type: 2,
+        title: '添加集群',
+        shadeClose: true,
+        shade: 0.8,
+        area: ['800px', '90%'],
+        content: '{{ url_for("ui.swarm_add") }}'
+    });
+}
+
+// iframe层初始化集群
+function SwarmInit() {
+    layer.open({
+        type: 2,
+        title: '初始化集群',
+        shadeClose: true,
+        shade: 0.8,
+        area: ['800px', '90%'],
+        content: '{{ url_for("ui.swarm_init") }}'
+    });
+}
 </script>
 {% endblock %}

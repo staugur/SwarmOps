@@ -3,7 +3,7 @@
 # SwarmOps views for ui
 #
 
-from flask import Blueprint, render_template, url_for, redirect, g, request
+from flask import Blueprint, render_template, url_for, redirect, g
 
 ui_blueprint = Blueprint("ui", __name__, template_folder="templates", static_folder='static')
 
@@ -13,6 +13,20 @@ ui_blueprint = Blueprint("ui", __name__, template_folder="templates", static_fol
 def index():
     if g.auth:
         return render_template("swarm/swarm.html")
+    else:
+        return redirect(url_for("login"))
+
+@ui_blueprint.route("/swarm/add/")
+def swarm_add():
+    if g.auth:
+        return render_template("swarm/add.html")
+    else:
+        return redirect(url_for("login"))
+
+@ui_blueprint.route("/swarm/init/")
+def swarm_init():
+    if g.auth:
+        return render_template("swarm/init.html")
     else:
         return redirect(url_for("login"))
 
@@ -49,6 +63,13 @@ def service_create():
 def service_detail():
     if g.auth:
         return render_template("service/detail.html")
+    else:
+        return redirect(url_for("login"))
+
+@ui_blueprint.route("/service/nginx/")
+def service_nginx():
+    if g.auth:
+        return render_template("service/nginx.html")
     else:
         return redirect(url_for("login"))
 
@@ -96,13 +117,7 @@ def storage():
     else:
         return redirect(url_for("login"))
 
-@ui_blueprint.route("/nginx/")
-def nginx():
-    if g.auth:
-        return render_template("service/nginx.html")
-    else:
-        return redirect(url_for("login"))
-
+'''network route'''
 @ui_blueprint.route("/network/")
 def network():
     if g.auth:
@@ -110,6 +125,7 @@ def network():
     else:
         return redirect(url_for("login"))
 
+'''registry route'''
 @ui_blueprint.route("/registry/")
 def registry():
     if g.auth:

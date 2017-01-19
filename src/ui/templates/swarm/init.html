@@ -1,0 +1,61 @@
+{% extends "base/micro.html" %}
+
+{% block title %}
+Swarm Initialization | SwarmOps - Docker管理平台
+{% endblock %}
+
+{% block container %}
+<form class="form-horizontal" role="form" id="InitSwarmForm">
+
+  <div class="form-group">
+    <label for="InitSwarmIp" class="col-sm-12">Swarm Ip&nbsp;<span class="glyphicon glyphicon-star-empty"></span></label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="InitSwarmIp" name="ip" placeholder="初始化Swarm集群的主节点IP">
+    </div>
+  </div>
+
+  <div class="radio">
+    <label>
+      <input type="radio" name="force" id="InitSwarmForce" value="false" checked>
+      非强制创建一个新的集群。
+    </label>
+  </div>
+  <div class="radio">
+    <label>
+      <input type="radio" name="force" id="InitSwarmForce" value="true">
+      强制创建一个新的集群，即使节点本身已经是集群。
+    </label>
+  </div>
+  <br />
+
+  <div class="form-group">
+    <div class=" col-sm-12">
+      <button type="button" onclick=InitSwarm() class="btn btn-primary">初始化集群</button>
+    </div>
+  </div>
+
+</form>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+function InitSwarm() {
+    $.ajax({
+        url: "{{ url_for('apis.core.InitSwarm') }}",
+        method: 'POST',
+        datatype: 'json',
+        data: $('#InitSwarmForm').serialize(),
+        success: function(res) {
+            console.log(res);
+            if (res.success==true) {
+                alert("初始化Swarm集群成功！");
+                //window.location.href="{{ url_for('ui.index') }}";
+                parent.location.reload();
+            } else {
+                alert("初始化Swarm集群失败，请重试提交或报告错误！\n错误原因是：" + res.msg);
+            }
+        },
+    });
+}
+</script>
+{% endblock %}

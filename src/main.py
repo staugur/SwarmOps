@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
+#
 # SetDate: 2016-10
-# Website: www.saintic.com
+# WebSite: www.saintic.com
 #
 
 import time, json, datetime, SpliceURL
@@ -46,7 +47,6 @@ def before_request():
     g.registry  = RegistryManager(Registry=REGISTRY)
     g.sysInfo   = {"Version": __version__, "Author": __author__, "Email": __email__, "Doc": __doc__}
     logger.info("Start Once Access, and this requestId is %s, auth(%s)" %(g.requestId, g.auth))
-    app.logger.info(app.url_map)
 
 #每次返回数据中，带上响应头，包含本次请求的requestId，以及允许所有域跨域访问API, 记录访问日志.
 @app.after_request

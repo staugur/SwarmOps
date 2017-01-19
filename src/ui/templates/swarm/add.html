@@ -1,0 +1,58 @@
+{% extends "base/micro.html" %}
+
+{% block title %}
+Swarm Add | SwarmOps - Docker管理平台
+{% endblock %}
+
+{% block container %}
+<form class="form-horizontal" role="form" id="AddSwarmForm">
+
+  <div class="form-group">
+    <label for="AddSwarmName" class="col-sm-12">Swarm Name&nbsp;<span class="glyphicon glyphicon-star-empty"></span></label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="AddSwarmName" name="name" placeholder="Swarm集群标识名称">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="AddSwarmIp" class="col-sm-12">Swarm Ip&nbsp;<span class="glyphicon glyphicon-star-empty"></span></label>
+    <div class="col-sm-12">
+      <input type="text" class="form-control" id="AddSwarmIp" name="ip" placeholder="Swarm集群任意节点IP">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class=" col-sm-12">
+      <button type="button" id="AddSwarmSubmit" onclick=AddSwarm() class="btn btn-success">添加集群</button>
+    </div>
+  </div>
+
+</form>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+function AddSwarm() {
+    $.ajax({
+        url: "{{ url_for('apis.core.swarm') }}",
+        method: 'POST',
+        datatype: 'json',
+        data: $('#AddSwarmForm').serialize(),
+        beforeSend: function () {
+            // 禁用按钮防止重复提交
+            $("#AddSwarmSubmit").attr({ disabled: "disabled" });
+        },
+        success: function(res) {
+            console.log(res);
+            if (res.success==true) {
+                alert("添加Swarm集群成功！");
+                //window.location.href="{{ url_for('ui.index') }}";
+                parent.location.reload();
+            } else {
+                alert("添加Swarm集群失败，请重试提交或报告错误！\n错误原因是：" + res.msg);
+            }
+        },
+    });
+}
+</script>
+{% endblock %}
