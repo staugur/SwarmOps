@@ -18,6 +18,13 @@ Registry | SwarmOps - Docker管理平台
     {% endif %}
     <p><scan class="glyphicon glyphicon-info-sign"></scan>当前标签数量:&nbsp;<span class="badge">{{ tags|length }}</scan></p>
     </p>
+    <div>
+        <ol class="breadcrumb">
+            <li>Registry</li>
+            <li class="active">ImageName</li>
+            <li>ImageInfo</li>
+        </ol>
+    </div>
 </div>
 {% if g.registry.status %}
 <table class="table table-bordered table-hover table-condensed table-responsive">
