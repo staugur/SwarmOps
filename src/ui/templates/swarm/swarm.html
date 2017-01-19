@@ -25,7 +25,7 @@ Swarm | SwarmOps - Docker管理平台
             <th style="vertical-align: middle; text-align: center;">Manager</th>
             <th style="vertical-align: middle; text-align: center;">State</th>
             <th style="vertical-align: middle; text-align: center;">Token</th>
-            <th style="vertical-align: middle; text-align: center;">Action</th>
+            <th style="vertical-align: middle; text-align: center;">Operations</th>
         </tr>
     </thead>
     <tbody>
@@ -52,11 +52,17 @@ Swarm | SwarmOps - Docker管理平台
             {% else %}
             <td style='vertical-align: middle; text-align: center;' class="text-danger">{{ swarm.state }}</td>
             {% endif %}
-            <td style='vertical-align: middle;'>{{ "Manager:  {}".format(swarm.managerToken) }}<br/>{{ "Worker: {}".format(swarm.workerToken) }}</td>
-            <td style='vertical-align: middle; '>
-                &nbsp;&nbsp;<a class="btn btn-xs btn-danger" href="javascript:SwarmDelete('{{ swarm.name }}')"><i class="icon-trash icon-large"></i> 删除</a>
-                <br />
-                &nbsp;&nbsp;<a class="btn btn-xs btn-info" href="{{ url_for('ui.index', UpdateManager=true) }}"><i class="icon-refresh icon-large icon-spin"></i> 同步</a>
+            <td style='vertical-align: middle; text-align: center;'>
+                {{ "Worker: {}".format(swarm.workerToken) }}
+                <br/>
+                {{ "Manager:  {}".format(swarm.managerToken) }}
+                <br/>
+            </td>
+            <td style='vertical-align: middle; text-align: center;'>
+                &nbsp;&nbsp;<a class="btn btn-xs btn-info" href="{{ url_for('ui.index', UpdateManager=true) }}"><i class="icon-refresh icon-large icon-spin"></i>&nbsp;同步</a>
+                <br/>
+                &nbsp;&nbsp;<a class="btn btn-xs btn-danger" href="javascript:SwarmDelete('{{ swarm.name }}')"><i class="icon-trash icon-large"></i>&nbsp;删除</a>
+                <br/>
             </td>
         </tr>
     {% endfor %}
