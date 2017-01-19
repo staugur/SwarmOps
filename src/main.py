@@ -18,7 +18,7 @@ from libs.Service import ServiceManager
 from libs.Network import NetworkManager
 from libs.Registry import RegistryManager
 
-__version__ = '0.0.2'
+__version__ = '0.0.3'
 __author__  = 'Mr.tao'
 __email__   = 'staugur@saintic.com'
 __doc__     = 'Manage swarm clusters to provide a more concise and compact intermediate layer web application with ui.'
