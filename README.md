@@ -44,7 +44,6 @@ MIT
 ![Services][3]
 ![Nodes][4]
 ![Storages][5]
-![Nginx][6]
 ![Network][7]
 ![Registry][8]
 
@@ -86,6 +85,5 @@ MIT
   [3]: ./misc/service.png "服务"
   [4]: ./misc/node.png "节点"
   [5]: ./misc/storage.png "存储"
-  [6]: ./misc/nginx.png "Nginx配置样例"
   [7]: ./misc/network.png "网络"
   [8]: ./misc/registry.png "私有仓"
