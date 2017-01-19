@@ -51,14 +51,16 @@ function AddNode() {
             console.log(res);
             if (res.success==true) {
                 alert("节点加入集群成功!");
+                parent.location.reload();
             } else {
                 alert("节点加入集群失败，请重试提交或报告错误！\n错误原因是：" + res.msg);
+                document.location.reload(); //重载当前页面
             }
-            document.location.reload(); //重载当前页面
         },
         error: function(res) {
             console.log(res);
             alert(res.statusText);
+            document.location.reload(); //重载当前页面
         }
     });
 }

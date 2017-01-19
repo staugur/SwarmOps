@@ -97,7 +97,8 @@ function DelNode() {
         if (FAILED.length!==0) {
             alert("节点删除失败列表：" + FAILED);
         }
-        document.location.reload(); //重载当前页面
+        //document.location.reload(); //重载当前页面
+        parent.location.reload();
     }
   } else {
       alert("请填写要删除的节点标识！");

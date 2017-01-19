@@ -68,9 +68,10 @@ function UpdateNode() {
             console.log(res);
             if (res.success==true) {
                 alert("更新节点成功!");
-                document.location.reload(); //重载当前页面
+                parent.location.reload();
             } else {
                 alert("更新节点失败，请重试提交或报告错误！\n错误原因是：" + res.msg);
+                document.location.reload(); //重载当前页面
             }
         },
         error: function(res) {

@@ -8,6 +8,7 @@ Node | SwarmOps - Docker管理平台
 <div class="alert alert-danger" role="alert">活跃集群异常!!!</div>
 {% endif %}
 <p>
+    <a href="{{ url_for('ui.node') }}"><button type="button" class="btn btn-default"><i class="icon-repeat"></i> Reload</button></a>
     <a href="javascript:NodeAdd()"><button type="button" class="btn btn-success">添加节点</button></a>
     <a href="javascript:NodeDeleteMore()"><button type="button" class="btn btn-danger">批量删除节点</button></a>
 </p>
@@ -82,6 +83,10 @@ function NodeDelete(nodeIp) {
                         layer.msg("Delete Node Failed. "+res.msg, {icon: 2, time: 15*1000});
                     }
                 },
+                error: function(res) {
+                    console.log(res);
+                    layer.alert(res.statusText);
+                }
             });
         }
     }, function() {

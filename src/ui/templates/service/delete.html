@@ -88,7 +88,8 @@ function DelService() {
         if (FAILED.length!==0) {
             alert("服务删除失败列表：" + FAILED);
         }
-        window.location.href="{{ url_for('ui.service') }}";
+        //window.location.href="{{ url_for('ui.service') }}";
+        parent.location.reload();
     }
   } else {
       alert("请填写要删除的服务标识！");

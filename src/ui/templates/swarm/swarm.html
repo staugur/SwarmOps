@@ -13,6 +13,7 @@ Swarm | SwarmOps - Docker管理平台
 <div class="alert alert-danger" role="alert">当前系统无活跃集群!!!</div>
 {% endif %}
 <p>
+    <a href="{{ url_for('ui.index') }}"><button type="button" class="btn btn-default"><i class="icon-repeat"></i> Reload</button></a>
     <a href="{{ url_for('ui.misc', misc='AddSwarm') }}"><button type="button" class="btn btn-success">添加集群</button></a>
     <a href="{{ url_for('ui.misc', misc='InitSwarm') }}"><button type="button" class="btn btn-primary">初始化集群</button></a>
 </p>
@@ -31,9 +32,9 @@ Swarm | SwarmOps - Docker管理平台
     {% for swarm in Swarms %}
         <tr>
         {%- if swarm.name == ActiveSwarm.name %}
-            <td style="vertical-align: middle; text-align: center;"><attr title="当前为活跃集群" class="glyphicon glyphicon-ok-sign"></attr></td>
+            <td style="vertical-align: middle; text-align: center;"><attr title="当前为活跃集群" class="icon-ok icon-large text-success"></attr></td>
         {% else %}
-            <td style="vertical-align: middle; text-align: center;"><a href='javascript:setActive("{{ swarm.name }}")'><attr title='升级为活跃集群' class='glyphicon glyphicon-arrow-up'></attr></a></td>
+            <td style="vertical-align: middle; text-align: center;"><a href='javascript:setActive("{{ swarm.name }}")'><attr title='升级为活跃集群' class='icon-arrow-up icon-large text-primary'></attr></a></td>
         {% endif -%}
             <td style='vertical-align: middle; text-align: center;'>{{ swarm.name }}</td>
             <td style='vertical-align: middle; text-align: center;'>
