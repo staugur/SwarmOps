@@ -7,10 +7,10 @@ Swarm | SwarmOps - Docker管理平台
 {% set Swarms = g.swarm.getSwarm(checkState=true, UpdateManager=UpdateManager) %}
 {% set ActiveSwarm = g.swarm.getActive %}
 {% if not Swarms %}
-<div class="alert alert-warning" role="alert">当前系统无集群!!!</div>
+<div class="alert alert-warning" role="alert"><i class="icon-info-sign"></i> 当前系统无集群!!!</div>
 {% endif %}
 {% if not ActiveSwarm %}
-<div class="alert alert-danger" role="alert">当前系统无活跃集群!!!</div>
+<div class="alert alert-danger" role="alert"><i class="icon-remove-sign"></i> 当前系统无活跃集群!!!</div>
 {% endif %}
 <p>
     <a href="{{ url_for('ui.index') }}"><button type="button" class="btn btn-default"><i class="icon-repeat"></i> Reload</button></a>
@@ -45,6 +45,7 @@ Swarm | SwarmOps - Docker管理平台
                 {% else %}
                     <em>{{ m }}</em>
                 {% endif %}
+                <br/>
             {% endfor %}
             </td>
             {% if swarm.state == "Healthy" %}
@@ -90,9 +91,9 @@ function setActive(name) {
         success: function(res) {
             console.log(res);
             if (res.success==true) {
-                alert("设置活跃集群成功！");
+                layer.msg("设置活跃集群成功！", {icon: 1});
             } else {
-                alert("设置活跃集群失败！");
+                layer.msg("设置活跃集群失败！", {icon: 2, time: 15*1000});
             }
             window.location.reload();
         },

@@ -10,8 +10,8 @@ ADD requirements.txt /tmp
 
 WORKDIR /SwarmOps
 
-#RUN apk add --no-cache libffi-dev openssl-dev
-
 RUN pip install --timeout 30 --index https://pypi.douban.com/simple/ -r /tmp/requirements.txt
+
+EXPOSE 10130
 
 ENTRYPOINT ["supervisord"]

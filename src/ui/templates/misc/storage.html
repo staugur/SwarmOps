@@ -7,10 +7,10 @@ Storage | SwarmOps - Docker管理平台
 {% set ACTIVE = g.swarm.getActive %}
 <div class="alert alert-success" role="alert"><i class="icon-info-sign"></i> 当前系统使用<code>{{ g.swarm.getMethod }}</code>存储</div>
 {% if not ALL %}
-<div class="alert alert-info" role="alert">没有集群!!!</div>
+<div class="alert alert-info" role="alert"><i class="icon-info-sign"></i> 没有集群!!!</div>
 {% endif %}
 {% if not ACTIVE %}
-<div class="alert alert-warning" role="alert">没有活跃集群!!!</div>
+<div class="alert alert-danger" role="alert"><i class="icon-remove-sign"></i> 没有活跃集群!!!</div>
 {% endif %}
 <table class="table table-bordered table-hover table-condensed table-responsive">
     <caption><div class="text-success"><strong>存储后端所有数据列表:&nbsp;</strong></div></caption>

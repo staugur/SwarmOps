@@ -5,7 +5,7 @@ Service | SwarmOps - Docker管理平台
 {% block container %}
 {% set Services = g.service.GET(request.args.get("id", request.args.get("name")), core=True, core_convert=True).data %}
 {% if not Services %}
-<div class="alert alert-danger" role="alert">没有服务或活跃集群异常!!!</div>
+<div class="alert alert-danger" role="alert"><i class="icon-info-sign"></i> 没有服务或活跃集群异常!!!</div>
 {% endif %}
 <p>
 

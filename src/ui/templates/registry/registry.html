@@ -33,7 +33,7 @@ Registry | SwarmOps - Docker管理平台
 
 <form class="form-search form-horizontal" action="?q=" method="" id="SearchForm">
   <div class="input-group search-input-group">
-    <button type="button" onclick=SearchRepository() class="btn btn-primary">查询</button>
+    <button type="button" onclick=SearchRepository() class="btn btn-primary"><i class="icon-search"></i></button>
     <input type="text" name="q" placeholder="搜索私有仓镜像" value="{{ request.args.get('q','') }}">
   </div>
 </form>
@@ -75,7 +75,9 @@ NavId.className='active';
 function SearchRepository() {
     var search = $('#SearchForm').serialize();
     console.log(search);
-    window.location.href="?"+search
+    if (search) {
+        window.location.href="?"+search;
+    }
 }
 
 // 删除镜像
@@ -88,11 +90,11 @@ function DeleteRepository(repository_name) {
         success: function(res) {
             console.log(res);
             if (res.success==true) {
-                alert("镜像" + repository_name + "删除成功！");
+                layer.msg("镜像" + repository_name + "删除成功！", {icon: 1});
+                window.location.reload();
             } else {
-                alert("镜像" + repository_name + "删除失败！");
+                layer.msg("镜像" + repository_name + "删除失败！", {icon: 2, time: 15*1000});
             }
-            window.location.reload();
         },
         error: function(error){
             console.log(error);

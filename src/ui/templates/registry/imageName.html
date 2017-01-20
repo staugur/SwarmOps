@@ -72,11 +72,11 @@ function DeleteTag(tag) {
         success: function(res) {
             console.log(res);
             if (res.success==true) {
-                alert("{{ imageName }}:" + tag +", 标签删除成功！");
+                layer.msg("{{ imageName }}:" + tag +", 标签删除成功！", {icon: 1});
+                window.location.reload();
             } else {
-                alert("{{ imageName }}:" + tag +", 标签删除失败！");
+                layer.msg("{{ imageName }}:" + tag +", 标签删除失败！", {icon: 2, time: 15*1000});
             }
-            window.location.reload();
         },
         error: function(error){
             console.log(error);
