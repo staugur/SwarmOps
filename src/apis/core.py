@@ -1,4 +1,7 @@
 # -*- coding:utf-8 -*-
+#
+# SwarmOps views for api
+#
 
 from flask import Blueprint, request, g, abort
 from flask_restful import Api, Resource

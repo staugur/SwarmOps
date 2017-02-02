@@ -8,7 +8,7 @@ import requests
 import hashlib
 from redis import Redis
 from .syslog import Syslog
-from config import STORAGE, SSO
+from config import STORAGE, SSO, GLOBAL
 
 md5             = lambda pwd:hashlib.md5(pwd).hexdigest()
 ip_pat          = re.compile(r"^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$")
@@ -21,6 +21,8 @@ RedisConnection = Redis(host=ParseRedis[0], port=ParseRedis[1], password=ParseRe
 
 
 def timeChange(timestring):
+    """ 将形如2017-01-19T02:05:58.129161072Z转化为可读性高的字符串 """
+
     logger.debug("Change time, source time is %s" %timestring)
     startedat = timestring.replace('T', ' ')[:19]
     try:
@@ -40,12 +42,17 @@ def ip_check(ip):
 def isLogged_in(cookie_str):
     ''' check username is logged in '''
 
-    SSOURL = SSO.get("SSO.URL")
-    if cookie_str and not cookie_str == '..':
-        username, expires, sessionId = cookie_str.split('.')
-        success = requests.post(SSOURL+"/sso/", data={"username": username, "time": expires, "sessionId": sessionId}, timeout=5, verify=False, headers={"User-Agent": "Template"}).json().get("success", False)
-        logger.info("check login request, cookie_str: %s, success:%s" %(cookie_str, success))
-        return success
+    AuthType = GLOBAL["Authentication"].lower()
+
+    if AuthType == "sso":
+        SSOURL = SSO.get("SSO.URL")
+        if cookie_str and not cookie_str == '..':
+            username, expires, sessionId = cookie_str.split('.')
+            success = requests.post(SSOURL+"/sso/", data={"username": username, "time": expires, "sessionId": sessionId}, timeout=5, verify=False, headers={"User-Agent": "Template"}).json().get("success", False)
+            logger.info("check login request, cookie_str: %s, success:%s" %(cookie_str, success))
+            return success
+    elif AuthType == "none":
+        return True
     else:
         logger.info("Not Logged in")
         return False

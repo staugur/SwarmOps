@@ -19,6 +19,9 @@ GLOBAL={
 
     "LogLevel": os.getenv("swarmops_loglevel", "DEBUG"),
     #应用程序写日志级别，目前有DEBUG，INFO，WARNING，ERROR，CRITICAL
+
+    "Authentication": os.getenv("swarmops_authentication", "sso"),
+    #认证模块，可选sso(使用passport认证)、none(不适用认证)，
 }
 
 #生产环境配置段

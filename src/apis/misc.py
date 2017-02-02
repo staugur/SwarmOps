@@ -1,4 +1,7 @@
 # -*- coding:utf-8 -*-
+#
+# SwarmOps views for misc
+#
 
 from utils.public import logger
 from flask import Blueprint, request, g, jsonify
