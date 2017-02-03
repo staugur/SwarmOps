@@ -311,7 +311,7 @@ server {
         #post data and check result
         try:
             SwarmEngineServiceCreateUrl  = Splice(netloc=self.leader, port=self.port, path="/services/create").geturl
-            SwarmEngineServiceCreateRes  = requests.post(SwarmEngineServiceCreateUrl, timeout=self.timeout, verify=self.verify, data=json.dumps(baseData))
+            SwarmEngineServiceCreateRes  = requests.post(SwarmEngineServiceCreateUrl, verify=self.verify, data=json.dumps(baseData))
             SwarmEngineServiceCreateData = SwarmEngineServiceCreateRes.json()
         except Exception,e:
             logger.error(e, exc_info=True)
@@ -516,7 +516,7 @@ server {
         #post data to update service
         try:
             SwarmEngineServiceUpdateUrl  = Splice(netloc=self.leader, port=self.port, path="/services/%s/update?version=%d" %(serviceFlag2ID, defaultVersion)).geturl
-            SwarmEngineServiceUpdateRes  = requests.post(SwarmEngineServiceUpdateUrl, headers={"Content-type": "application/json"}, timeout=self.timeout, verify=self.verify, data=json.dumps(baseData))
+            SwarmEngineServiceUpdateRes  = requests.post(SwarmEngineServiceUpdateUrl, headers={"Content-type": "application/json"}, verify=self.verify, data=json.dumps(baseData))
             SwarmEngineServiceUpdateCode = SwarmEngineServiceUpdateRes.status_code
             SwarmEngineServiceUpdateData = SwarmEngineServiceUpdateRes.text or '{}'
             SwarmEngineServiceUpdateData = json.loads(SwarmEngineServiceUpdateData)
