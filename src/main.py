@@ -54,7 +54,7 @@ def before_request():
 #每次返回数据中，带上响应头，包含本次请求的requestId，以及允许所有域跨域访问API, 记录访问日志.
 @app.after_request
 def add_header(response):
-    response.headers["X-Emar-Request-Id"]   = g.requestId
+    response.headers["X-SaintIC-Request-Id"]   = g.requestId
     response.headers["Access-Control-Allow-Origin"] = "*"
     logger.info({
             "AccessLog": True,
