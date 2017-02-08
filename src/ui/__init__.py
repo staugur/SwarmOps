@@ -4,6 +4,7 @@
 #
 
 from flask import Blueprint, render_template, url_for, redirect, g, abort
+from utils.public import logger
 
 ui_blueprint = Blueprint("ui", __name__, template_folder="templates", static_folder='static')
 
@@ -136,11 +137,11 @@ def registry():
 @ui_blueprint.route("/registry/<namespace>/<repository_name>/")
 def registryImageName(namespace, repository_name):
     if g.auth:
-        return render_template("registry/imageName.html", imageName="{}/{}".format(namespace, repository_name))
+        return render_template("registry/imageName.html", imageName="{}/{}".format(namespace, repository_name).replace("_/", ""))
     else:
         return abort(403)
 
-@ui_blueprint.route("/registry/<imageId>")
+@ui_blueprint.route("/registry/<imageId>/")
 def registryImageId(imageId):
     if g.auth:
         return render_template("registry/imageId.html", imageId=imageId)

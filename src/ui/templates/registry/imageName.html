@@ -38,8 +38,8 @@ Registry | SwarmOps - Docker管理平台
     <tbody>
     {% for tag, imageId in tags.iteritems() %}
         <tr>
-            <td style='vertical-align: middle;'>{{ "{}/{}:{}".format(g.registry.url.split("://")[-1].strip("/"), imageName, tag) }}</td>
-            <td style='vertical-align: middle; '>
+            <td style='vertical-align: middle; text-align: center;'>{{ "{}/{}:{}".format(g.registry.url.split("://")[-1].strip("/"), imageName, tag) }}</td>
+            <td style='vertical-align: middle; text-align: center;'>
                 <a href="{{ url_for('ui.registryImageId', imageId=imageId) }}" target="_blank">{{ imageId }}</a>
             </td>
             <td style='vertical-align: middle; text-align: center;'>

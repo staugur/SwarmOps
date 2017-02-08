@@ -6,12 +6,6 @@ Registry | SwarmOps - Docker管理平台
 
 {% block container %}
 {% set registies = g.registry._search_all_repository(request.args.get("q", "")) %}
-<!--
-<p>
-    <a href="{{ url_for('ui.misc', misc='AddRegistry') }}"><button type="button" class="btn btn-success">添加私有仓</button></a>
-    <a href="{{ url_for('ui.misc', misc='DelRegistry') }}"><button type="button" class="btn btn-danger">删除私有仓</button></a>
-</p>
--->
 <div>
     <p><scan class="glyphicon glyphicon-info-sign"></scan>私有仓地址:&nbsp;<kbd>{{ g.registry.url }}</kbd></p>
     <p><scan class="glyphicon glyphicon-info-sign"></scan>私有仓版本:&nbsp;<kbd>v{{ g.registry.version }}</kbd></p>
@@ -50,7 +44,13 @@ Registry | SwarmOps - Docker管理平台
     <tbody id="list_repository">
     {% for registry in registies %}
         <tr>
-            <td style='vertical-align: middle; text-align: center; width: 60%'><a href="{{ url_for('ui.registryImageName', namespace=registry.name.split('/')[0], repository_name=registry.name.split('/')[-1]) }}">{{ "{}/{}".format(g.registry.url.split("://")[-1].strip("/"), registry.name) }}</a></td>
+            <td style='vertical-align: middle; text-align: center; width: 60%'>
+            {% if registry.name.split('/')|length > 1 %}
+            <a href="{{ url_for('ui.registryImageName', namespace=registry.name.split('/')[0], repository_name=registry.name.split('/')[-1]) }}">
+            {% else %}
+            <a href="{{ url_for('ui.registryImageName', namespace='_', repository_name=registry.name) }}">
+            {% endif %}
+            {{ "{}/{}".format(g.registry.url.split("://")[-1].strip("/"), registry.name) }}</a></td>
             <td style='vertical-align: middle; text-align: center;'>{{ registry.description }}</td>
             <td style='vertical-align: middle; text-align: center;'>
                 <a href="javascript:DeleteRepository('{{ registry.name }}')" title="确认删除镜像: {{ registry.name }}&nbsp;?"><scan class="text-danger glyphicon glyphicon-trash"></scan></a>
