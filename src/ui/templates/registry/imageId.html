@@ -6,7 +6,7 @@ Registry | SwarmOps - Docker管理平台
 
 {% block container %}
 
-{% set imageIdInfo = g.registry._get_imageId_info(imageId) %}
+{% set imageIdInfo = g.registry._get_imageId_info(imageId, request.args.get("imageName")) %}
 <div>
     <p><scan class="glyphicon glyphicon-info-sign"></scan>私有仓地址:&nbsp;<kbd>{{ g.registry.url }}</kbd></p>
     <p><scan class="glyphicon glyphicon-info-sign"></scan>私有仓版本:&nbsp;<kbd>v{{ g.registry.version }}</kbd></p>

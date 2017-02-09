@@ -40,7 +40,11 @@ Registry | SwarmOps - Docker管理平台
         <tr>
             <td style='vertical-align: middle; text-align: center;'>{{ "{}/{}:{}".format(g.registry.url.split("://")[-1].strip("/"), imageName, tag) }}</td>
             <td style='vertical-align: middle; text-align: center;'>
-                <a href="{{ url_for('ui.registryImageId', imageId=imageId) }}" target="_blank">{{ imageId }}</a>
+                {% if g.registry.version ==1 %}
+                <a href="{{ url_for('ui.registryImageId', imageId=imageId, imageName=imageName) }}" target="_blank">{{ imageId }}</a>
+                {% else %}
+                <a href="{{ url_for('ui.registryImageId', imageId=tag, imageName=imageName) }}" target="_blank">{{ imageId }}</a>
+                {% endif %}
             </td>
             <td style='vertical-align: middle; text-align: center;'>
                 <a href="javascript:DeleteTag('{{ tag }}')" title="确认删除标签: {{ tag }}&nbsp;?"><scan class="text-danger glyphicon glyphicon-trash"></scan></a>

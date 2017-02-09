@@ -76,20 +76,27 @@ class RegistryManager:
             if self.version == 1:
                 return Tags
             else:
-                return { _:"digest" for _ in Tags.get('tags', []) }
+                return { _:self._get_imageId(ImageName, _) for _ in Tags.get('tags', []) }
 
     def _get_imageId(self, ImageName, tag="latest"):
-        """ 查询某个镜像tag的imageId """
+        """ 查询某个镜像tag的imageId/digest """
 
-        ReqUrl = self._baseUrl + "/repositories/{}/tags/{}".format(ImageName, tag)
+        ReqUrl = self._baseUrl + "/repositories/{}/tags/{}".format(ImageName, tag) if self.version == 1 else self._baseUrl + "/{}/manifests/{}".format(ImageName, tag)
         logger.info("_get_imageId for url {}".format(ReqUrl))
         try:
-            ImageId = requests.get(ReqUrl, timeout=self.timeout, verify=self.verify).json()
+            if self.version == 1:
+                r = requests.get(ReqUrl, timeout=self.timeout, verify=self.verify)
+            else:
+                r = requests.head(ReqUrl, timeout=self.timeout, verify=self.verify, allow_redirects=True, headers={"Content-Type": "application/vnd.docker.distribution.manifest.v2+json"})
         except Exception,e:
             logger.error(e, exc_info=True)
             return False
         else:
-            return ImageId
+            if self.version == 1:
+                return r.json()
+            else:
+                return r.headers.get("Docker-Content-Digest", "")
+        return ""
 
     def _delete_repository_tag(self, ImageName, tag):
         """ 删除一个镜像的某个标签 """
@@ -130,10 +137,14 @@ class RegistryManager:
         else:
             return ImageIds
 
-    def _get_imageId_info(self, ImageId):
-        """ 查询某个镜像的信息 """
+    def _get_imageId_info(self, ImageId, ImageName=None):
+        """
+        查询某个镜像的信息
+        v1: ImageId
+        v2: ImageName + Tag(ImageId)
+        """
 
-        ReqUrl = self._baseUrl + "/images/{}/json".format(ImageId)
+        ReqUrl = self._baseUrl + "/images/{}/json".format(ImageId) if self.version == 1 else self._baseUrl + "/{}/manifests/{}".format(ImageName, ImageId)
         logger.info("_get_imageId_info for url {}".format(ReqUrl))
         try:
             ImageInfo = requests.get(ReqUrl, timeout=self.timeout, verify=self.verify).json()
@@ -142,5 +153,3 @@ class RegistryManager:
             return False
         else:
             return ImageInfo
-
-
