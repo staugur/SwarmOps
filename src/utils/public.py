@@ -9,6 +9,9 @@ import hashlib
 from redis import Redis
 from .syslog import Syslog
 from config import STORAGE, SSO, GLOBAL
+from functools import wraps
+from flask import g, request, redirect, url_for
+
 
 md5             = lambda pwd:hashlib.md5(pwd).hexdigest()
 ip_pat          = re.compile(r"^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$")
@@ -68,3 +71,12 @@ def string2dict(string):
         data = {}
     logger.info("change string2dict, return {}".format(data))
     return data
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not g.signin:
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
