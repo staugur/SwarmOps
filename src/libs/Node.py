@@ -29,7 +29,7 @@ class NodeManager(BASE_SWARM_ENGINE_API):
                 try:
                     node_id            = i['ID']
                     node_role          = 'Leader' if i.get('ManagerStatus', {}).get('Leader') else i['Spec'].get('Role')
-                    node_host          = i.get('ManagerStatus', {}).get('Addr', '').split(':')[0] or i['Spec'].get('Labels', {}).get('ipaddr', i['Description']['Hostname'])
+                    node_host          = i['Spec'].get('Labels', {}).get('ipaddr', i['Description']['Hostname']) or i.get('ManagerStatus', {}).get('Addr', '').split(':')[0]
                     node_status        = i['Status']['State']
                     node_availability  = i['Spec'].get('Availability')
                     node_reachability  = i.get('ManagerStatus', {}).get('Reachability')
@@ -50,7 +50,7 @@ class NodeManager(BASE_SWARM_ENGINE_API):
                 except Exception,e:
                     logger.error(e, exc_info=True)
                     logger.debug(i)
-                    node_host = i.get('ManagerStatus', {}).get('Addr', '').split(':')[0] or i['Spec'].get('Labels', {}).get('ipaddr', i['Description']['Hostname'])
+                    node_host = i['Spec'].get('Labels', {}).get('ipaddr', i['Description']['Hostname']) or i.get('ManagerStatus', {}).get('Addr', '').split(':')[0]
                     node_data.append((node_host, i.get("ID")))
                 else:
                     node_data.append((node_host, node_id, node_role, node_status, node_availability, node_reachability, node_containers, node_cpu, node_mem, node_label, node_CreatedAt, node_UpdatedAt, node_dockerVersion))

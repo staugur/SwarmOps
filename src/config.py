@@ -59,10 +59,10 @@ STORAGE={
     #当SwarmStorageMode不为local时，此配置项有意义。
     #此配置项设置存储后端的连接信息, 如redis, redis没有密码则留空:password部分
 
-    "SwarmKey": os.getenv("swarmops_StorageSwarmKey", "Swarm_All"),
+    "SwarmKey": os.getenv("swarmops_StorageSwarmKey", "SwarmOps_All"),
     #存储后端存储所有Swarm数据的Key索引
 
-    "ActiveKey": os.getenv("swarmops_StorageActiveKey", "Swarm_Active"),
+    "ActiveKey": os.getenv("swarmops_StorageActiveKey", "SwarmOps_Active"),
     #存储后端存储活跃集群数据的Key索引
 }
 

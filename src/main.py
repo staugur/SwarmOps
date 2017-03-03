@@ -8,7 +8,7 @@ import time, json
 from urllib import urlencode
 from flask import Flask, request, g, jsonify, redirect, make_response, url_for, abort
 from config import GLOBAL, PRODUCT, SSO, STORAGE, REGISTRY
-from utils.public import logger, gen_requestId, isLogged_in
+from utils.public import logger, gen_requestId, isLogged_in, login_required
 from ui import ui_blueprint
 from apis.core import core_blueprint
 from apis.misc import misc_blueprint
@@ -70,11 +70,9 @@ def add_header(response):
     return response
 
 @app.route("/")
+@login_required
 def index():
-    if g.auth:
-        return redirect(url_for("ui.index"))
-    else:
-        return redirect(url_for("auth.login"))
+    return redirect(url_for("ui.index"))
 
 @app.errorhandler(404)
 def not_found(error=None):

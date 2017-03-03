@@ -10,7 +10,7 @@ from redis import Redis
 from .syslog import Syslog
 from config import STORAGE, SSO, GLOBAL
 from functools import wraps
-from flask import g, request, redirect, url_for
+from flask import g, request, redirect, url_for, abort
 
 
 md5             = lambda pwd:hashlib.md5(pwd).hexdigest()
@@ -75,8 +75,8 @@ def string2dict(string):
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not g.signin:
-            return redirect(url_for('login'))
+        if not g.auth:
+            return redirect(url_for('auth.login'))
         return f(*args, **kwargs)
     return decorated_function
 
