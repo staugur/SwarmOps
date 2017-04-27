@@ -78,7 +78,7 @@ class BASE_SWARM_ENGINE_API:
             return "ERROR"
         else:
             logger.info("To determine whether the cluster is healthy, ending, the state is %s, manager number is %d" %(state, mnum))
-            if len(state) == mnum and state:
+            if len(nodes) == mnum and state:
                 return 'Healthy'
             else:
                 return 'Unhealthy'
