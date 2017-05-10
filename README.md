@@ -20,6 +20,7 @@ MIT
     1.1 pip install -r requirements.txt
     
 2. modify config.py or add environment variables(os.getenv key in the reference configuration item):
+    `此处解释一个配置: Authentication, 用来做认证的, 可选sso和none; 默认是sso, 如果不想认证, 改为none, 或者启动前设置环境变量export swarmops_authentication=none`
 
 3. run:
     3.1 python main.py        #开发模式
