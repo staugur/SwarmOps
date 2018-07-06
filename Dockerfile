@@ -1,4 +1,4 @@
-FROM registry.saintic.com/python
+FROM alpine:gcc
 
 MAINTAINER Mr.tao <staugur@saintic.com>
 

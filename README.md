@@ -36,7 +36,7 @@ MIT
 ## Usage for Docker
 
 ```
-   cd misc ; docker build -t alpine:gcc .
+   cd misc ; docker build -f Dockerfile_gcc -t alpine:gcc .
    cd .. ;   docker build -t swarmops .
    docker run -tdi --name swarmops --net=host --always=restart swarmops
    ps aux|grep SwarmOps //watch the process
@@ -84,8 +84,7 @@ MIT
 
 ## TODO
 
-> 1. Network
-> 2. Service Optimization
+Not yet developed(暂不开发)
 
 
   [1]: ./misc/SwarmOpsApi.png
