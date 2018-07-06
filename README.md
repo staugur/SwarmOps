@@ -38,7 +38,7 @@ MIT
 ```
    cd misc ; docker build -f Dockerfile_gcc -t alpine:gcc .
    cd .. ;   docker build -t swarmops .
-   docker run -tdi --name swarmops --net=host --always=restart swarmops
+   docker run -tdi --name swarmops --net=host swarmops
    ps aux|grep SwarmOps //watch the process
 ```
 

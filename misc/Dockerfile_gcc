@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-MAINTAINER taochengwei <taochengwei@emar.com>
+MAINTAINER taochengwei <staugur@saintic.com>
 
 ADD localtime /etc/localtime
 
