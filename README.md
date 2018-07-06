@@ -39,9 +39,8 @@ MIT
 ```
    cd misc ; docker build -f Dockerfile_gcc -t alpine:gcc .
    cd .. ;   docker build -t swarmops .
-   # 设置无认证，默认sso，会使用passport(passport重构，此项目暂为适配)
    docker run -tdi --name swarmops --net=host -e swarmops_authentication=none swarmops
-   ps aux|grep SwarmOps //watch the process
+   ps aux|grep SwarmOps
 ```
 
 
