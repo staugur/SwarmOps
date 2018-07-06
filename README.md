@@ -21,8 +21,9 @@ MIT
     
 2. modify config.py or add environment variables(os.getenv key in the reference configuration item):
     """
-    此处解释一个配置: Authentication, 用来做认证的, 可选sso和none; 
-    默认是sso, 如果不想认证, 改为none, 或者启动前设置环境变量: export swarmops_authentication=none
+    此处解释一个配置: GLOBAL段中的Authentication, 用来做认证的, 可选sso和none; 
+    默认是sso, 会使用https://github.com/staugur/passport做认证，但是此已经更新，swarmops暂未适配，所以无法使用。
+    当下，您可以自行做认证，如果不想认证, 改为none, 或者启动前设置环境变量: export swarmops_authentication=none
     """
 
 3. run:
@@ -38,7 +39,8 @@ MIT
 ```
    cd misc ; docker build -f Dockerfile_gcc -t alpine:gcc .
    cd .. ;   docker build -t swarmops .
-   docker run -tdi --name swarmops --net=host swarmops
+   # 设置无认证，默认sso，会使用passport(passport重构，此项目暂为适配)
+   docker run -tdi --name swarmops --net=host -e swarmops_authentication=none swarmops
    ps aux|grep SwarmOps //watch the process
 ```
 
