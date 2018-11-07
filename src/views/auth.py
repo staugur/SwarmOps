@@ -6,7 +6,7 @@
 import datetime, SpliceURL
 from flask import Blueprint, request, g, redirect, make_response, url_for
 from urllib import urlencode
-from config import SSO
+from config import SSO, GLOBAL
 from utils.public import logger, md5
 
 auth_blueprint = Blueprint("auth", __name__)
@@ -27,7 +27,10 @@ def login():
 
 @auth_blueprint.route('/logout/')
 def logout():
-    SSOLogoutURL = SSO.get("SSO.URL") + "/sso/?nextUrl=" + request.url_root.strip("/")
+    if GLOBAL["Authentication"] == "sso":
+        SSOLogoutURL = SSO.get("SSO.URL") + "/sso/?nextUrl=" + request.url_root.strip("/")
+    else:
+        SSOLogoutURL = url_for("ui.index")
     resp = make_response(redirect(SSOLogoutURL))
     resp.set_cookie(key='logged_in', value='', expires=0)
     resp.set_cookie(key='username',  value='', expires=0)

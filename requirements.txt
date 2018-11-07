@@ -1,4 +1,4 @@
-Flask==0.10.1
+Flask
 Flask-RESTful
 SpliceURL>=1.2
 tornado
