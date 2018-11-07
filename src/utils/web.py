@@ -13,7 +13,7 @@ import json
 from .tool import logger
 from .jwt import JWTUtil, JWTException
 from .aes_cbc import CBC
-from libs.base import CacheBase
+from libs.Base import CacheBase
 from config import SSO
 from functools import wraps
 from flask import g, request, redirect, url_for, abort

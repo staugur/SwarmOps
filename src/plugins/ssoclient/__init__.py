@@ -12,7 +12,6 @@
 #: Importing these two modules is the first and must be done.
 #: 首先导入这两个必须模块
 from __future__ import absolute_import
-from libs.base import PluginBase
 #: Import the other modules here, and if it's your own module, use the relative Import. eg: from .lib import Lib
 #: 在这里导入其他模块, 如果有自定义包目录, 使用相对导入, 如: from .lib import Lib
 import requests, json, hmac, hashlib, re
@@ -209,7 +208,7 @@ def getPluginClass():
     return SSOClientMain
 
 #: 插件主类, 不强制要求名称与插件名一致, 保证getPluginClass准确返回此类
-class SSOClientMain(PluginBase):
+class SSOClientMain(object):
 
     def register_bep(self):
         """注册蓝图入口, 返回蓝图路由前缀及蓝图名称"""
