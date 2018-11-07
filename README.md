@@ -19,18 +19,11 @@ MIT
     1.0 yum install -y gcc gcc-c++ python-devel libffi-devel openssl-devel
     1.1 pip install -r requirements.txt
     
-2. modify config.py or add environment variables(os.getenv key in the reference configuration item):
-    """
-    此处解释一个配置: GLOBAL段中的Authentication, 用来做认证的, 可选sso和none; 
-    默认是sso, 会使用https://github.com/staugur/passport做认证，但是此已经更新，swarmops暂未适配，所以无法使用。
-    当下，您可以自行做认证，如果不想认证, 改为none, 或者启动前设置环境变量: export swarmops_authentication=none
-    """
+2. modify config.py or add environment variables(os.getenv key in the reference configuration item)
 
 3. run:
-    3.1 python main.py        #开发模式
-    3.2 sh Control.sh         #生产模式
-    3.3 python -O Product.py  #生产模式，3.2中方式实际调用此脚本
-    3.4 python super_debug.py #性能分析模式
+    3.1 python main.py                 #开发模式
+    3.2 bash online_gunicorn.sh start  #生产模式
 ```
 
 
@@ -39,10 +32,14 @@ MIT
 ```
    cd misc ; docker build -f Dockerfile_gcc -t alpine:gcc .
    cd .. ;   docker build -t swarmops .
-   docker run -tdi --name swarmops --net=host -e swarmops_authentication=none swarmops
+   docker run -tdi --name swarmops --net=host swarmops
    ps aux|grep SwarmOps
 ```
 
+
+## Demo
+
+[https://swarmops.saintic.com](https://swarmops.saintic.com "https://swarmops.saintic.com")
 
 ## UI
 ![Swarms][2]

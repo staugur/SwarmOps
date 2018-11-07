@@ -85,7 +85,6 @@ def before_request():
     g.node      = NodeManager(ActiveSwarm=g.swarm.getActive)
     g.network   = NetworkManager(ActiveSwarm=g.swarm.getActive)
     g.registry  = RegistryManager(Registry=REGISTRY)
-    app.logger.info(app.url_map)
 
 
 @app.after_request
