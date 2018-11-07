@@ -6,7 +6,8 @@
 
 import requests, json, re
 from SpliceURL import Splice
-from utils.public import logger, Ot2Bool, ip_check, timeChange, comma_Pat
+from utils.public import Ot2Bool, ip_check, timeChange, comma_Pat
+from utils.tool import logger
 from .Base import BASE_SWARM_ENGINE_API
 
 

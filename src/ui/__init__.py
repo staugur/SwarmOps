@@ -4,7 +4,7 @@
 #
 
 from flask import Blueprint, render_template, url_for, redirect, g, abort
-from utils.public import logger, login_required
+from utils.web import login_required
 
 ui_blueprint = Blueprint("ui", __name__, template_folder="templates", static_folder='static')
 

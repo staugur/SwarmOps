@@ -7,8 +7,7 @@ import datetime
 import requests
 import hashlib
 from redis import Redis
-from .syslog import Syslog
-from config import STORAGE, SSO, GLOBAL
+from config import STORAGE
 from functools import wraps
 from flask import g, request, redirect, url_for, abort
 
@@ -16,7 +15,6 @@ from flask import g, request, redirect, url_for, abort
 md5             = lambda pwd:hashlib.md5(pwd).hexdigest()
 ip_pat          = re.compile(r"^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$")
 comma_Pat       = re.compile(r"\s*,\s*")
-logger          = Syslog.getLogger()
 Ot2Bool         = lambda string:string.lower() in ("desc",) #将字符串desc转化为True
 gen_requestId   = lambda :str(uuid.uuid4())
 ParseRedis      = STORAGE["Connection"].split("redis://")[-1].split(":")
@@ -42,23 +40,6 @@ def ip_check(ip):
     if isinstance(ip, (str, unicode)):
         return ip_pat.match(ip)
 
-def isLogged_in(cookie_str):
-    ''' check username is logged in '''
-
-    AuthType = GLOBAL["Authentication"].lower()
-
-    if AuthType == "sso":
-        SSOURL = SSO.get("SSO.URL")
-        if cookie_str and not cookie_str == '..':
-            username, expires, sessionId = cookie_str.split('.')
-            success = requests.post(SSOURL+"/sso/", data={"username": username, "time": expires, "sessionId": sessionId}, timeout=5, verify=False, headers={"User-Agent": "Template"}).json().get("success", False)
-            logger.info("check login request, cookie_str: %s, success:%s" %(cookie_str, success))
-            return success
-    elif AuthType == "none":
-        return True
-    else:
-        logger.info("Not Logged in")
-        return False
 
 def string2dict(string):
     """ 把规律性字符串转化为字典 """
@@ -71,12 +52,4 @@ def string2dict(string):
         data = {}
     logger.info("change string2dict, return {}".format(data))
     return data
-
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if not g.auth:
-            return redirect(url_for('auth.login'))
-        return f(*args, **kwargs)
-    return decorated_function
 

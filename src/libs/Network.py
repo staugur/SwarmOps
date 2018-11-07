@@ -1,7 +1,8 @@
 # -*- coding:utf8 -*-
 
 from SpliceURL import Splice
-from utils.public import logger, ip_check, timeChange, string2dict
+from utils.public import ip_check, timeChange, string2dict
+from utils.tool import logger
 from .Base import BASE_SWARM_ENGINE_API
 
 

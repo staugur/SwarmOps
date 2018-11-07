@@ -4,7 +4,8 @@
 import json, requests, os
 from config import STORAGE
 from SpliceURL import Splice
-from utils.public import logger, RedisConnection, ip_check
+from utils.public import RedisConnection, ip_check
+from utils.tool import logger
 from .Base import BASE_SWARM_ENGINE_API
 
 class MultiSwarmManager(BASE_SWARM_ENGINE_API):

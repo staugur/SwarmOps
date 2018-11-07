@@ -5,7 +5,8 @@
 
 from flask import Blueprint, request, g, abort
 from flask_restful import Api, Resource
-from utils.public import logger, login_required
+from utils.tool import logger
+from utils.web import login_required
 
 
 class Swarm(Resource):

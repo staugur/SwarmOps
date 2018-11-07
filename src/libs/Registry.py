@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 
 import requests, SpliceURL
-from utils.public import logger
+from utils.tool import logger
 
 class RegistryManager:
 
