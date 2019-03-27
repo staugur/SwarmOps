@@ -2,8 +2,12 @@
 Operation of swarm cluster, providing an intermediate layer application of API interface and UI.
 
 
+## Issue
+- https://satic.io/n
+
+
 ## LICENSE
-MIT
+BSD
 
 
 ## Environment
