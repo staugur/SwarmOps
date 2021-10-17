@@ -37,7 +37,7 @@ function Monthly2Number() {
         Nov) echo 11;;
         Dec) echo 12;;
         *)   exit;;
-  esac
+    esac
 }
 
 case $1 in

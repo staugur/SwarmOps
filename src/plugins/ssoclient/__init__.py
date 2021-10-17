@@ -16,7 +16,7 @@ from __future__ import absolute_import
 #: 在这里导入其他模块, 如果有自定义包目录, 使用相对导入, 如: from .lib import Lib
 import requests, json, hmac, hashlib, re
 from flask import Blueprint, request, jsonify, g, redirect, url_for, make_response
-from flask_pluginkit import string_types
+from flask._compat import string_types
 from config import SSO, SYSTEM
 from utils.web import login_required, anonymous_required, set_ssoparam, set_sessionId, get_redirect_url, get_referrer_url, set_userinfo, logger
 

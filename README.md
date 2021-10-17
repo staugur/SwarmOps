@@ -3,7 +3,7 @@ Operation of swarm cluster, providing an intermediate layer application of API i
 
 
 ## Issue
-- https://satic.io/n
+- https://satic.cn/issues
 
 
 ## LICENSE
@@ -43,7 +43,7 @@ BSD
 
 ## Demo
 
-[https://swarmops.saintic.com](https://swarmops.saintic.com "https://swarmops.saintic.com")
+[SwarmOps Demo](http://swarmops.demo.saintic.com)
 
 ## UI
 ![Swarms][2]

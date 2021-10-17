@@ -1,17 +1,11 @@
-FROM alpine:gcc
-
-MAINTAINER Mr.tao <staugur@saintic.com>
-
-ADD src /SwarmOps
-
-ADD misc/supervisord.conf /etc/supervisord.conf
-
-ADD requirements.txt /tmp
-
+FROM python:2.7-slim
+ARG PIPMIRROR=https://pypi.org/simple
+COPY requirements.txt .
+RUN apt update &&\
+    apt install -y --no-install-recommends build-essential python-dev &&\
+    pip install --timeout 30 --index $PIPMIRROR --no-cache-dir -r requirements.txt &&\
+    rm -rf /var/lib/apt/lists/* requirements.txt
+COPY src /SwarmOps
 WORKDIR /SwarmOps
-
-RUN pip install --timeout 30 --index https://pypi.douban.com/simple/ -r /tmp/requirements.txt
-
 EXPOSE 10130
-
-ENTRYPOINT ["supervisord"]
+ENTRYPOINT ["bash", "online_gunicorn.sh", "run"]
