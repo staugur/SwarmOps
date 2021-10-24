@@ -8,4 +8,4 @@ RUN apt update &&\
 COPY src /SwarmOps
 WORKDIR /SwarmOps
 EXPOSE 10130
-ENTRYPOINT ["bash", "online_gunicorn.sh", "run"]
+ENTRYPOINT ["bash", "online_gunicorn.sh", "entrypoint"]

@@ -58,6 +58,10 @@ run)
     gunicorn -w $cpu_count --threads 16 -b ${host}:${port} main:app -k gevent --max-requests 250 --name $procname
     ;;
 
+entrypoint)
+    exec gunicorn -w $cpu_count --threads 16 -b ${host}:${port} main:app -k gevent --max-requests 250 --name $procname
+    ;;
+
 stop)
     if [ ! -f $pidfile ]; then
         echo "$pidfile does not exist, process is not running"

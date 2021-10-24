@@ -34,10 +34,9 @@ BSD
 ## Usage for Docker
 
 ```
-   cd misc ; docker build -f Dockerfile_gcc -t alpine:gcc .
-   cd .. ;   docker build -t swarmops .
-   docker run -tdi --name swarmops --net=host swarmops
-   ps aux|grep SwarmOps
+   docker build -t swarmops .
+   docker run -d --name swarmops --net=host swarmops
+   ps aux|grep -i swarmops
 ```
 
 

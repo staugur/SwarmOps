@@ -7,9 +7,7 @@ requests
 setproctitle==1.1.10
 gevent==20.9.0
 gunicorn==19.10.0
-enum34==1.1.10
 pycrypto==2.6.1
 psutil==5.7.3
 docker==4.3.1
 redis==3.5.3
-supervisor==4.2.1
