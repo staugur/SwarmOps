@@ -1,5 +1,5 @@
 Flask==0.10
-Werkzeug==0.16.1
+Werkzeug==2.2.3
 Flask-RESTful==0.3.8
 Flask-PluginKit==3.5.0
 SpliceURL>=1.2
